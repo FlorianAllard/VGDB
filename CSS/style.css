@@ -1,0 +1,445 @@
+*,
+::before,
+::after {
+  margin: 0px;
+  padding: 0px;
+  box-sizing: border-box;
+}
+
+section, header div {
+  flex: 1 1 0px;
+}
+
+:root {
+  --surface-color: #FFFFFF;
+  --background-color: #E6E6E6;
+  --hover-color: #F2F2F2;
+  --pressed-color: #D9D9D9;
+  --primary-color: #FE7E01;
+  --secondary-color: #00BBCA;
+  --text-color: #4D4D4D;
+  color: var(--text-color);
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+}
+
+.dark-mode {
+  --surface-color: #595959;
+  --background-color: #404040;
+  --hover-color: #4D4D4D;
+  --pressed-color: #333333;
+  --primary-color: #FE7E01;
+  --secondary-color: #00BBCA;
+  --text-color: #FFFFFF;
+}
+
+input,
+select,
+textarea,
+button {
+  font-family: inherit;
+}
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+button:focus-visible {
+  border: none;
+  outline: 3px solid var(--secondary-color);
+}
+
+header {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  background-color: #FE7E01;
+  padding: 1rem calc((100vw - 1200px) / 2);
+  position: sticky;
+  top: 0;
+  box-shadow: 0 0.125rem 0.125rem 0 rgba(0, 0, 0, 0.1);
+  z-index: 2;
+}
+header div {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+}
+
+.icon-button {
+  width: 2.5rem;
+  height: 2.5rem;
+  background-color: transparent;
+  border: none;
+  border-radius: 50%;
+  transition: background-color 100ms ease;
+}
+.icon-button i {
+  font-size: 150%;
+}
+.icon-button:hover {
+  cursor: pointer;
+  background-color: var(--hover-color);
+}
+.icon-button:active {
+  background-color: var(--pressed-color);
+}
+.icon-button i {
+  color: var(--text-color);
+}
+
+.search-bar {
+  flex-grow: 2;
+  position: relative;
+}
+.search-bar i {
+  position: absolute;
+  left: 0.75rem;
+  top: 50%;
+  translate: 0 -50%;
+}
+.search-bar input[type=text] {
+  padding: 0 1rem 0.1rem 2.5rem;
+  height: 2.5rem;
+  border-radius: 0.5rem;
+  background-color: var(--surface-color);
+  border: none;
+  flex-grow: 1;
+  font-size: 1rem;
+}
+
+div:has(> .user-profile) {
+  justify-content: flex-end;
+}
+
+.user-profile {
+  display: flex;
+  flex-direction: row;
+  gap: calc(0.5rem + 6px);
+  padding: 0 0.5rem 0 6px;
+  border: none;
+  background-color: transparent;
+  align-items: center;
+  color: #FFFFFF;
+  border-radius: 1.25rem 0.5rem 0.5rem 1.25rem;
+  transition: all 100ms ease;
+}
+.user-profile:hover {
+  cursor: pointer;
+  background-color: var(--hover-color);
+}
+.user-profile:hover img {
+  outline-color: var(--secondary-color);
+}
+.user-profile:active {
+  background-color: var(--pressed-color);
+}
+
+.profile-picture {
+  width: calc(2.5rem - 12px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  outline: 3px solid var(--text-color);
+  outline-offset: 3px;
+  transition: all 100ms ease;
+}
+
+h2 {
+  font-size: 1.25rem;
+}
+
+p {
+  font-weight: normal;
+}
+
+.section-title {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  justify-content: space-between;
+}
+
+a {
+  color: var(--secondary-color);
+  text-decoration: none;
+  font-weight: 600;
+}
+a:hover {
+  text-decoration: underline;
+}
+
+body {
+  width: 100%;
+  height: 100vh;
+  background-color: var(--background-color);
+}
+
+main {
+  display: flex;
+  flex-direction: column;
+  gap: 4rem;
+  padding: 4rem calc((100vw - 1200px) / 2) 4rem calc((100vw - 1200px) / 2);
+}
+
+section {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+section > .content {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.card {
+  color: var(--text-color);
+  background-color: var(--surface-color);
+  box-shadow: 0 0.125rem 0.125rem 0 rgba(0, 0, 0, 0.1);
+  outline: 3px solid transparent;
+  transition: all 200ms ease;
+  flex-grow: 1;
+}
+.card b {
+  font-weight: bold;
+}
+.card .cover {
+  background-size: cover;
+  background-position: center;
+}
+.card > .content {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  padding: 1rem;
+  justify-content: center;
+}
+.card:hover {
+  text-decoration: none;
+  cursor: pointer;
+  box-shadow: none;
+  scale: 1.02;
+  background-color: var(--hover-color);
+  border-radius: 0.5rem;
+  outline: 3px solid var(--secondary-color);
+  z-index: 1;
+}
+.card:active {
+  scale: 1.01;
+  background-color: var(--pressed-color);
+}
+
+#trending > .content {
+  height: 20rem;
+}
+
+.card.vertical {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+.card.vertical .cover {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  flex-grow: 1;
+  justify-content: flex-end;
+  align-items: flex-end;
+  padding-bottom: 1rem;
+}
+
+.cover.landscape {
+  background-image: url(/Assets/cover_landscape_placeholder.jpg);
+}
+
+.cover.portrait {
+  background-image: url(/Assets/cover_portrait_placeholder.jpg);
+}
+
+.card.vertical:has(> .cover.landscape) {
+  flex: 3 1 0px;
+}
+
+.card.vertical:has(> .cover.portrait) {
+  flex: 1 1 0px;
+}
+
+ul.subtexts {
+  display: flex;
+  flex-direction: row;
+  gap: 0.5rem;
+  list-style-type: none;
+}
+ul.subtexts li {
+  height: min-content;
+}
+
+small {
+  font-size: 0.75rem;
+}
+
+.rating-user, .rating-critics {
+  display: inline-block;
+  font-weight: bold;
+  padding: 0 1rem 0 0.5rem;
+  height: 1.5rem;
+  border-radius: 0.25rem 0 0 0.25rem;
+  color: var(--surface-color);
+  width: calc(3.5ch + 1.5rem);
+}
+
+.rating-critics {
+  background-color: var(--primary-color);
+}
+
+.rating-user {
+  background-color: var(--secondary-color);
+}
+
+section:has(> section) {
+  flex-direction: row;
+  gap: 4rem;
+}
+section:has(> section) > section .content {
+  flex-direction: column;
+}
+
+#most-anticipated {
+  flex-grow: 3;
+}
+
+#coming-soon {
+  flex-grow: 2;
+}
+
+.card.horizontal {
+  display: flex;
+  flex-direction: row;
+  gap: 0;
+}
+.card.horizontal:has(> .cover.landscape) {
+  height: 6rem;
+}
+.card.horizontal:has(> .cover.portrait) {
+  height: 4rem;
+}
+.card.horizontal .cover.landscape {
+  aspect-ratio: 205/96;
+}
+.card.horizontal .cover.portrait {
+  aspect-ratio: 42/64;
+}
+.card.horizontal .content {
+  flex-grow: 1;
+}
+
+.countdown {
+  display: flex;
+  flex-direction: row;
+  gap: 0.5rem;
+  padding: 1rem 1rem 2.25rem 1rem;
+  align-items: center;
+}
+.countdown div {
+  display: flex;
+  flex-direction: row;
+  gap: 0.25rem;
+  position: relative;
+}
+.countdown hr {
+  width: 3px;
+  height: 1rem;
+}
+.countdown span {
+  background-color: var(--background-color);
+  padding: 0.5rem;
+  font-size: 1.25rem;
+  font-weight: bold;
+  border-radius: 0.5rem;
+}
+.countdown small {
+  position: absolute;
+  width: 100%;
+  bottom: -1.25rem;
+  text-align: center;
+}
+
+.smaller {
+  font-size: 0.625rem;
+}
+
+hr {
+  background-color: var(--text-color);
+  border: none;
+  border-radius: 1.5px;
+}
+
+#user-reviews > .content {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+.user-review {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  height: 16rem;
+}
+.user-review .user {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  align-items: center;
+  padding: 0.75rem 0 0.75rem calc(1rem + 6px);
+  height: fit-content;
+  flex-grow: 0;
+}
+.user-review .user .content {
+  flex-grow: 1;
+  padding: 0;
+}
+.user-review .review {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  padding: 1rem;
+  flex-grow: 1;
+}
+.user-review .review .content {
+  padding: 0;
+  gap: 0.5rem;
+}
+.user-review .review p {
+  overflow: hidden;
+  max-lines: 3;
+  text-overflow: ellipsis;
+  flex: 1 1 0px;
+  margin-bottom: 0.5rem;
+}
+.user-review .review ul {
+  justify-content: flex-end;
+}
+
+.game-cover {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  aspect-ratio: 93/152;
+  outline: 3px solid black;
+  border-radius: 0.25rem;
+  flex: 1 1 0px;
+}
+.game-cover .game-cover-platform {
+  width: 100%;
+}
+.game-cover .cover {
+  flex-grow: 1;
+}
+.game-cover.xbox {
+  outline-color: #4EBF5B;
+}
+.game-cover.xbox .game-cover-platform {
+  aspect-ratio: 93.35/13.34;
+  content: url(/Assets/Platforms/Xbox.png);
+}
+
+/*# sourceMappingURL=style.css.map */

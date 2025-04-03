@@ -1,0 +1,45 @@
+// Instantiate headers
+fetch("/HTML/header.html").then(importEssentials);
+
+/**
+ *
+ * @param {Response} response
+ */
+function importEssentials(response) {
+  if (response.ok) {
+    response.text().then((data) => {
+      document.body.innerHTML = data + document.body.innerHTML;
+    });
+  } else {
+    console.error(response.statusText);
+  }
+}
+
+debug_populatePage();
+function debug_populatePage() {
+  const trendingPortrait = document.querySelector(
+    "#trending .card:has(>.portrait)"
+  );
+  for (let i = 0; i < 3; i++) {
+    const clone = trendingPortrait.cloneNode(true);
+    trendingPortrait.after(clone);
+  }
+
+  const mostAnticipated = document.querySelector("#most-anticipated .card");
+  for (let i = 0; i < 4; i++) {
+    const clone = mostAnticipated.cloneNode(true);
+    mostAnticipated.after(clone);
+  }
+
+  const comingSoon = document.querySelector("#coming-soon .card");
+  for (let i = 0; i < 6; i++) {
+    const clone = comingSoon.cloneNode(true);
+    comingSoon.after(clone);
+  }
+
+  const userReview = document.querySelector(".user-review");
+  for (let i = 0; i < 5; i++) {
+    const clone = userReview.cloneNode(true);
+    userReview.after(clone);
+  }
+}
