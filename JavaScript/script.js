@@ -42,4 +42,10 @@ function debug_populatePage() {
     const clone = userReview.cloneNode(true);
     userReview.after(clone);
   }
+
+  const fullRating = document.querySelector(".rating-full");
+  for (let i = 0; i < 5; i++) {
+    const clone = fullRating.cloneNode(true);
+    fullRating.after(clone);
+  }
 }

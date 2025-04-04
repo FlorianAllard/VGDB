@@ -442,4 +442,58 @@ hr {
   content: url(/Assets/Platforms/Xbox.png);
 }
 
+#ratings > .content {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+.rating-full {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.rating-full .cover.landscape {
+  aspect-ratio: 486/250;
+}
+.rating-full .rating-graph {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  align-items: center;
+  padding: 1rem 0 1rem 1rem;
+}
+.rating-full .rating-graph > div {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  flex-grow: 1;
+  width: 40%;
+}
+
+.percentage-bar {
+  display: flex;
+  flex-direction: row;
+  gap: 3px;
+  align-items: stretch;
+  height: 0.5rem;
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+.percentage-bar hr {
+  border-radius: 0;
+}
+.percentage-bar hr:nth-of-type(1) {
+  background-color: #ff4444;
+  flex-grow: 1;
+}
+.percentage-bar hr:nth-of-type(2) {
+  background-color: #FE7E01;
+  flex-grow: 1;
+}
+.percentage-bar hr:nth-of-type(3) {
+  background-color: #00c851;
+  flex-grow: 1;
+}
+
 /*# sourceMappingURL=style.css.map */
