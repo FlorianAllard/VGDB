@@ -1,5 +1,16 @@
 // Instantiate headers
-fetch("/HTML/header.html").then(importEssentials);
+const headerFetch = fetch("/HTML/header.html");
+let headerHTML = "";
+const footerFetch = fetch("/HTML/footer.html");
+let footerHTML = "";
+Promise.all([headerFetch, footerFetch]).then((responses) => {
+  responses[0].text().then((data) => {
+    document.body.innerHTML = data + document.body.innerHTML;
+  });
+  responses[1].text().then((data) => {
+    document.body.innerHTML = document.body.innerHTML + data;
+  });
+});
 
 /**
  *
