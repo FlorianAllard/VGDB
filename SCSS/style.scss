@@ -1,3 +1,5 @@
+// npx sass --watch ./SCSS:./CSS
+
 *,
 ::before,
 ::after {
@@ -239,6 +241,7 @@ section {
     &>.content {
         @include flex();
         flex-wrap: wrap;
+        position: relative;
     }
 }
 
@@ -249,14 +252,38 @@ section {
     outline: $outline-width solid transparent;
     transition: all $transition-duration-smooth ease;
     flex-grow: 1;
+    min-width: 0;
+    pointer-events: all;
+    opacity: 100%;
 
     b {
         font-weight: bold;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        height: 1lh;
+        min-height: 1lh;
+    }
+
+    &.hidden {
+        pointer-events: none;
+        opacity: 0%;
+        .cover {
+            opacity: 0%;
+        }
     }
 
     .cover {
         background-size: cover;
         background-position: center;
+
+        &.landscape {
+            aspect-ratio: 460/215;
+        }
+
+        &.portrait {
+            aspect-ratio: 297/64;
+        }
     }
 
     &>.content {
@@ -282,10 +309,6 @@ section {
     }
 }
 
-#trending>.content {
-    height: 20rem;
-}
-
 .card.vertical {
     @include flex(column, 0);
 
@@ -298,13 +321,13 @@ section {
     }
 }
 
-.cover.landscape {
-    background-image: url(/Assets/cover_landscape_placeholder.jpg)
-}
+// .cover.landscape {
+//     background-image: url(/Assets/cover_landscape_placeholder.jpg)
+// }
 
-.cover.portrait {
-    background-image: url(/Assets/cover_portrait_placeholder.jpg)
-}
+// .cover.portrait {
+//     background-image: url(/Assets/cover_portrait_placeholder.jpg)
+// }
 
 .card.vertical:has(>.cover.landscape) {
     flex: 3 1 0px;
@@ -342,7 +365,7 @@ small {
     background-color: var(--primary-color);
 }
 
-.rating-user {
+.rating-users {
     @extend %rating;
     background-color: var(--secondary-color);
 }
@@ -373,16 +396,6 @@ section:has(>section) {
 
     &:has(>.cover.portrait) {
         height: 4rem;
-    }
-
-    .cover {
-        &.landscape {
-            aspect-ratio: 205/96;
-        }
-
-        &.portrait {
-            aspect-ratio: 42/64;
-        }
     }
 
     .content {
@@ -600,12 +613,32 @@ footer {
             align-items: center;
         }
 
-        li{
+        li {
             list-style: none;
         }
 
         a {
             color: var(--text-color);
         }
+    }
+}
+
+.loading {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    translate: -50% -50%;
+    color: var(--secondary-color);
+    font-size: 2rem;
+    animation: loading 1s steps(8) infinite;
+}
+
+@keyframes loading {
+    from {
+        rotate: 0;
+    }
+
+    to {
+        rotate: 360deg;
     }
 }

@@ -193,6 +193,7 @@ section > .content {
   flex-direction: row;
   gap: 1rem;
   flex-wrap: wrap;
+  position: relative;
 }
 
 .card {
@@ -202,13 +203,34 @@ section > .content {
   outline: 3px solid transparent;
   transition: all 200ms ease;
   flex-grow: 1;
+  min-width: 0;
+  pointer-events: all;
+  opacity: 100%;
 }
 .card b {
   font-weight: bold;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  height: 1lh;
+  min-height: 1lh;
+}
+.card.hidden {
+  pointer-events: none;
+  opacity: 0%;
+}
+.card.hidden .cover {
+  opacity: 0%;
 }
 .card .cover {
   background-size: cover;
   background-position: center;
+}
+.card .cover.landscape {
+  aspect-ratio: 460/215;
+}
+.card .cover.portrait {
+  aspect-ratio: 297/64;
 }
 .card > .content {
   display: flex;
@@ -232,10 +254,6 @@ section > .content {
   background-color: var(--pressed-color);
 }
 
-#trending > .content {
-  height: 20rem;
-}
-
 .card.vertical {
   display: flex;
   flex-direction: column;
@@ -249,14 +267,6 @@ section > .content {
   justify-content: flex-end;
   align-items: flex-end;
   padding-bottom: 1rem;
-}
-
-.cover.landscape {
-  background-image: url(/Assets/cover_landscape_placeholder.jpg);
-}
-
-.cover.portrait {
-  background-image: url(/Assets/cover_portrait_placeholder.jpg);
 }
 
 .card.vertical:has(> .cover.landscape) {
@@ -281,7 +291,7 @@ small {
   font-size: 0.75rem;
 }
 
-.rating-user, .rating-critics {
+.rating-users, .rating-critics {
   display: inline-block;
   font-weight: bold;
   padding: 0 1rem 0 0.5rem;
@@ -295,7 +305,7 @@ small {
   background-color: var(--primary-color);
 }
 
-.rating-user {
+.rating-users {
   background-color: var(--secondary-color);
 }
 
@@ -325,12 +335,6 @@ section:has(> section) > section .content {
 }
 .card.horizontal:has(> .cover.portrait) {
   height: 4rem;
-}
-.card.horizontal .cover.landscape {
-  aspect-ratio: 205/96;
-}
-.card.horizontal .cover.portrait {
-  aspect-ratio: 42/64;
 }
 .card.horizontal .content {
   flex-grow: 1;
@@ -557,6 +561,25 @@ footer #legal li {
 }
 footer #legal a {
   color: var(--text-color);
+}
+
+.loading {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  translate: -50% -50%;
+  color: var(--secondary-color);
+  font-size: 2rem;
+  animation: loading 1s steps(8) infinite;
+}
+
+@keyframes loading {
+  from {
+    rotate: 0;
+  }
+  to {
+    rotate: 360deg;
+  }
 }
 
 /*# sourceMappingURL=style.css.map */

@@ -7,7 +7,9 @@
     <title>VGDB</title>
     <link rel="stylesheet" href="/CSS/style.css">
     <link rel="stylesheet" href="/node_modules/@fortawesome/fontawesome-free/css/all.min.css">
+    <script src="/JavaScript/api_calls.js" defer></script>
     <script src="/JavaScript/script.js" defer></script>
+    <script src="/JavaScript/index.js" defer></script>
 </head>
 
 <body>
@@ -18,31 +20,21 @@
                 <a href="">See more</a>
             </div>
             <div class="content">
-                <a href="" class="card vertical">
-                    <div class="cover landscape">
-                        <span class="rating-critics">000</span>
-                        <span class="rating-user">00.0</span>
-                    </div>
-                    <div class="content">
-                        <b>Marvel Rivals</b>
-                        <ul class="subtexts">
-                            <li><small>Shooter</small></li>
-                            <li><small>Multiplayer</small></li>
-                        </ul>
-                    </div>
-                </a>
-                <a href="" class="card vertical">
-                    <div class="cover portrait">
-                        <span class="rating-critics">000</span>
-                        <span class="rating-user">00.0</span>
-                    </div>
-                    <div class="content">
-                        <b>Marvel Rivals</b>
-                        <ul class="subtexts">
-                            <li><small>Shooter</small></li>
-                        </ul>
-                    </div>
-                </a>
+                <i class="fa-solid fa-spinner loading"></i>
+                <template id="trending-template">
+                    <a href="" class="card vertical">
+                        <div class="cover">
+                            <span class="rating-critics">-</span>
+                            <span class="rating-users">-</span>
+                        </div>
+                        <div class="content">
+                            <b>-</b>
+                            <ul class="subtexts">
+                                <li><small>-</small></li>
+                            </ul>
+                        </div>
+                    </a>
+                </template>
             </div>
         </section>
 
@@ -117,7 +109,7 @@
                                 <li><small>16 reviews</small></li>
                             </ul>
                         </div>
-                        <span class="rating-user">00.0</span>
+                        <span class="rating-users">00.0</span>
                     </a>
                     <a href="" class="card review">
                         <div class="game-cover xbox">
@@ -184,7 +176,7 @@
                                 <hr>
                             </div>
                         </div>
-                        <span class="rating-user">00.0</span>
+                        <span class="rating-users">00.0</span>
                     </a>
                 </div>
             </div>
