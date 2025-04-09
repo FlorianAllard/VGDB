@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="/node_modules/@fortawesome/fontawesome-free/css/all.min.css">
     <script src="/JavaScript/api_calls.js" defer></script>
     <script src="/JavaScript/script.js" defer></script>
-    <script src="/JavaScript/index.js" defer></script>
+    <script type="module" src="/JavaScript/index.js"></script>
 </head>
 
 <body>
@@ -21,7 +21,7 @@
             </div>
             <div class="content">
                 <i class="fa-solid fa-spinner loading"></i>
-                <template id="trending-template">
+                <template>
                     <a href="" class="card vertical">
                         <div class="cover">
                             <span class="rating-critics">-</span>
@@ -44,6 +44,8 @@
                     <h2>Most anticipated</h2>
                 </div>
                 <div class="content">
+                    <i class="fa-solid fa-spinner loading"></i>
+                   <template>
                     <a href="" class="card horizontal">
                         <div class="cover landscape"></div>
                         <div class="content">
@@ -54,24 +56,25 @@
                         </div>
                         <div class="countdown">
                             <div>
-                                <span>0</span>
-                                <span>0</span>
+                                <span class="countdown-days-10s">0</span>
+                                <span class="countdown-days-1s">0</span>
                                 <small class="smaller">Days</small>
                             </div>
                             <hr>
                             <div>
-                                <span>0</span>
-                                <span>0</span>
+                                <span class="countdown-hours-10s">0</span>
+                                <span class="countdown-hours-1s">0</span>
                                 <small class="smaller">Hours</small>
                             </div>
                             <hr>
                             <div>
-                                <span>0</span>
-                                <span>0</span>
+                                <span class="countdown-minutes-10s">0</span>
+                                <span class="countdown-minutes-1s">0</span>
                                 <small class="smaller">Minutes</small>
                             </div>
                         </div>
                     </a>
+                   </template>
                 </div>
             </section>
 
@@ -81,15 +84,18 @@
                     <a href="">See more</a>
                 </div>
                 <div class="content">
-                    <a href="" class="card horizontal">
-                        <div class="cover portrait"></div>
-                        <div class="content">
-                            <b>Marvel Rivals</b>
-                            <ul class="subtexts">
-                                <li><small>6 December 2024</small></li>
-                            </ul>
-                        </div>
-                    </a>
+                    <i class="fa-solid fa-spinner loading"></i>
+                    <template>
+                        <a href="" class="card horizontal">
+                            <div class="cover portrait"></div>
+                            <div class="content">
+                                <b>Marvel Rivals</b>
+                                <ul class="subtexts">
+                                    <li><small>6 December 2024</small></li>
+                                </ul>
+                            </div>
+                        </a>
+                    </template>
                 </div>
             </section>
         </section>

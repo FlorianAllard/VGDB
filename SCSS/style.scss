@@ -251,7 +251,7 @@ section {
     box-shadow: $shadow;
     outline: $outline-width solid transparent;
     transition: all $transition-duration-smooth ease;
-    flex-grow: 1;
+    flex: 1 1 0px;
     min-width: 0;
     pointer-events: all;
     opacity: 100%;
@@ -261,7 +261,6 @@ section {
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
-        height: 1lh;
         min-height: 1lh;
     }
 
@@ -282,7 +281,7 @@ section {
         }
 
         &.portrait {
-            aspect-ratio: 297/64;
+            aspect-ratio: 359/539;
         }
     }
 
@@ -371,8 +370,7 @@ small {
 }
 
 section:has(>section) {
-    flex-direction: row;
-    gap: 4rem;
+    @include flex(row, 4rem);
 
     &>section .content {
         flex-direction: column;
@@ -380,18 +378,22 @@ section:has(>section) {
 }
 
 #most-anticipated {
-    flex-grow: 3
+    flex: 3 1 0px;
+    max-width: calc((100% - 4rem) * .6);
+    .card {
+        max-width: 100%;
+    }
 }
 
 #coming-soon {
-    flex-grow: 2;
+    flex: 2 1 0px;
 }
 
 .card.horizontal {
     @include flex(row, 0);
 
     &:has(>.cover.landscape) {
-        height: 6rem;
+        min-height: 6rem;
     }
 
     &:has(>.cover.portrait) {
@@ -400,6 +402,7 @@ section:has(>section) {
 
     .content {
         flex-grow: 1;
+        min-width: 0;
     }
 }
 
