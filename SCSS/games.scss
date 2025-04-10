@@ -1,0 +1,155 @@
+@import "./style";
+
+body {
+    @include flex(column, 0);
+    width: 100%;
+    height: 100vh;
+}
+
+main {
+    @include grid();
+    grid-template-columns: 5fr 2fr;
+    justify-items: center;
+    padding: 0 $side-padding 4rem $side-padding;
+}
+
+#hero {
+    @include flex(column);
+    grid-column: 1 / span 2;
+    width: calc(100% + ($side-padding * 2));
+    padding: 4rem 0 8rem 0;
+    aspect-ratio: 1280/413;
+    background-color: var(--background-color);
+    background-size: contain;
+    margin-bottom: -8rem;
+    align-items: center;
+    z-index: -2;
+    position: relative;
+
+    &::before {
+        position: absolute;
+        top: 0;
+        background-color: black;
+        opacity: 50%;
+        width: 100%;
+        height: 100%;
+        content: "";
+        z-index: -1;
+    }
+
+    img {
+        height: 100%;
+        width: calc(100% / 2);
+        aspect-ratio: 2/1;
+        object-fit: contain;
+    }
+}
+
+section {
+    width: 100%;
+}
+
+#content {
+    padding: 4rem $side-padding 0 $side-padding;
+}
+
+.frame {
+    background-color: var(--surface-color);
+    box-shadow: $shadow;
+    padding: 2rem;
+    width: 100%;
+
+    * {
+        @include transition();
+        opacity: 100%;
+    }
+
+    &.hidden * {
+        opacity: 0%;
+    }
+}
+
+#top {
+    @include flex();
+    grid-column: 1 / span 2;
+    width: 100%;
+    margin-top: 4rem;
+
+    img {
+        aspect-ratio: 359/539;
+        height: 100%;
+    }
+
+    iframe {
+        aspect-ratio: 552/358;
+    }
+
+    .frame {
+        @include flex(row, 1.5rem);
+        height: 358px;
+    }
+
+    .frame>div {
+        @include flex(column, .5rem);
+        flex: 1 1 0px;
+
+        >div {
+            position: relative;
+            flex: 1 1 0px;
+
+            p{
+                position: absolute;
+                max-width: 100%;
+                max-height: 100%;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+        }
+    }
+
+    small {
+        margin-bottom: .5rem;
+    }
+}
+
+#left, #right {
+    @include flex(column);
+}
+
+#general-values {
+    @include flex(column);
+}
+
+.value-list {
+    @include flex();
+
+    &:has(p) {
+        flex-direction: column;
+        gap: .5rem;
+    }
+
+    li {
+        list-style: none;
+    }
+
+    ul {
+        @include flex(row, .5rem);
+        flex-wrap: wrap;
+    }
+
+    b {
+        width: 21ch;
+    }
+
+    a {
+        font-weight: normal;
+    }
+}
+
+hr {
+    width: 100%;
+    height: $outline-width;
+    border: none;
+    background-color: var(--background-color);
+    margin: .5rem 0 .5rem 0;
+}

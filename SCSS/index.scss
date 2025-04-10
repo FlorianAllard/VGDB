@@ -1,0 +1,19 @@
+@import "./style";
+
+main {
+    @include flex(column, 4rem);
+    padding: 4rem $side-padding 4rem $side-padding;
+}
+
+#most-anticipated {
+    flex: 3 1 0px;
+    max-width: calc((100% - 4rem) * .6);
+
+    .card {
+        max-width: 100%;
+    }
+}
+
+#coming-soon {
+    flex: 2 1 0px;
+}

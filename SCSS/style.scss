@@ -200,6 +200,10 @@ div:has(>.user-profile) {
     transition: all $transition-duration-instant ease;
 }
 
+h1 {
+    line-height: 1.5rem;
+}
+
 h2 {
     font-size: 1.25rem;
 }
@@ -227,11 +231,6 @@ body {
     width: 100%;
     height: fit-content;
     background-color: var(--background-color);
-}
-
-main {
-    @include flex(column, 4rem);
-    padding: 4rem $side-padding 4rem $side-padding;
 }
 
 section {
@@ -320,14 +319,6 @@ section {
     }
 }
 
-// .cover.landscape {
-//     background-image: url(/Assets/cover_landscape_placeholder.jpg)
-// }
-
-// .cover.portrait {
-//     background-image: url(/Assets/cover_portrait_placeholder.jpg)
-// }
-
 .card.vertical:has(>.cover.landscape) {
     flex: 3 1 0px;
 }
@@ -375,18 +366,6 @@ section:has(>section) {
     &>section .content {
         flex-direction: column;
     }
-}
-
-#most-anticipated {
-    flex: 3 1 0px;
-    max-width: calc((100% - 4rem) * .6);
-    .card {
-        max-width: 100%;
-    }
-}
-
-#coming-soon {
-    flex: 2 1 0px;
 }
 
 .card.horizontal {
@@ -447,135 +426,135 @@ hr {
     border-radius: calc($outline-width / 2);
 }
 
-#user-reviews>.content {
-    @include grid();
-}
+// #user-reviews>.content {
+//     @include grid();
+// }
 
-.user-review {
-    @include flex(column, $outline-width);
-    height: 16rem;
+// .user-review {
+//     @include flex(column, $outline-width);
+//     height: 16rem;
 
-    .user {
-        @include flex();
-        align-items: center;
-        padding: .75rem 0 .75rem calc(1rem + 2 * $outline-width);
-        height: fit-content;
-        flex-grow: 0;
+//     .user {
+//         @include flex();
+//         align-items: center;
+//         padding: .75rem 0 .75rem calc(1rem + 2 * $outline-width);
+//         height: fit-content;
+//         flex-grow: 0;
 
-        .content {
-            flex-grow: 1;
-            padding: 0;
-        }
-    }
+//         .content {
+//             flex-grow: 1;
+//             padding: 0;
+//         }
+//     }
 
-    .review {
-        @include flex();
-        padding: 1rem;
-        flex-grow: 1;
+//     .review {
+//         @include flex();
+//         padding: 1rem;
+//         flex-grow: 1;
 
-        .content {
-            padding: 0;
-            gap: .5rem;
-        }
+//         .content {
+//             padding: 0;
+//             gap: .5rem;
+//         }
 
-        p {
-            overflow: hidden;
-            max-lines: 3;
-            text-overflow: ellipsis;
-            flex: 1 1 0px;
-            margin-bottom: .5rem;
-        }
+//         p {
+//             overflow: hidden;
+//             max-lines: 3;
+//             text-overflow: ellipsis;
+//             flex: 1 1 0px;
+//             margin-bottom: .5rem;
+//         }
 
-        ul {
-            justify-content: flex-end;
-        }
-    }
-}
+//         ul {
+//             justify-content: flex-end;
+//         }
+//     }
+// }
 
-.game-cover {
-    @include flex(column, 0);
-    aspect-ratio: 93/152;
-    outline: $outline-width solid black;
-    border-radius: calc($border-radius / 2);
-    flex: 1 1 0px;
+// .game-cover {
+//     @include flex(column, 0);
+//     aspect-ratio: 93/152;
+//     outline: $outline-width solid black;
+//     border-radius: calc($border-radius / 2);
+//     flex: 1 1 0px;
 
-    .game-cover-platform {
-        width: 100%;
-    }
+//     .game-cover-platform {
+//         width: 100%;
+//     }
 
-    .cover {
-        flex-grow: 1;
-    }
+//     .cover {
+//         flex-grow: 1;
+//     }
 
-    &.xbox {
-        outline-color: #4EBF5B;
+//     &.xbox {
+//         outline-color: #4EBF5B;
 
-        .game-cover-platform {
-            aspect-ratio: 93.35/13.34;
-            content: url(/Assets/Platforms/Xbox.png);
-        }
-    }
-}
+//         .game-cover-platform {
+//             aspect-ratio: 93.35/13.34;
+//             content: url(/Assets/Platforms/Xbox.png);
+//         }
+//     }
+// }
 
-#ratings>.content {
-    @include grid(3);
-}
+// #ratings>.content {
+//     @include grid(3);
+// }
 
-.rating-full {
-    @include flex(column, $outline-width);
+// .rating-full {
+//     @include flex(column, $outline-width);
 
-    .cover.landscape {
-        aspect-ratio: 486/250;
-    }
+//     .cover.landscape {
+//         aspect-ratio: 486/250;
+//     }
 
-    .rating-graph {
-        @include flex(row);
-        align-items: center;
-        padding-right: 0;
+//     .rating-graph {
+//         @include flex(row);
+//         align-items: center;
+//         padding-right: 0;
 
-        .content {
-            @include flex(column, .375rem);
-            flex-grow: 1;
+//         .content {
+//             @include flex(column, .375rem);
+//             flex-grow: 1;
 
-            div:not(.percentage-bar) {
-                @include flex(row, 0);
-                justify-content: space-between;
-                align-items: center;
+//             div:not(.percentage-bar) {
+//                 @include flex(row, 0);
+//                 justify-content: space-between;
+//                 align-items: center;
 
-                small {
-                    padding-top: .175rem;
-                }
-            }
-        }
-    }
-}
+//                 small {
+//                     padding-top: .175rem;
+//                 }
+//             }
+//         }
+//     }
+// }
 
-.percentage-bar {
-    @include flex(row, $outline-width);
-    align-items: stretch;
-    height: .375rem;
-    border-radius: $border-radius;
-    overflow: hidden;
+// .percentage-bar {
+//     @include flex(row, $outline-width);
+//     align-items: stretch;
+//     height: .375rem;
+//     border-radius: $border-radius;
+//     overflow: hidden;
 
-    hr {
-        border-radius: 0;
-    }
+//     hr {
+//         border-radius: 0;
+//     }
 
-    hr:nth-of-type(1) {
-        background-color: $error-color;
-        flex-grow: 1;
-    }
+//     hr:nth-of-type(1) {
+//         background-color: $error-color;
+//         flex-grow: 1;
+//     }
 
-    hr:nth-of-type(2) {
-        background-color: $primary-color;
-        flex-grow: 1;
-    }
+//     hr:nth-of-type(2) {
+//         background-color: $primary-color;
+//         flex-grow: 1;
+//     }
 
-    hr:nth-of-type(3) {
-        background-color: $success-color;
-        flex-grow: 1;
-    }
-}
+//     hr:nth-of-type(3) {
+//         background-color: $success-color;
+//         flex-grow: 1;
+//     }
+// }
 
 footer {
     @include flex(column);
@@ -645,3 +624,9 @@ footer {
         rotate: 360deg;
     }
 }
+
+iframe {
+    background-color: black;
+    border: none;
+}
+

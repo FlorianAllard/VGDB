@@ -73,32 +73,42 @@ function createUpcomingCards(amount) {
 
 async function requestPageData() {
   // Get popular games IDs
-  trendingIDs = await IGDB.requestPopularityPrimitives(
+  const trendingIDsPromise = IGDB.requestPopularityPrimitives(
     "game_id",
     "value desc",
     trendingCards.length,
     "",
     9
   );
-  console.log("Trending games IDs: ", trendingIDs);
 
   // Get anticipated games IDs
   const today = Math.round(Date.now() / 1000);
   const maxSeconds = 100 * 86400;
-  const anticipatedData = await IGDB.requestGames(
+  const anticipatedDataPromise = IGDB.requestGames(
     "first_release_date",
     "hypes desc", anticipatedCards.length,
-    `first_release_date > ${today} & first_release_date < ${today + maxSeconds}`);
-  anticipatedIDs = anticipatedData.sort((a, b) => a.first_release_date - b.first_release_date).map((data) => data.id);
-  console.log("Anticipated games IDs: ", anticipatedIDs);
+    `first_release_date > ${today} & first_release_date < ${today + maxSeconds}`
+  );
 
   // Get upcoming games IDs
-  const upcomingData = await IGDB.requestGames(
+  const upcomingDataPromise = IGDB.requestGames(
     "first_release_date",
     "first_release_date asc",
     upcomingCards.length,
-    `first_release_date > ${today}`);
-  upcomingIDs = upcomingData.map((data) => data.id);
+    `first_release_date > ${today}`
+  );
+
+  // Wait for results and process
+  await Promise.all([trendingIDsPromise, anticipatedDataPromise, upcomingDataPromise])
+  .then((result) => {
+    let index = 0;
+    trendingIDs = result[index++];
+    anticipatedIDs = result[index++].sort((a, b) => a.first_release_date - b.first_release_date).map((data) => data.id);
+    upcomingIDs = result[index++].map((data) => data.id);
+  });
+
+  console.log("Trending games IDs: ", trendingIDs);
+  console.log("Anticipated games IDs: ", anticipatedIDs);
   console.log("Upcoming games IDs: ", upcomingIDs);
 
   // Get all games
@@ -113,22 +123,31 @@ async function requestPageData() {
 
   //Get all genres
   const genreIDs = [...new Set(games.flatMap((game) => game.genres))];
-  genres = await IGDB.requestGenres(
+  const genresPromise = IGDB.requestGenres(
     "name",
     "",
     genreIDs.length,
     `id = (${genreIDs.toString()})`
   );
-  console.log("Genres: ", genres);
 
   //Get all websites
   const websiteIDs = [...new Set(games.flatMap((game) => game.websites).filter((id) => id))];
-  websites = await IGDB.requestWebsites(
+  const websitesPromise = IGDB.requestWebsites(
     "url",
     "",
     websiteIDs.length,
     `id = (${websiteIDs.toString()})`
   );
+
+  // Wait for results and process
+  await Promise.all([genresPromise, websitesPromise])
+  .then((result) => {
+    let index = 0;
+    genres = result[index++];
+    websites = result[index++];
+  });
+
+  console.log("Genres: ", genres);
   console.log("Websites: ", websites);
 
   //Get all covers
@@ -143,6 +162,8 @@ async function requestPageData() {
         game_id: game.id,
         landscape_url: `https://steamcdn-a.akamaihd.net/steam/apps/${match[1]}/header.jpg`,
         portrait_url: `https://steamcdn-a.akamaihd.net/steam/apps/${match[1]}/library_600x900_2x.jpg`,
+        hero_url: `https://steamcdn-a.akamaihd.net/steam/apps/${match[1]}/library_hero.jpg`,
+        logo_url: `https://steamcdn-a.akamaihd.net/steam/apps/${match[1]}/logo.png`,
       });
     }
     else {
@@ -164,6 +185,8 @@ async function requestPageData() {
           game_id: game.id,
           landscape_url: `https://images.igdb.com/igdb/image/upload/t_screenshot_big/image_id.webp`.replace("image_id", cover.image_id),
           portrait_url: `https://images.igdb.com/igdb/image/upload/t_cover_big/image_id.webp`.replace("image_id", cover.image_id),
+          hero_url: `https://images.igdb.com/igdb/image/upload/t_1080p/image_id.webp`.replace("image_id", cover.image_id),
+          logo_url: ``,
         });
       }
     });
@@ -209,6 +232,8 @@ function displayTrendingCards() {
       }
     }
 
+    card.addEventListener("click", (event) => openGamePage(event, game));
+
     card.classList.remove("hidden");
   }
   const loading = trending.querySelector(".loading");
@@ -228,6 +253,8 @@ function displayAnticipatedCard() {
 
     const date = card.querySelector(".subtexts small");
     date.textContent = DateModule.dateFromUnix(game.first_release_date);
+
+    card.addEventListener("click", (event) => openGamePage(event, game));
 
     card.classList.remove("hidden");
   }
@@ -272,9 +299,20 @@ function displayUpcomingCards() {
     const date = card.querySelector(".subtexts small");
     date.textContent = DateModule.dateFromUnix(game.first_release_date);
 
+    card.addEventListener("click", (event) => openGamePage(event, game));
+    
     card.classList.remove("hidden");
   }
 
   const loading = upcoming.querySelector(".loading");
   loading.remove();
+}
+
+function openGamePage(event, game) {
+  event.preventDefault();
+  sessionStorage.setItem("game", JSON.stringify(game));
+  sessionStorage.setItem("genres", JSON.stringify(genres.filter((genre) => game.genres.includes(genre.id))));
+  sessionStorage.setItem("websites", JSON.stringify(websites.filter((website) => game.websites.includes(website.id))));
+  sessionStorage.setItem("covers", JSON.stringify(covers.find((cover) => cover.game_id == game.id)));
+  open("/HTML/games/", "_self");
 }

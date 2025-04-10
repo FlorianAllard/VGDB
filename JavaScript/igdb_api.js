@@ -176,3 +176,82 @@ export async function requestCovers(fields, sort = "", limit = "", where = "") {
     return null;
   }
 }
+
+export async function requestVideos(fields, sort = "", limit = "", where = "") {
+  try {
+    const response = await fetch("http://localhost:8010/proxy/game_videos/", {
+      method: "POST",
+      headers: {
+        "Client-ID": localStorage.getItem("client_id"),
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+        Accept: "application/json",
+      },
+      body: 
+      `fields ${fields};`
+      + (sort ? ` sort ${sort};` : "")
+      + (limit ? ` limit ${limit};` : "")
+      + (where ? ` where ${where};` : ""),
+    });
+
+    if (response.ok) {
+      const videos = await response.json();
+      return videos;
+    } else {
+      console.error("Failed to fetch videos:", response.statusText);
+      return null;
+    }
+  } catch (error) {
+    console.error("Error fetching videos:", error);
+    return null;
+  }
+}
+
+export async function requestSeries(fields, sort = "", limit = "", where = "") {
+  try {
+    const response = await fetch("http://localhost:8010/proxy/collections/", {
+      method: "POST",
+      headers: {
+        "Client-ID": localStorage.getItem("client_id"),
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+        Accept: "application/json",
+      },
+      body: `fields ${fields};` + (sort ? ` sort ${sort};` : "") + (limit ? ` limit ${limit};` : "") + (where ? ` where ${where};` : ""),
+    });
+
+    if (response.ok) {
+      const series = await response.json();
+      return series;
+    } else {
+      console.error("Failed to fetch series:", response.statusText);
+      return null;
+    }
+  } catch (error) {
+    console.error("Error fetching series:", error);
+    return null;
+  }
+}
+
+export async function requestFranchises(fields, sort = "", limit = "", where = "") {
+  try {
+    const response = await fetch("http://localhost:8010/proxy/franchises/", {
+      method: "POST",
+      headers: {
+        "Client-ID": localStorage.getItem("client_id"),
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+        Accept: "application/json",
+      },
+      body: `fields ${fields};` + (sort ? ` sort ${sort};` : "") + (limit ? ` limit ${limit};` : "") + (where ? ` where ${where};` : ""),
+    });
+
+    if (response.ok) {
+      const franchises = await response.json();
+      return franchises;
+    } else {
+      console.error("Failed to fetch franchises:", response.statusText);
+      return null;
+    }
+  } catch (error) {
+    console.error("Error fetching franchises:", error);
+    return null;
+  }
+}
