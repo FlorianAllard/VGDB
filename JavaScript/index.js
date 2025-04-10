@@ -1,6 +1,9 @@
 "use strict";
 
+import * as IGDB from "./igdb_api.js";
 import * as DateModule from "./date_module.js";
+
+IGDB.default();
 
 const trending = document.querySelector("#trending");
 const trendingTemplate = trending.querySelector("template");
@@ -70,7 +73,7 @@ function createUpcomingCards(amount) {
 
 async function requestPageData() {
   // Get popular games IDs
-  trendingIDs = await requestPopularityPrimitives(
+  trendingIDs = await IGDB.requestPopularityPrimitives(
     "game_id",
     "value desc",
     trendingCards.length,
@@ -82,7 +85,7 @@ async function requestPageData() {
   // Get anticipated games IDs
   const today = Math.round(Date.now() / 1000);
   const maxSeconds = 100 * 86400;
-  const anticipatedData = await requestGames(
+  const anticipatedData = await IGDB.requestGames(
     "first_release_date",
     "hypes desc", anticipatedCards.length,
     `first_release_date > ${today} & first_release_date < ${today + maxSeconds}`);
@@ -90,7 +93,7 @@ async function requestPageData() {
   console.log("Anticipated games IDs: ", anticipatedIDs);
 
   // Get upcoming games IDs
-  const upcomingData = await requestGames(
+  const upcomingData = await IGDB.requestGames(
     "first_release_date",
     "first_release_date asc",
     upcomingCards.length,
@@ -100,7 +103,7 @@ async function requestPageData() {
 
   // Get all games
   const IDs = [...new Set([...trendingIDs, ...anticipatedIDs, ...upcomingIDs])];
-  games = await requestGames (
+  games = await IGDB.requestGames (
     "*",
     "",
     IDs.length,
@@ -110,7 +113,7 @@ async function requestPageData() {
 
   //Get all genres
   const genreIDs = [...new Set(games.flatMap((game) => game.genres))];
-  genres = await requestGenres(
+  genres = await IGDB.requestGenres(
     "name",
     "",
     genreIDs.length,
@@ -120,7 +123,7 @@ async function requestPageData() {
 
   //Get all websites
   const websiteIDs = [...new Set(games.flatMap((game) => game.websites).filter((id) => id))];
-  websites = await requestWebsites(
+  websites = await IGDB.requestWebsites(
     "url",
     "",
     websiteIDs.length,
@@ -149,7 +152,7 @@ async function requestPageData() {
   const coverIDs = [...new Set(nonSteamGames.map((game) => game.cover))];
   let nonSteamCovers;
   if(nonSteamGames.length > 0) {
-    nonSteamCovers = await requestCovers(
+    nonSteamCovers = await IGDB.requestCovers(
       "image_id, url",
       "",
       coverIDs.length,

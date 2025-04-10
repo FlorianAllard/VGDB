@@ -2,20 +2,20 @@
 
 "use strict";
 
-const igdbClientID = "wjrgwqzu6olj4dczprc3jx4kcvkcs4";
-if (localStorage.getItem("client_id") == null) {
-  localStorage.setItem("client_id", igdbClientID);
-}
-const igdbClientSecret = "2lr64wndvp5g2eqogk1sym4azconhc";
-const igdbGrantType = "client_credentials";
-var igdbQueryParameters = `?client_id=${igdbClientID}&client_secret=${igdbClientSecret}&grant_type=${igdbGrantType}`;
-igdbAuthentification();
-function igdbAuthentification() {
+const clientID = "wjrgwqzu6olj4dczprc3jx4kcvkcs4";
+const clientSecret = "2lr64wndvp5g2eqogk1sym4azconhc";
+const grantType = "client_credentials";
+var queryParameters = `?client_id=${clientID}&client_secret=${clientSecret}&grant_type=${grantType}`;
+
+export default function authentification() {
   const lastTokenCreation = localStorage.getItem("token_creation");
   const lastTokenDuration = localStorage.getItem("token_duration");
+  if (localStorage.getItem("client_id") == null) {
+    localStorage.setItem("client_id", clientID);
+  }
   if (lastTokenCreation == null || Date.now() / 1000 - lastTokenCreation > lastTokenDuration) {
     console.log(`Getting new IGDB token... (expired ${Math.abs(Math.round(lastTokenDuration - (Date.now() / 1000 - lastTokenCreation)))} seconds ago)`);
-    fetch("https://id.twitch.tv/oauth2/token" + igdbQueryParameters, {
+    fetch("https://id.twitch.tv/oauth2/token" + queryParameters, {
       method: "POST",
     }).then((response) => {
       if (response.ok) {
@@ -31,7 +31,7 @@ function igdbAuthentification() {
   }
 }
 
-async function requestPopularityPrimitives(fields, sort = "", limit = "", where = "", popularityType = 9) {
+export async function requestPopularityPrimitives(fields, sort = "", limit = "", where = "", popularityType = 9) {
   try {
     const response = await fetch("http://localhost:8010/proxy/popularity_primitives/", {
       method: "POST",
@@ -61,7 +61,7 @@ async function requestPopularityPrimitives(fields, sort = "", limit = "", where 
   }
 }
 
-async function requestGames(fields, sort = "", limit = "", where = "") {
+export async function requestGames(fields, sort = "", limit = "", where = "") {
   try {
     const response = await fetch("http://localhost:8010/proxy/games/", {
       method: "POST",
@@ -90,7 +90,7 @@ async function requestGames(fields, sort = "", limit = "", where = "") {
   }
 }
 
-async function requestGenres(fields, sort = "", limit = "", where = "") {
+export async function requestGenres(fields, sort = "", limit = "", where = "") {
   try {
     const response = await fetch("http://localhost:8010/proxy/genres/", {
       method: "POST",
@@ -119,7 +119,7 @@ async function requestGenres(fields, sort = "", limit = "", where = "") {
   }
 }
 
-async function requestWebsites(fields, sort = "", limit = "", where = "") {
+export async function requestWebsites(fields, sort = "", limit = "", where = "") {
   try {
     const response = await fetch("http://localhost:8010/proxy/websites/", {
       method: "POST",
@@ -148,7 +148,7 @@ async function requestWebsites(fields, sort = "", limit = "", where = "") {
   }
 }
 
-async function requestCovers(fields, sort = "", limit = "", where = "") {
+export async function requestCovers(fields, sort = "", limit = "", where = "") {
   try {
     const response = await fetch("http://localhost:8010/proxy/covers/", {
       method: "POST",
