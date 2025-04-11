@@ -40,12 +40,7 @@ export async function requestPopularityPrimitives(fields, sort = "", limit = "",
         Authorization: `Bearer ${localStorage.getItem("token")}`,
         Accept: "application/json",
       },
-      body: 
-      `fields ${fields};`
-      + (sort ? ` sort ${sort};` : "")
-      + (limit ? ` limit ${limit};` : "")
-      + ` where popularity_type = ${popularityType}`
-      + (where ? ` & ${where};` : ";"),
+      body: `fields ${fields};` + (sort ? ` sort ${sort};` : "") + (limit ? ` limit ${limit};` : "") + ` where popularity_type = ${popularityType}` + (where ? ` & ${where};` : ";"),
     });
 
     if (response.ok) {
@@ -70,11 +65,7 @@ export async function requestGames(fields, sort = "", limit = "", where = "") {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
         Accept: "application/json",
       },
-      body: 
-      `fields ${fields};`
-      + (sort ? ` sort ${sort};` : "")
-      + (limit ? ` limit ${limit};` : "")
-      + (where ? ` where ${where};` : ""),
+      body: `fields ${fields};` + (sort ? ` sort ${sort};` : "") + (limit ? ` limit ${limit};` : "") + (where ? ` where ${where};` : ""),
     });
 
     if (response.ok) {
@@ -99,11 +90,7 @@ export async function requestGenres(fields, sort = "", limit = "", where = "") {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
         Accept: "application/json",
       },
-      body: 
-      `fields ${fields};`
-      + (sort ? ` sort ${sort};` : "")
-      + (limit ? ` limit ${limit};` : "")
-      + (where ? ` where ${where};` : ""),
+      body: `fields ${fields};` + (sort ? ` sort ${sort};` : "") + (limit ? ` limit ${limit};` : "") + (where ? ` where ${where};` : ""),
     });
 
     if (response.ok) {
@@ -128,11 +115,7 @@ export async function requestWebsites(fields, sort = "", limit = "", where = "")
         Authorization: `Bearer ${localStorage.getItem("token")}`,
         Accept: "application/json",
       },
-      body:
-      `fields ${fields};`
-      + (sort ? ` sort ${sort};` : "")
-      + (limit ? ` limit ${limit};` : "")
-      + (where ? ` where ${where};` : ""),
+      body: `fields ${fields};` + (sort ? ` sort ${sort};` : "") + (limit ? ` limit ${limit};` : "") + (where ? ` where ${where};` : ""),
     });
 
     if (response.ok) {
@@ -157,11 +140,7 @@ export async function requestCovers(fields, sort = "", limit = "", where = "") {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
         Accept: "application/json",
       },
-      body: 
-      `fields ${fields};`
-      + (sort ? ` sort ${sort};` : "")
-      + (limit ? ` limit ${limit};` : "")
-      + (where ? ` where ${where};` : ""),
+      body: `fields ${fields};` + (sort ? ` sort ${sort};` : "") + (limit ? ` limit ${limit};` : "") + (where ? ` where ${where};` : ""),
     });
 
     if (response.ok) {
@@ -186,11 +165,7 @@ export async function requestVideos(fields, sort = "", limit = "", where = "") {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
         Accept: "application/json",
       },
-      body: 
-      `fields ${fields};`
-      + (sort ? ` sort ${sort};` : "")
-      + (limit ? ` limit ${limit};` : "")
-      + (where ? ` where ${where};` : ""),
+      body: `fields ${fields};` + (sort ? ` sort ${sort};` : "") + (limit ? ` limit ${limit};` : "") + (where ? ` where ${where};` : ""),
     });
 
     if (response.ok) {
@@ -254,4 +229,31 @@ export async function requestFranchises(fields, sort = "", limit = "", where = "
     console.error("Error fetching franchises:", error);
     return null;
   }
+}
+
+export function getCovers(games) {
+  games.forEach((game) => {
+    if (game.cover != null) {
+      let steamURL;
+      if (game.websites?.length > 0) steamURL = game.websites.find((website) => website.url.includes("steam"));
+      if (steamURL) {
+        const match = steamURL.url.match(/\/app\/(\d+)/);
+        game.cover = {
+          landscape_url: `https://steamcdn-a.akamaihd.net/steam/apps/${match[1]}/header.jpg`,
+          portrait_url: `https://steamcdn-a.akamaihd.net/steam/apps/${match[1]}/library_600x900_2x.jpg`,
+          hero_url: `https://steamcdn-a.akamaihd.net/steam/apps/${match[1]}/library_hero.jpg`,
+          logo_url: `https://steamcdn-a.akamaihd.net/steam/apps/${match[1]}/logo.png`,
+        };
+      } else {
+        game.cover = {
+          landscape_url: `https://images.igdb.com/igdb/image/upload/t_screenshot_big/image_id.webp`.replace("image_id", game.cover.image_id),
+          portrait_url: `https://images.igdb.com/igdb/image/upload/t_cover_big/image_id.webp`.replace("image_id", game.cover.image_id),
+          hero_url: `https://images.igdb.com/igdb/image/upload/t_1080p/image_id.webp`.replace("image_id", game.cover.image_id),
+          logo_url: ``,
+        };
+      }
+    }
+  });
+
+  return games;
 }

@@ -6,78 +6,39 @@ import * as DateModule from "./date_module.js";
 IGDB.default();
 
 let game;
-let genres;
-let websites;
-let cover;
-let videos;
-let series;
-let franchises;
+let previousGame;
+let nextGame;
 const frames = document.querySelectorAll(".frame");
 frames.forEach(frame => {
     frame.classList.add("hidden");
 });
 requestPageData();
 
-document.title = game.name;
-const originalURL = `${window.location.origin}/HTML/games/`;
-history.pushState({}, "", `${originalURL}?=${game.slug}`);
 
 async function requestPageData() {
-  game = JSON.parse(sessionStorage.getItem("game"));
-  console.log(game);
-  genres = JSON.parse(sessionStorage.getItem("genres"));
-  websites = JSON.parse(sessionStorage.getItem("websites"));
-  cover = JSON.parse(sessionStorage.getItem("covers"));
+  const id = new URLSearchParams(window.location.search).get("id");
 
-  const promises = [];
-
-  // Get videos
-  if (game.videos?.length > 0) {
-    const videoIDs = game.videos;
-    const videosPromise = IGDB.requestVideos(
-        "*",
-        "",
-        videoIDs.length,
-        `id = (${videoIDs.toString()})`
-    );
-    promises.push(videosPromise);
+  let games = await IGDB.requestGames(
+    "*, genres.*, websites.*, videos.*, collections.*, franchises.*, cover.*, player_perspectives.*, game_modes.*, themes.*, involved_companies.*, involved_companies.company.*, game_engines.*",
+    "",
+    3,
+    `id = (${parseInt(id)-1},${id},${parseInt(id)+1})`
+  );
+  games = IGDB.getCovers(games);
+  for (let i = 0; i < games.length; i++) {
+    if (games[i].id == id) {
+      game = games[i];
+    }
+    else if (game == null) {
+      previousGame = games[i];
+    }
+    else {
+      nextGame = games[i];
+    }
   }
+  document.title = game.name;
 
-  // Get series
-  if (game.collections?.length > 0) {
-    const seriesIDs = game.collections;
-    const seriesPromise = IGDB.requestSeries(
-      "name",
-      "",
-      seriesIDs.length,
-      `id = (${seriesIDs.toString()})`
-    );
-    promises.push(seriesPromise);
-  }
-
-  // Get franchises
-  if (game.franchises?.length > 0) {
-    const franchisesIDs = game.franchises;
-    const franchisesPromise = IGDB.requestFranchises(
-      "name",
-      "",
-      franchisesIDs.length,
-      `id = (${franchisesIDs.toString()})`
-    );
-    promises.push(franchisesPromise);
-  }
-
-  await Promise.all(promises)
-  .then((result) => {
-    let index  = 0;
-    videos = game.videos?.length > 0 ? result[index++] : [];
-    series = game.collections?.length > 0 ? result[index++] : [];
-    franchises = game.franchises?.length > 0 ? result[index++] : [];
-  });
-
-  console.log("Videos: ", videos);
-  console.log("Series: ", series);
-  console.log("Franchises: ", franchises);
+  console.log("Game: ", game);
 
   displayPage();
 }
@@ -85,27 +46,59 @@ async function requestPageData() {
 function displayPage() {
   // Update page data
   let hero = document.querySelector("#hero");
-  if (cover.logo_url) {
-    hero.style.backgroundImage = `url(${cover.hero_url})`;
-    hero.querySelector(".logo").setAttribute("src", cover.logo_url);
+  if (game.cover?.logo_url) {
+    hero.style.backgroundImage = `url(${game.cover.hero_url})`;
+    hero.querySelector(".logo").setAttribute("src", game.cover.logo_url);
   } else hero.remove();
 
   // Top frame
   const top = document.querySelector("#top .frame");
-  top.querySelector("img").setAttribute("src", cover.portrait_url);
+  if (game.cover?.portrait_url) top.querySelector("img").setAttribute("src", game.cover.portrait_url);
   top.querySelector("h1").textContent = game.name;
   top.querySelector("small").textContent = `${DateModule.dateFromUnix(game.first_release_date)}` + (game.first_release_date < Math.floor(Date.now() / 1000) ? ` (${DateModule.timeAgoFromUnix(game.first_release_date)})` : "");
   top.querySelector("p").textContent = game.summary;
 
-  if (videos.length > 0) {
-    document.querySelector("iframe").setAttribute("src", `https://www.youtube.com/embed/${videos.at(-1).video_id}?&mute=1`);
+  if (game.videos?.length > 0) {
+    document.querySelector("iframe").setAttribute("src", `https://www.youtube.com/embed/${game.videos.at(-1).video_id}?&mute=1`);
   }
 
   const left = document.querySelector("#left");
   left.querySelector("#story-value p").textContent = game.storyline ?? "-";
-  createValueLinks(series, left.querySelector("#series-value-list ul"));
-  createValueLinks(franchises, left.querySelector("#franchises-value-list ul"));
-  createValueLinks(genres, left.querySelector("#genres-value-list ul"));
+  createValueLinks(game.collections, left.querySelector("#series-value-list ul"));
+  createValueLinks(game.franchises, left.querySelector("#franchises-value-list ul"));
+  createValueLinks(game.genres, left.querySelector("#genres-value-list ul"));
+  createValueLinks(game.player_perspectives, left.querySelector("#perspectives-value-list ul"));
+  createValueLinks(game.game_modes, left.querySelector("#modes-value-list ul"));
+  createValueLinks(game.themes, left.querySelector("#themes-value-list ul"));
+  createValueLinks(
+    game.involved_companies?.filter((company) => company.developer).map((company) => company.company),
+    left.querySelector("#developers-value-list ul")
+  );
+  createValueLinks(
+    game.involved_companies?.filter((company) => company.supporting).map((company) => company.company),
+    left.querySelector("#supporting-value-list ul")
+  );
+  createValueLinks(
+    game.involved_companies?.filter((company) => company.publisher).map((company) => company.company),
+    left.querySelector("#publishers-value-list ul")
+  );
+  createValueLinks(game.game_engines, left.querySelector("#engine-value-list ul"));
+
+  const previousGameLink = document.querySelector("#previous-game");
+  if (previousGame) {
+    previousGameLink.querySelector("h2").textContent = previousGame.name;
+    previousGameLink.setAttribute("href", `/HTML/games/?id=${previousGame.id}`);
+  } else {
+    previousGameLink.remove();
+  }
+
+  const nextGameLink = document.querySelector("#next-game");
+  if (nextGame) {
+    nextGameLink.querySelector("h2").textContent = nextGame.name;
+    nextGameLink.setAttribute("href", `/HTML/games/?id=${nextGame.id}`);
+  } else {
+    nextGameLink.remove();
+  }
 
   frames.forEach((frame) => {
     frame.classList.remove("hidden");

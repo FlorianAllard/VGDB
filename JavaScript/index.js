@@ -114,84 +114,15 @@ async function requestPageData() {
   // Get all games
   const IDs = [...new Set([...trendingIDs, ...anticipatedIDs, ...upcomingIDs])];
   games = await IGDB.requestGames (
-    "*",
+    "*, genres.*, websites.*, cover.*",
     "",
     IDs.length,
     `id = (${IDs.toString()})`
   );
   console.log("Games: ", games);
 
-  //Get all genres
-  const genreIDs = [...new Set(games.flatMap((game) => game.genres))];
-  const genresPromise = IGDB.requestGenres(
-    "name",
-    "",
-    genreIDs.length,
-    `id = (${genreIDs.toString()})`
-  );
-
-  //Get all websites
-  const websiteIDs = [...new Set(games.flatMap((game) => game.websites).filter((id) => id))];
-  const websitesPromise = IGDB.requestWebsites(
-    "url",
-    "",
-    websiteIDs.length,
-    `id = (${websiteIDs.toString()})`
-  );
-
-  // Wait for results and process
-  await Promise.all([genresPromise, websitesPromise])
-  .then((result) => {
-    let index = 0;
-    genres = result[index++];
-    websites = result[index++];
-  });
-
-  console.log("Genres: ", genres);
-  console.log("Websites: ", websites);
-
   //Get all covers
-  covers = [];
-  const nonSteamGames = [];
-  games.forEach(game => {
-    const gameWebsites = websites.filter((website) => game.websites?.includes(website.id));
-    const steamURL = gameWebsites.find((website) => website.url.includes("steam"));
-    if (steamURL) {
-      const match = steamURL.url.match(/\/app\/(\d+)/);
-      covers.push({
-        game_id: game.id,
-        landscape_url: `https://steamcdn-a.akamaihd.net/steam/apps/${match[1]}/header.jpg`,
-        portrait_url: `https://steamcdn-a.akamaihd.net/steam/apps/${match[1]}/library_600x900_2x.jpg`,
-        hero_url: `https://steamcdn-a.akamaihd.net/steam/apps/${match[1]}/library_hero.jpg`,
-        logo_url: `https://steamcdn-a.akamaihd.net/steam/apps/${match[1]}/logo.png`,
-      });
-    }
-    else {
-      nonSteamGames.push(game);
-    }
-  });
-  const coverIDs = [...new Set(nonSteamGames.map((game) => game.cover))];
-  let nonSteamCovers;
-  if(nonSteamGames.length > 0) {
-    nonSteamCovers = await IGDB.requestCovers(
-      "image_id, url",
-      "",
-      coverIDs.length,
-      `id = (${coverIDs.toString()})`);
-    nonSteamGames.forEach(game => {
-      const cover = nonSteamCovers.find((cover) => game.cover == cover.id);
-      if (cover) {
-        covers.push({
-          game_id: game.id,
-          landscape_url: `https://images.igdb.com/igdb/image/upload/t_screenshot_big/image_id.webp`.replace("image_id", cover.image_id),
-          portrait_url: `https://images.igdb.com/igdb/image/upload/t_cover_big/image_id.webp`.replace("image_id", cover.image_id),
-          hero_url: `https://images.igdb.com/igdb/image/upload/t_1080p/image_id.webp`.replace("image_id", cover.image_id),
-          logo_url: ``,
-        });
-      }
-    });
-  }
-  console.log("Covers: ", covers);
+  games = IGDB.getCovers(games);
 
   displayTrendingCards();
   displayAnticipatedCard();
@@ -202,8 +133,6 @@ function displayTrendingCards() {
   for (let i = 0; i < trendingCards.length; i++) {
     const card = trendingCards[i];
     const game = games.find((game) => game.id == trendingIDs[i]);
-    const gameCovers = covers.find((cover) => cover.game_id == game.id);
-    const gameGenres = genres.filter((genre) => game.genres.includes(genre.id));
 
     card.querySelector("b").textContent = game.name;
 
@@ -219,20 +148,20 @@ function displayTrendingCards() {
 
     const cover = card.querySelector(".cover");
     const isLandscape = cover.classList.contains("landscape");
-    cover.style.backgroundImage = `url(${isLandscape ? gameCovers.landscape_url : gameCovers.portrait_url})`;
+    cover.style.backgroundImage = `url(${isLandscape ? game.cover.landscape_url : game.cover.portrait_url})`;
 
     const genresParent = card.querySelector(".subtexts");
     const genreElement = genresParent.querySelector("li");
-    genreElement.querySelector("small").textContent = gameGenres[0].name;
+    genreElement.querySelector("small").textContent = game.genres[0].name;
     if (isLandscape) {
-      for (let i = 1; i < gameGenres.length; i++) {
+      for (let i = 1; i < game.genres.length; i++) {
         const newElement = genreElement.cloneNode(true);
-        newElement.querySelector("small").textContent = gameGenres[i].name;
+        newElement.querySelector("small").textContent = game.genres[i].name;
         genresParent.appendChild(newElement);
       }
     }
 
-    card.addEventListener("click", (event) => openGamePage(event, game));
+    card.setAttribute("href", `/HTML/games/?id=${game.id}`);
 
     card.classList.remove("hidden");
   }
@@ -244,17 +173,16 @@ function displayAnticipatedCard() {
   for (let i = 0; i < anticipatedCards.length; i++) {
     const card = anticipatedCards[i];
     const game = games.find((game) => game.id == anticipatedIDs[i]);
-    const gameCovers = covers.find((cover) => cover.game_id == game.id);
 
     card.querySelector("b").textContent = game.name;
 
     const cover = card.querySelector(".cover");
-    cover.style.backgroundImage = `url(${gameCovers.landscape_url})`;
+    cover.style.backgroundImage = `url(${game.cover.landscape_url})`;
 
     const date = card.querySelector(".subtexts small");
     date.textContent = DateModule.dateFromUnix(game.first_release_date);
 
-    card.addEventListener("click", (event) => openGamePage(event, game));
+    card.setAttribute("href", `/HTML/games/?id=${game.id}`);
 
     card.classList.remove("hidden");
   }
@@ -289,30 +217,20 @@ function displayUpcomingCards() {
   for (let i = 0; i < upcomingCards.length; i++) {
     const card = upcomingCards[i];
     const game = games.find((game) => game.id == upcomingIDs[i]);
-    const gameCovers = covers.find((cover) => cover.game_id == game.id);
 
     card.querySelector("b").textContent = game.name;
 
     const cover = card.querySelector(".cover");
-    cover.style.backgroundImage = `url(${gameCovers.portrait_url})`;
+    cover.style.backgroundImage = `url(${game.cover.portrait_url})`;
 
     const date = card.querySelector(".subtexts small");
     date.textContent = DateModule.dateFromUnix(game.first_release_date);
 
-    card.addEventListener("click", (event) => openGamePage(event, game));
+    card.setAttribute("href", `/HTML/games/?id=${game.id}`);
     
     card.classList.remove("hidden");
   }
 
   const loading = upcoming.querySelector(".loading");
   loading.remove();
-}
-
-function openGamePage(event, game) {
-  event.preventDefault();
-  sessionStorage.setItem("game", JSON.stringify(game));
-  sessionStorage.setItem("genres", JSON.stringify(genres.filter((genre) => game.genres.includes(genre.id))));
-  sessionStorage.setItem("websites", JSON.stringify(websites.filter((website) => game.websites.includes(website.id))));
-  sessionStorage.setItem("covers", JSON.stringify(covers.find((cover) => cover.game_id == game.id)));
-  open("/HTML/games/", "_self");
 }
