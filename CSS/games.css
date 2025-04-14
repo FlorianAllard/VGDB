@@ -291,8 +291,7 @@ small {
 .rating-users, .rating-critics {
   display: inline-block;
   font-weight: bold;
-  padding: 0 1rem 0 0.5rem;
-  height: 1.5rem;
+  padding: 0 1rem 0.1rem 0.5rem;
   border-radius: 0.25rem 0 0 0.25rem;
   color: var(--surface-color);
   width: calc(3.5ch + 1.5rem);
@@ -444,6 +443,25 @@ iframe {
   border: none;
 }
 
+platform-prefab i, platform-prefab img {
+  margin-top: 1px;
+}
+platform-prefab a {
+  display: flex;
+  flex-direction: row;
+  gap: 0.25rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  background-color: lightgrey;
+  color: white;
+  align-items: center;
+}
+platform-prefab img {
+  height: 1rem;
+  width: 1rem;
+  filter: invert(100%) sepia(98%) saturate(8%) hue-rotate(151deg) brightness(103%) contrast(102%);
+}
+
 body {
   display: flex;
   flex-direction: column;
@@ -456,7 +474,7 @@ main {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 1rem;
-  grid-template-columns: 5fr 2fr;
+  grid-template-columns: 4fr 2fr;
   justify-items: center;
   padding: 0 calc((100vw - 1200px) / 2) 2rem calc((100vw - 1200px) / 2);
 }
@@ -575,7 +593,7 @@ section {
   flex-direction: row;
   gap: 1rem;
 }
-.value-list:has(p) {
+.value-list:has(p), .value-list#platforms-value-list {
   flex-direction: column;
   gap: 0.5rem;
 }
@@ -627,6 +645,56 @@ hr {
 #navigation i {
   font-weight: bold;
   font-size: 1.5rem;
+}
+
+#ratings {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+#ratings > small {
+  margin-top: calc(0.5rem - 3px);
+  align-self: flex-end;
+}
+#ratings #reviews {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+#ratings span {
+  font-size: 1.25rem;
+  height: auto;
+  padding-bottom: 0.2rem;
+}
+#ratings .frame {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  padding: 1.5rem 2rem;
+}
+#ratings .frame:not(.review) {
+  justify-content: space-between;
+  align-items: center;
+  padding-right: 0;
+}
+#ratings .frame div {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+#ratings .review {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1.5rem;
+}
+#ratings .review div {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+}
+#ratings .review a {
+  align-self: flex-end;
 }
 
 /*# sourceMappingURL=games.css.map */

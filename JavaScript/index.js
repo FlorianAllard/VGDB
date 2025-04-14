@@ -1,6 +1,6 @@
 "use strict";
 
-import * as IGDB from "./igdb_api.js";
+import * as IGDB from "./APIs/igdb_api.js";
 import * as DateModule from "./date_module.js";
 
 IGDB.default();

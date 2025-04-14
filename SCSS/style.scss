@@ -344,8 +344,7 @@ small {
 %rating {
     display: inline-block;
     font-weight: bold;
-    padding: 0 1rem 0 .5rem;
-    height: 1.5rem;
+    padding: 0 1rem .1rem .5rem;
     border-radius: .25rem 0 0 .25rem;
     color: var(--surface-color);
     width: calc(3.5ch + 1.5rem);
@@ -631,3 +630,23 @@ iframe {
     border: none;
 }
 
+platform-prefab {
+    i, img {
+        margin-top: 1px;
+    }
+
+    a {
+        @include flex(row, .25rem);
+        padding: .25rem .5rem;
+        border-radius: $border-radius / 2;
+        background-color: lightgrey;
+        color: white;
+        align-items: center;
+    }
+    
+    img {
+        height: 1rem;
+        width: 1rem;
+        filter: invert(100%) sepia(98%) saturate(8%) hue-rotate(151deg) brightness(103%) contrast(102%);
+    }
+}
