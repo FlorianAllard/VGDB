@@ -257,3 +257,59 @@ export function getCovers(games) {
 
   return games;
 }
+
+export function formatLanguages(languages) {
+  let newLanguages = [];
+
+  languages.forEach((supp) => {
+    let language = newLanguages.find((e) => e.language.name == supp.language.name);
+    if (language == null) {
+      language = {
+        language: supp.language,
+        audio: supp.language_support_type == "Audio",
+        subtitles: supp.language_support_type == "Subtitles",
+        interface: supp.language_support_type == "Interface",
+      };
+      newLanguages.push(language);
+    }
+    language.audio = supp.language_support_type.name == "Audio" || language.audio;
+    language.subtitles = supp.language_support_type.name == "Subtitles" || language.subtitles;
+    language.interface = supp.language_support_type.name == "Interface" || language.interface;
+  });
+
+  return newLanguages.sort((a, b) => a.language.name.localeCompare(b.language.name));
+}
+
+export function formatAgeRatings(ageRatings) {
+  let newRatings = [];
+
+  ageRatings.forEach(rating => {
+    const newRating = {
+      country: getCountryFromRating(rating.organization.name),
+      rating: rating.rating,
+      logo_url: `/Assets/Age ratings/${rating.rating}.svg`,
+    };
+    newRatings.push(newRating);
+  });
+
+  return newRatings;
+}
+
+function getCountryFromRating(rating) {
+  switch(rating) {
+    case "ESRB":
+      return "USA & Canada";
+    case "PEGI":
+      return "Europe";
+    case "CERO":
+      return "Japan";
+    case "USK":
+      return "Germany";
+    case "GRAC":
+      return "South Korea";
+    case "CLASS_IND":
+      return "Brazil";
+    case "ACB":
+      return "Australia";
+  }
+}

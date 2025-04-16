@@ -17,3 +17,11 @@ main {
 #coming-soon {
     flex: 2 1 0px;
 }
+
+section:has(>section) {
+    @include flex(row, 4rem);
+
+    &>section .content {
+        flex-direction: column;
+    }
+}

@@ -1,147 +1,65 @@
 @import "./style";
 
-body {
-    @include flex(column, 0);
-    width: 100%;
-    height: 100vh;
-}
-
 main {
     @include grid();
-    grid-template-columns: 4fr 2fr;
-    justify-items: center;
-    padding: 0 $side-padding 2rem $side-padding;
+    position: relative;
+    grid-template-columns: 2fr 5fr;
+    justify-content: center;
+    padding: 2rem $side-padding;
+    background-size: contain;
+    background-position: top;
+    background-repeat: no-repeat;
 }
 
-#hero {
-    @include flex(column);
-    grid-column: 1 / span 2;
-    width: calc(100% + ($side-padding * 2));
-    padding: 4rem 0 8rem 0;
-    aspect-ratio: 1280/413;
-    background-color: var(--background-color);
-    background-size: contain;
-    margin-bottom: -8rem;
-    align-items: center;
-    z-index: -2;
-    position: relative;
+#game-hero {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    z-index: -1;
+    filter: brightness(75%);
+}
 
-    &::before {
-        position: absolute;
-        top: 0;
-        background-color: black;
-        opacity: 50%;
-        width: 100%;
-        height: 100%;
-        content: "";
-        z-index: -1;
-    }
+#game-logo {
+    @include center();
+    grid-column: span 2;
+    aspect-ratio: 1920/492;
+    margin-bottom: 1rem;
 
     img {
         height: 100%;
-        width: calc(100% / 2);
-        aspect-ratio: 2/1;
-        object-fit: contain;
+        width: 50%;
     }
-}
-
-section {
-    width: 100%;
-}
-
-#content {
-    padding: 4rem $side-padding 0 $side-padding;
 }
 
 .frame {
     background-color: var(--surface-color);
-    box-shadow: $shadow;
+    box-shadow: var(--shadow);
     padding: 2rem;
-    width: 100%;
-
-    * {
-        @include transition();
-        opacity: 100%;
-    }
-
-    &.hidden * {
-        opacity: 0%;
-    }
 }
 
-#top {
-    @include flex();
-    grid-column: 1 / span 2;
-    width: 100%;
-    margin-top: 4rem;
-
-    img {
-        aspect-ratio: 359/539;
-        height: 100%;
-    }
-
-    iframe {
-        aspect-ratio: 552/358;
-    }
-
-    .frame {
-        @include flex(row, 1.5rem);
-        height: 358px;
-    }
-
-    .frame>div {
-        @include flex(column, .5rem);
-        flex: 1 1 0px;
-
-        >div {
-            position: relative;
-            flex: 1 1 0px;
-
-            p {
-                position: absolute;
-                max-width: 100%;
-                max-height: 100%;
-                overflow: hidden;
-                text-overflow: ellipsis;
-            }
-        }
-    }
-
-    small {
-        margin-bottom: .5rem;
-    }
-}
-
-#left,
-#right {
+section {
     @include flex(column);
 }
 
-#general-values {
-    @include flex(column);
+#navigation {
+    position: sticky;
+    top: 6.5rem;
+    height: fit-content;
 }
 
-.value-list {
-    @include flex();
+#page {
+    @include flex(column, 2rem);
+}
 
-    &:has(p),
-    &#platforms-value-list {
-        flex-direction: column;
-        gap: .5rem;
+#table-of-contents {
+    @include flex(column);
+    
+    ul {
+        @include flex(column, .25rem);
     }
 
     li {
         list-style: none;
-    }
-
-    ul {
-        @include flex(row, .5rem);
-        flex-wrap: wrap;
-        flex: 1 1 0px;
-    }
-
-    b {
-        width: 21ch;
     }
 
     a {
@@ -149,83 +67,90 @@ section {
     }
 }
 
-hr {
-    width: 100%;
-    height: $outline-width;
-    border: none;
-    background-color: var(--background-color);
-    margin: .5rem 0 .5rem 0;
+#hero {
+    gap: .5rem;
+
+    div {
+        @include flex();
+        margin: .5rem 0;
+
+        img {
+            width: calc((100% - 1rem) * (264/352));
+            aspect-ratio: 264/352;
+        }
+        iframe {
+            width: calc((100% - 1rem) * (552/358));
+            aspect-ratio: 552/358;
+        }
+    }
 }
 
-#navigation {
+hr {
+    width: 100%;
+    height: calc($outline-width / 2);
+}
+
+.about-list, .about-platforms {
     @include flex();
-    margin-top: 1rem;
-    grid-column: span 2;
+    width: 100%;
+
+    &.about-platforms {
+        flex-direction: column;
+        gap: .5rem;
+    }
+
+    b {
+        width: 12rem;
+        min-width: 12rem;
+    }
+
+    ul {
+        @include flex(flex, .5rem);
+        flex-wrap: wrap;
+        flex-grow: 1;
+    }
+
+    li {
+        list-style: none;
+    }
 
     a {
-        @include flex(row, .5rem);
-        align-items: center;
-        color: var(--text-color);
-
+        font-weight: normal;
     }
 
-    #previous-game {
-        margin-right: auto;
+    .chip {
+        padding: .25rem .5rem;
+        border-radius: calc($border-radius / 2);
+
+        a {
+            color: white;
+        }
+    }
+}
+
+table {
+    font-size: .75rem;
+    
+
+    td, th {
+        padding: .5rem 0;
+        border-bottom: calc($outline-width / 2) solid var(--background-color);
     }
 
-    #next-game {
-        margin-left: auto;
+    td:nth-child(1) {
+        text-align: left;
+    }
+
+    *:first-child ~ td {
+        width: 20%;
+    }
+
+    td {
+       text-align: center; 
     }
 
     i {
-        font-weight: bold;
-        font-size: 1.5rem;
-    }
-}
-
-#ratings {
-    @include flex(column, $outline-width);
-    
-    &>small {
-        margin-top: calc(.5rem - $outline-width);
-        align-self: flex-end;
-    }
-
-    #reviews {
-        @include flex(column, $outline-width);
-    }
-
-    span {
-        font-size: 1.25rem;
-        height: auto;
-        padding-bottom: .2rem;
-    }
-
-    .frame {
-        @include flex();
-        padding: 1.5rem 2rem;
-
-        &:not(.review) {
-            justify-content: space-between;
-            align-items: center;
-            padding-right: 0;
-        }
-
-        div {
-            @include flex(column, 0);
-        }
-    }
-
-    .review {
-        @include flex(column, .75rem);
-        padding: 1.5rem;
-
-        div {
-            @include flex(row, 1rem);
-        }
-
-        a {
-            align-self: flex-end;
-        }
+        color: var(--primary-color);
+        font-size: 1rem;
     }
 }

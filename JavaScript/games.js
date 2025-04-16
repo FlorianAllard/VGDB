@@ -11,16 +11,18 @@ let game;
 let reviews;
 let previousGame;
 let nextGame;
+/*
 const frames = document.querySelectorAll(".frame");
 frames.forEach((frame) => {
   frame.classList.add("hidden");
 });
+*/
 requestPageData();
 
 async function requestPageData() {
   const id = new URLSearchParams(window.location.search).get("id") ?? "1";
 
-  let games = await IGDB.requestGames("*, genres.*, websites.*, videos.*, collections.*, franchises.*, cover.*, player_perspectives.*, game_modes.*, themes.*, involved_companies.*, involved_companies.company.*, game_engines.*, platforms.*", "", 3, `id = (${parseInt(id) - 1},${id},${parseInt(id) + 1})`);
+  let games = await IGDB.requestGames("*, genres.*, websites.*, videos.*, collections.*, franchises.*, cover.*, player_perspectives.*, game_modes.*, themes.*, involved_companies.*, involved_companies.company.*, game_engines.*, platforms.*, language_supports.*, language_supports.language.*, language_supports.language_support_type.*, age_ratings.*, age_ratings.content_descriptions.*, age_ratings.organization.*", "", 3, `id = (${parseInt(id) - 1},${id},${parseInt(id) + 1})`);
   games = IGDB.getCovers(games);
   for (let i = 0; i < games.length; i++) {
     if (games[i].id == id) {
@@ -31,134 +33,183 @@ async function requestPageData() {
       nextGame = games[i];
     }
   }
-  document.title = game.name;
 
+  document.title = game.name;
+  if(game.language_supports?.length > 0) game.language_supports = IGDB.formatLanguages(game.language_supports);
+  if(game.age_ratings?.length > 0) game.age_ratings = IGDB.formatAgeRatings(game.age_ratings);
   console.log("Game: ", game);
 
-  reviews = await OpenCritic.requestReviews(game.name);
-  console.log("Reviews: ", reviews);
+  // reviews = await OpenCritic.requestReviews(game.name);
+  // console.log("Reviews: ", reviews);
 
   fillPage();
 }
 
 function fillPage() {
-  // Update page data
-  let hero = document.querySelector("#hero");
-  if (game.cover?.logo_url) {
-    hero.style.backgroundImage = `url(${game.cover.hero_url})`;
-    hero.querySelector(".logo").setAttribute("src", game.cover.logo_url);
-  } else hero.remove();
+  fillHero();
+  fillAbout();
 
-  fillTop();
-  fillGeneralData();
-  fillRatings();
-  fillNavigation();
-
-  frames.forEach((frame) => {
-    frame.classList.remove("hidden");
-  });
-}
-
-function fillTop() {
-  const top = document.querySelector("#top .frame");
-  if (game.cover?.portrait_url) top.querySelector("img").setAttribute("src", game.cover.portrait_url);
-  top.querySelector("h1").textContent = game.name;
-  top.querySelector("small").textContent = `${DateModule.dateFromUnix(game.first_release_date)}` + (game.first_release_date < Math.floor(Date.now() / 1000) ? ` (${DateModule.timeAgoFromUnix(game.first_release_date)})` : "");
-  top.querySelector("p").textContent = game.summary;
-
-  if (game.videos?.length > 0) {
-    document.querySelector("iframe").setAttribute("src", `https://www.youtube.com/embed/${game.videos.at(-1).video_id}?&mute=1`);
+  const plot = document.querySelector("#plot");
+  if (game.storyline) {
+    plot.querySelector("p").textContent = game.storyline;
+  } else {
+    plot.remove();
   }
+
+  fillLanguages();
+  fillAgeRatings();
+
+  createTableOfContents();
 }
 
-function fillGeneralData() {
-  const left = document.querySelector("#left");
-  left.querySelector("#story-value p").textContent = game.storyline ?? "-";
-  createValueLinks(game.collections, left.querySelector("#series-value-list ul"));
-  createValueLinks(game.franchises, left.querySelector("#franchises-value-list ul"));
-  createValueLinks(game.genres, left.querySelector("#genres-value-list ul"));
-  createValueLinks(game.player_perspectives, left.querySelector("#perspectives-value-list ul"));
-  createValueLinks(game.game_modes, left.querySelector("#modes-value-list ul"));
-  createValueLinks(game.themes, left.querySelector("#themes-value-list ul"));
-  createValueLinks(
-    game.involved_companies?.filter((company) => company.developer).map((company) => company.company),
-    left.querySelector("#developers-value-list ul")
-  );
-  createValueLinks(
-    game.involved_companies?.filter((company) => company.supporting).map((company) => company.company),
-    left.querySelector("#supporting-value-list ul")
-  );
-  createValueLinks(
-    game.involved_companies?.filter((company) => company.publisher).map((company) => company.company),
-    left.querySelector("#publishers-value-list ul")
-  );
-  createValueLinks(game.game_engines, left.querySelector("#engine-value-list ul"));
-  PrefabModule.CreateAndAppendPlatforms(game.platforms, left.querySelector("#platforms-value-list ul"));
+function fillHero() {
+  const logo = document.querySelector("#game-logo");
+  if (game.cover.logo_url) {
+    document.querySelector("#game-hero").setAttribute("src", game.cover.hero_url);
+    logo.querySelector("img").setAttribute("src", game.cover.logo_url);
+  } else {
+    logo.remove();
+  }
+
+  const hero = document.querySelector("#hero");
+  hero.querySelector("h1").textContent = game.name;
+  hero.querySelector("small").textContent = game.first_release_date < Date.now() / 1000 ? `${DateModule.dateFromUnix(game.first_release_date)} (${DateModule.timeAgoFromUnix(game.first_release_date)})` : `${DateModule.dateFromUnix(game.first_release_date)}`;
+  hero.querySelector("p").textContent = game.summary;
+  hero.querySelector("img").setAttribute("src", game.cover.portrait_url);
+  const video = game.videos.find((v) => v.name.includes("Launch")) ?? game.videos.at(-1);
+  hero.querySelector("iframe").setAttribute("src", `https://www.youtube.com/embed/${video.video_id}?mute=1`);
 }
 
-function createValueLinks(values, parent, key = "name") {
-  if (values?.length > 0) {
-    for (let i = 0; i < values.length; i++) {
-      const value = values[i];
+function fillAbout() {
+  const parent = document.body.querySelector("#about .content");
+  orderPlatforms();
+  createAboutList(parent, "Platforms", game.platforms, "name");
+  parent.append(document.createElement("hr"));
+  createAboutList(parent, "Genres", game.genres, "name");
+  createAboutList(parent, "Game modes", game.game_modes, "name");
+  createAboutList(parent, "Player perspectives", game.player_perspectives, "name");
+  createAboutList(parent, "Themes", game.themes, "name");
+  parent.append(document.createElement("hr"));
+  createAboutList(
+    parent,
+    "Main developers",
+    game.involved_companies.filter((e) => e.developer).map((e) => e.company),
+    "name"
+  );
+  createAboutList(
+    parent,
+    "Supporting developers",
+    game.involved_companies.filter((e) => e.supporting).map((e) => e.company),
+    "name"
+  );
+  createAboutList(
+    parent,
+    "Publishers",
+    game.involved_companies.filter((e) => e.publisher).map((e) => e.company),
+    "name"
+  );
+  createAboutList(parent, "Game engine", game.game_engines, "name");
+  parent.append(document.createElement("hr"));
+  createAboutList(parent, "Series", game.collections, "name");
+  createAboutList(parent, "Franchises", game.franchises, "name");
+}
+
+function createAboutList(parent, label, array, key) {
+  const container = document.createElement("div");
+  container.classList.add("about-list");
+
+  const b = document.createElement("b");
+  b.textContent = label;
+  container.append(b);
+
+  const ul = document.createElement("ul");
+  if (array?.length > 0) {
+    for (let i = 0; i < array.length; i++) {
+      const value = array[i];
       const li = document.createElement("li");
       const a = document.createElement("a");
       a.textContent = value[key];
       li.append(a);
 
-      if (i < values.length - 1) {
+      if (i < array.length - 1) {
         li.innerHTML += ",";
       }
-      parent.append(li);
+      ul.append(li);
     }
   } else {
-    const li = document.createElement("li");
-    li.textContent = "-";
-
-    parent.append(li);
+    ul.textContent = "-";
   }
+  container.append(ul);
+
+  parent.append(container);
 }
 
-function fillRatings() {
-  const ratingsUsers = document.querySelector("#ratings-users");
-  if (game.total_rating) {
-    ratingsUsers.querySelector(".rating-users").textContent = Math.round(game.total_rating);
-    ratingsUsers.querySelector("small").textContent = `Based on ${game.total_rating_count} reviews`;
-  } else ratingsUsers.remove();
+function createTableOfContents() {
+  const page = document.querySelector("#page");
+  const headings = page.querySelectorAll("h2, h3");
+  const table = document.createElement("ul");
 
-  const ratingsCritics = document.querySelector("#ratings-critics");
-  if (game.aggregated_rating) {
-    ratingsCritics.querySelector(".rating-critics").textContent = Math.round(game.aggregated_rating);
-    ratingsCritics.querySelector("small").textContent = `Based on ${game.aggregated_rating_count} reviews`;
-  } else ratingsCritics.remove();
+  headings.forEach((heading) => {
+    const item = document.createElement("li");
+    const link = document.createElement("a");
+    link.href = `#${heading.parentElement.id}`;
+    link.textContent = heading.textContent;
 
-  const reviewTemplate = ratings.querySelector("template");
-  for (let i = 0; i < Math.min(reviews.length, 3); i++) {
-    const newClone = reviewTemplate.content.cloneNode(true);
-    const review = reviews[i];
+    if (heading.tagName == "H3") {
+      link.style.paddingLeft = "1rem";
+    }
 
-    newClone.querySelector("p").textContent = review.snippet;
-    const link = newClone.querySelector("a");
-    link.textContent = `- ${review.Authors[0].name}, ${review.Outlet.name}`;
-    link.setAttribute("href", review.externalUrl);
+    item.append(link);
+    table.append(item);
+  });
 
-    reviewTemplate.parentNode.append(newClone);
-  }
+  document.querySelector("#table-of-contents").append(table);
 }
 
-function fillNavigation() {
-  const previousGameLink = document.querySelector("#previous-game");
-  if (previousGame) {
-    previousGameLink.querySelector("h2").textContent = previousGame.name;
-    previousGameLink.setAttribute("href", `/HTML/games/?id=${previousGame.id}`);
-  } else {
-    previousGameLink.remove();
-  }
+function orderPlatforms() {
+  game.platforms.forEach(platform => {
+    if (platform.platform_family == null) platform.platform_family = -1;
+    if (platform.slug == "linux") platform.platform_family = 0;
+    if (platform.platform_family == 4) platform.platform_family = 6;
+  });
 
-  const nextGameLink = document.querySelector("#next-game");
-  if (nextGame) {
-    nextGameLink.querySelector("h2").textContent = nextGame.name;
-    nextGameLink.setAttribute("href", `/HTML/games/?id=${nextGame.id}`);
-  } else {
-    nextGameLink.remove();
-  }
+  game.platforms = game.platforms.sort((a,b) => {
+    if (a.platform_family !== b.platform_family) return a.platform_family - b.platform_family;
+    else return a.generation - b.generation;
+  });
+}
+
+function fillLanguages() {
+  const table = document.querySelector("#languages tbody");
+  game.language_supports.forEach(language => {
+    const tr = document.createElement("tr");
+    const td = document.createElement("td");
+    td.textContent = language.language.name;
+    tr.append(td);
+
+    const tds = [];
+    for (let i = 0; i < 3; i++) {
+      const td = document.createElement("td");
+      tds.push(td);
+      tr.append(td);
+    }
+
+    tds[0].innerHTML = language.audio ? '<i class="fa-solid fa-check"></i>' : "";
+    tds[1].innerHTML = language.subtitles ? '<i class="fa-solid fa-check"></i>' : "";
+    tds[2].innerHTML = language.interface ? '<i class="fa-solid fa-check"></i>' : "";
+
+    table.append(tr);
+  });
+}
+
+function fillAgeRatings() {
+  const parent = document.querySelector("#age div");
+  game.age_ratings.forEach(rating => {
+    const div = document.createElement("div");
+    const img = document.createElement("img");
+    img.setAttribute("src", rating.logo_url);
+    div.append(img);
+    div.textContent = rating.country;
+    parent.append(div);
+  });
 }
