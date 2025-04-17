@@ -42,7 +42,7 @@ section {
     @include flex(column);
 }
 
-#navigation {
+#side {
     position: sticky;
     top: 6.5rem;
     height: fit-content;
@@ -52,7 +52,7 @@ section {
     @include flex(column, 2rem);
 }
 
-#table-of-contents {
+#table-of-contents, #external-links {
     @include flex(column);
 
     ul {
@@ -185,6 +185,25 @@ hr {
         img {
             aspect-ratio: 1/1;
             width: 100%;
+            object-fit: contain;
+        }
+    }
+}
+
+#external-links .grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: .5rem;
+
+    a {
+        aspect-ratio: 1;
+        border-radius: calc($border-radius / 2);
+        background-color: black;
+        @include center();
+
+        img {
+            width: 66%;
+            height: 66%;
             object-fit: contain;
         }
     }

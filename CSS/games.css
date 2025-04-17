@@ -555,7 +555,7 @@ section {
   gap: 1rem;
 }
 
-#navigation {
+#side {
   position: sticky;
   top: 6.5rem;
   height: fit-content;
@@ -567,20 +567,20 @@ section {
   gap: 2rem;
 }
 
-#table-of-contents {
+#table-of-contents, #external-links {
   display: flex;
   flex-direction: column;
   gap: 1rem;
 }
-#table-of-contents ul {
+#table-of-contents ul, #external-links ul {
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
 }
-#table-of-contents li {
+#table-of-contents li, #external-links li {
   list-style: none;
 }
-#table-of-contents a {
+#table-of-contents a, #external-links a {
   font-weight: normal;
 }
 
@@ -702,6 +702,25 @@ hr {
 #age div span img {
   aspect-ratio: 1/1;
   width: 100%;
+  object-fit: contain;
+}
+
+#external-links .grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.5rem;
+}
+#external-links .grid a {
+  aspect-ratio: 1;
+  border-radius: 0.25rem;
+  background-color: black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+#external-links .grid a img {
+  width: 66%;
+  height: 66%;
   object-fit: contain;
 }
 

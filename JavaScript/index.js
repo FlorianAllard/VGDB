@@ -1,7 +1,7 @@
 "use strict";
 
 import * as IGDB from "./APIs/igdb_api.js";
-import * as DateModule from "./date_module.js";
+import * as Utilities from "./utilities_module.js";
 
 IGDB.default();
 
@@ -180,7 +180,7 @@ function displayAnticipatedCard() {
     cover.style.backgroundImage = `url(${game.cover.landscape_url})`;
 
     const date = card.querySelector(".subtexts small");
-    date.textContent = DateModule.dateFromUnix(game.first_release_date);
+    date.textContent = Utilities.dateFromUnix(game.first_release_date);
 
     card.setAttribute("href", `/HTML/games/?id=${game.id}`);
 
@@ -202,7 +202,7 @@ function updateAnticipatedCountdowns() {
    for (let i = 0; i < anticipatedCards.length; i++) {
      const countdown = anticipatedCards[i].querySelector(".countdown");
      const game = games.find((game) => game.id == anticipatedIDs[i]);
-     const time = DateModule.timeRemainingFromUnix(game.first_release_date);
+     const time = Utilities.timeRemainingFromUnix(game.first_release_date);
 
      countdown.querySelector(".countdown-days-10s").textContent = time[0].charAt(0);
      countdown.querySelector(".countdown-days-1s").textContent = time[0].charAt(1);
@@ -224,7 +224,7 @@ function displayUpcomingCards() {
     cover.style.backgroundImage = `url(${game.cover.portrait_url})`;
 
     const date = card.querySelector(".subtexts small");
-    date.textContent = DateModule.dateFromUnix(game.first_release_date);
+    date.textContent = Utilities.dateFromUnix(game.first_release_date);
 
     card.setAttribute("href", `/HTML/games/?id=${game.id}`);
     

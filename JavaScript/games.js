@@ -3,7 +3,7 @@
 import * as IGDB from "./APIs/igdb_api.js";
 import * as OpenCritic from "./APIs/opencritic_api.js";
 import * as PrefabModule from "./prefab_module.js";
-import * as DateModule from "./date_module.js";
+import * as Utilities from "./utilities_module.js";
 
 IGDB.default();
 
@@ -35,9 +35,9 @@ async function requestPageData() {
   }
 
   document.title = game.name;
-  if(game.language_supports?.length > 0) game.language_supports = IGDB.formatLanguages(game.language_supports);
-  console.log("Ratings: ", game.age_ratings);
-  if(game.age_ratings?.length > 0) game.age_ratings = IGDB.formatAgeRatings(game.age_ratings);
+  if (game.language_supports?.length > 0) game.language_supports = IGDB.formatLanguages(game.language_supports);
+  if (game.age_ratings?.length > 0) game.age_ratings = IGDB.formatAgeRatings(game.age_ratings);
+  if (game.websites?.length > 0) game.websites = IGDB.formatWebsites(game.websites);
   console.log("Game: ", game);
 
   // reviews = await OpenCritic.requestReviews(game.name);
@@ -61,6 +61,7 @@ function fillPage() {
   fillAgeRatings();
 
   createTableOfContents();
+  createExternalLinks();
 }
 
 function fillHero() {
@@ -74,7 +75,7 @@ function fillHero() {
 
   const hero = document.querySelector("#hero");
   hero.querySelector("h1").textContent = game.name;
-  hero.querySelector("small").textContent = game.first_release_date < Date.now() / 1000 ? `${DateModule.dateFromUnix(game.first_release_date)} (${DateModule.timeAgoFromUnix(game.first_release_date)})` : `${DateModule.dateFromUnix(game.first_release_date)}`;
+  hero.querySelector("small").textContent = game.first_release_date < Date.now() / 1000 ? `${Utilities.dateFromUnix(game.first_release_date)} (${Utilities.timeAgoFromUnix(game.first_release_date)})` : `${Utilities.dateFromUnix(game.first_release_date)}`;
   hero.querySelector("p").textContent = game.summary;
   hero.querySelector("img").setAttribute("src", game.cover.portrait_url);
   const video = game.videos.find((v) => v.name.includes("Launch")) ?? game.videos.at(-1);
@@ -168,13 +169,13 @@ function createTableOfContents() {
 }
 
 function orderPlatforms() {
-  game.platforms.forEach(platform => {
+  game.platforms.forEach((platform) => {
     if (platform.platform_family == null) platform.platform_family = -1;
     if (platform.slug == "linux") platform.platform_family = 0;
     if (platform.platform_family == 4) platform.platform_family = 6;
   });
 
-  game.platforms = game.platforms.sort((a,b) => {
+  game.platforms = game.platforms.sort((a, b) => {
     if (a.platform_family !== b.platform_family) return a.platform_family - b.platform_family;
     else return a.generation - b.generation;
   });
@@ -182,7 +183,7 @@ function orderPlatforms() {
 
 function fillLanguages() {
   const table = document.querySelector("#languages tbody");
-  game.language_supports.forEach(language => {
+  game.language_supports.forEach((language) => {
     const tr = document.createElement("tr");
     const td = document.createElement("td");
     td.textContent = language.language.name;
@@ -205,18 +206,43 @@ function fillLanguages() {
 
 function fillAgeRatings() {
   const parent = document.querySelector("#age div");
-  game.age_ratings.forEach(rating => {
-    const element = parent.querySelector(`#${rating.organization}`);
-    if (element) {
-      element.querySelector("img").setAttribute("src", `/Assets/Age ratings/${rating.rating}.svg`);
-      const tooltip = element.querySelector("my-tooltip");
-      if (rating.descriptions?.length > 0) {
-        rating.descriptions.forEach((desc) => {
-          tooltip.innerHTML += desc + "<br>";
-        });
-      } else {
-        tooltip.remove();
+  if (game.age_ratings?.length > 0) {
+    game.age_ratings.forEach((rating) => {
+      const element = parent.querySelector(`#${rating.organization}`);
+      if (element) {
+        element.querySelector("img").setAttribute("src", `/Assets/Age ratings/${rating.rating}.svg`);
+        const tooltip = element.querySelector("my-tooltip");
+        if (rating.descriptions?.length > 0) {
+          rating.descriptions.forEach((desc) => {
+            tooltip.innerHTML += desc + "<br>";
+          });
+        } else {
+          tooltip.remove();
+        }
       }
+    });
+  } else {
+    document.querySelector("#age").remove();
+  }
+}
+
+function createExternalLinks() {
+  const grid = document.createElement("div");
+  grid.classList.add("grid");
+
+  game.websites.forEach((wb) => {
+    const a = document.createElement("a");
+    a.setAttribute("href", wb.url);
+    a.setAttribute("target", "_blank");
+    a.style.backgroundColor = wb.color;
+    const img = document.createElement("img");
+    if (Utilities.colorToLuma(wb.color) < 200) {
+      img.style.filter = "invert(95%) sepia(100%) saturate(14%) hue-rotate(213deg) brightness(104%) contrast(104%)";
     }
+    img.setAttribute("src", wb.icon);
+    a.append(img);
+    grid.append(a);
   });
+
+  document.querySelector("#external-links").append(grid);
 }

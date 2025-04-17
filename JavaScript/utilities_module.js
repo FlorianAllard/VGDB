@@ -37,3 +37,15 @@ export function timeAgoFromUnix(unix) {
         return `${days} ${days === 1 ? "day" : "days"} ago`;
     }
 }
+
+export function colorToLuma(color) {
+    color = color.substring(1);
+    var rgb = parseInt(color, 16);
+    var r = (rgb >> 16) & 0xff;
+    var g = (rgb >> 8) & 0xff;
+    var b = (rgb >> 0) & 0xff;
+
+    const luma = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+    console.log(luma);
+    return .2126*r + .7152*g + .0722*b;
+}
