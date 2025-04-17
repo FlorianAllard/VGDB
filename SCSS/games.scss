@@ -28,6 +28,7 @@ main {
     img {
         height: 100%;
         width: 50%;
+        object-fit: contain;
     }
 }
 
@@ -53,7 +54,7 @@ section {
 
 #table-of-contents {
     @include flex(column);
-    
+
     ul {
         @include flex(column, .25rem);
     }
@@ -78,6 +79,7 @@ section {
             width: calc((100% - 1rem) * (264/352));
             aspect-ratio: 264/352;
         }
+
         iframe {
             width: calc((100% - 1rem) * (552/358));
             aspect-ratio: 552/358;
@@ -90,7 +92,8 @@ hr {
     height: calc($outline-width / 2);
 }
 
-.about-list, .about-platforms {
+.about-list,
+.about-platforms {
     @include flex();
     width: 100%;
 
@@ -128,29 +131,61 @@ hr {
     }
 }
 
-table {
-    font-size: .75rem;
-    
+#languages {
+    table-layout: fixed;
+    width: 100%;
 
-    td, th {
+    td,
+    th {
         padding: .5rem 0;
         border-bottom: calc($outline-width / 2) solid var(--background-color);
-    }
-
-    td:nth-child(1) {
-        text-align: left;
-    }
-
-    *:first-child ~ td {
-        width: 20%;
+        font-size: .75rem;
     }
 
     td {
-       text-align: center; 
+        text-align: center;
     }
 
     i {
         color: var(--primary-color);
         font-size: 1rem;
+    }
+
+    *:first-child~td,
+    *:first-child~th {
+        width: 20%;
+    }
+
+    td:nth-child(1),
+    th:nth-child(1) {
+        text-align: left;
+    }
+}
+
+#age div {
+    @include flex();
+    width: 100%;
+
+    span {
+        @include flex(column, .5rem);
+        align-items: center;
+        padding: 1rem;
+        padding-top: .5rem;
+        background-color: var(--background-color);
+        border-radius: $border-radius;
+
+        small {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            text-align: center;
+            max-width: calc(100%);
+        }
+
+        img {
+            aspect-ratio: 1/1;
+            width: 100%;
+            object-fit: contain;
+        }
     }
 }

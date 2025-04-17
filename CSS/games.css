@@ -207,6 +207,7 @@ section > .content {
   min-width: 0;
   pointer-events: all;
   opacity: 100%;
+  position: relative;
 }
 .card b {
   font-weight: bold;
@@ -467,6 +468,46 @@ platform-prefab img {
   filter: invert(100%) sepia(98%) saturate(8%) hue-rotate(151deg) brightness(103%) contrast(102%);
 }
 
+*:has(> my-tooltip) my-tooltip {
+  --surface-color: #595959;
+  --background-color: #404040;
+  --hover-color: #4D4D4D;
+  --pressed-color: #333333;
+  --primary-color: #FE7E01;
+  --secondary-color: #00BBCA;
+  --text-color: #FFFFFF;
+  position: absolute;
+  visibility: hidden;
+  opacity: 0%;
+  padding: 0.5rem;
+  border-radius: 0.25rem;
+  top: 0;
+  left: 50%;
+  translate: -50% -100%;
+  z-index: 10;
+  color: var(--text-color);
+  width: max-content;
+  text-align: center;
+  background-color: var(--surface-color);
+  transition: all 100ms ease;
+}
+*:has(> my-tooltip) my-tooltip::before {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  translate: -50% -50%;
+  rotate: 45deg;
+  width: 0.5rem;
+  height: 0.5rem;
+  background-color: var(--surface-color);
+}
+*:has(> my-tooltip):hover my-tooltip:not(:empty) {
+  visibility: visible;
+  opacity: 100%;
+  translate: -50% calc(-100% - 1rem);
+}
+
 main {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -499,6 +540,7 @@ main {
 #game-logo img {
   height: 100%;
   width: 50%;
+  object-fit: contain;
 }
 
 .frame {
@@ -565,60 +607,102 @@ hr {
   height: 1.5px;
 }
 
-.about-list, .about-platforms {
+.about-list,
+.about-platforms {
   display: flex;
   flex-direction: row;
   gap: 1rem;
   width: 100%;
 }
-.about-list.about-platforms, .about-platforms.about-platforms {
+.about-list.about-platforms,
+.about-platforms.about-platforms {
   flex-direction: column;
   gap: 0.5rem;
 }
-.about-list b, .about-platforms b {
+.about-list b,
+.about-platforms b {
   width: 12rem;
   min-width: 12rem;
 }
-.about-list ul, .about-platforms ul {
+.about-list ul,
+.about-platforms ul {
   display: flex;
   flex-direction: flex;
   gap: 0.5rem;
   flex-wrap: wrap;
   flex-grow: 1;
 }
-.about-list li, .about-platforms li {
+.about-list li,
+.about-platforms li {
   list-style: none;
 }
-.about-list a, .about-platforms a {
+.about-list a,
+.about-platforms a {
   font-weight: normal;
 }
-.about-list .chip, .about-platforms .chip {
+.about-list .chip,
+.about-platforms .chip {
   padding: 0.25rem 0.5rem;
   border-radius: 0.25rem;
 }
-.about-list .chip a, .about-platforms .chip a {
+.about-list .chip a,
+.about-platforms .chip a {
   color: white;
 }
 
-table {
-  font-size: 0.75rem;
+#languages {
+  table-layout: fixed;
+  width: 100%;
 }
-table td, table th {
+#languages td,
+#languages th {
   padding: 0.5rem 0;
   border-bottom: 1.5px solid var(--background-color);
+  font-size: 0.75rem;
 }
-table td:nth-child(1) {
-  text-align: left;
-}
-table *:first-child ~ td {
-  width: 20%;
-}
-table td {
+#languages td {
   text-align: center;
 }
-table i {
+#languages i {
   color: var(--primary-color);
   font-size: 1rem;
+}
+#languages *:first-child ~ td,
+#languages *:first-child ~ th {
+  width: 20%;
+}
+#languages td:nth-child(1),
+#languages th:nth-child(1) {
+  text-align: left;
+}
+
+#age div {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  width: 100%;
+}
+#age div span {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  align-items: center;
+  padding: 1rem;
+  padding-top: 0.5rem;
+  background-color: var(--background-color);
+  border-radius: 0.5rem;
+}
+#age div span small {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: center;
+  max-width: 100%;
+}
+#age div span img {
+  aspect-ratio: 1/1;
+  width: 100%;
+  object-fit: contain;
 }
 
 /*# sourceMappingURL=games.css.map */

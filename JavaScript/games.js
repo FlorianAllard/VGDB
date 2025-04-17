@@ -36,6 +36,7 @@ async function requestPageData() {
 
   document.title = game.name;
   if(game.language_supports?.length > 0) game.language_supports = IGDB.formatLanguages(game.language_supports);
+  console.log("Ratings: ", game.age_ratings);
   if(game.age_ratings?.length > 0) game.age_ratings = IGDB.formatAgeRatings(game.age_ratings);
   console.log("Game: ", game);
 
@@ -205,11 +206,17 @@ function fillLanguages() {
 function fillAgeRatings() {
   const parent = document.querySelector("#age div");
   game.age_ratings.forEach(rating => {
-    const div = document.createElement("div");
-    const img = document.createElement("img");
-    img.setAttribute("src", rating.logo_url);
-    div.append(img);
-    div.textContent = rating.country;
-    parent.append(div);
+    const element = parent.querySelector(`#${rating.organization}`);
+    if (element) {
+      element.querySelector("img").setAttribute("src", `/Assets/Age ratings/${rating.rating}.svg`);
+      const tooltip = element.querySelector("my-tooltip");
+      if (rating.descriptions?.length > 0) {
+        rating.descriptions.forEach((desc) => {
+          tooltip.innerHTML += desc + "<br>";
+        });
+      } else {
+        tooltip.remove();
+      }
+    }
   });
 }

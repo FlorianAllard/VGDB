@@ -1,5 +1,7 @@
 "use strict";
 
+import { Tooltip } from "./tooltip.js";
+
 // Instantiate headers
 const headerFetch = fetch("/HTML/header.html");
 let headerHTML = "";

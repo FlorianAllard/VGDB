@@ -286,8 +286,10 @@ export function formatAgeRatings(ageRatings) {
   ageRatings.forEach(rating => {
     const newRating = {
       country: getCountryFromRating(rating.organization.name),
+      organization: rating.organization.name,
       rating: rating.rating,
       logo_url: `/Assets/Age ratings/${rating.rating}.svg`,
+      descriptions: rating.content_descriptions?.map(e => e.description)
     };
     newRatings.push(newRating);
   });

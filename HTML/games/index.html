@@ -7,7 +7,7 @@
     <title>Game (0000)</title>
     <link rel="stylesheet" href="/CSS/games.css">
     <link rel="stylesheet" href="/node_modules/@fortawesome/fontawesome-free/css/all.min.css">
-    <script src="/JavaScript/script.js" defer></script>
+    <script type="module"  src="/JavaScript/script.js"></script>
     <script type="module" src="/JavaScript/games.js"></script>
 </head>
 
@@ -61,7 +61,7 @@
                     <table>
                         <thead>
                             <tr>
-                                <th></th>
+                                <th>Language</th>
                                 <th>Audio</th>
                                 <th>Subtitles</th>
                                 <th>Interface</th>
@@ -74,30 +74,44 @@
                 </section>
                 <section id="age">
                     <h3>Age ratings</h3>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Europe</th>
-                                <th>Germany</th>
-                                <th>USA & Canada</th>
-                                <th>Brazil</th>
-                                <th>Australia</th>
-                                <th>South Korea</th>
-                                <th>Japan</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td><img src="" alt=""></td>
-                                <td><img src="" alt=""></td>
-                                <td><img src="" alt=""></td>
-                                <td><img src="" alt=""></td>
-                                <td><img src="" alt=""></td>
-                                <td><img src="" alt=""></td>
-                                <td><img src="" alt=""></td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <div>
+                        <span id="PEGI" class="card">
+                            <small>Europe</small>
+                            <img src="/Assets/Age ratings/0.svg" alt="">
+                            <my-tooltip></my-tooltip>
+                        </span>
+                        <span id="USK" class="card">
+                            <small>Germany</small>
+                            <img src="/Assets/Age ratings/0.svg" alt="">
+                            <my-tooltip></my-tooltip>
+                        </span>
+                        <span id="ESRB" class="card">
+                            <small>North America</small>
+                            <img src="/Assets/Age ratings/0.svg" alt="">
+                            <my-tooltip></my-tooltip>
+                        </span>
+                        <span id="CLASS_IND" class="card">
+                            <small>Brazil</small>
+                            <img src="/Assets/Age ratings/0.svg" alt="">
+                            <my-tooltip></my-tooltip>
+                        </span>
+                        <span id="ACB" class="card">
+                            <small>Australia</small>
+                            <img src="/Assets/Age ratings/0.svg" alt="">
+                            <my-tooltip></my-tooltip>
+                        </span>
+                        <span id="CERO" class="card">
+                            <small>Japan</small>
+                            <img src="/Assets/Age ratings/0.svg" alt="">
+                            <my-tooltip></my-tooltip>
+                        </span>
+                        <span id="GRAC" class="card">
+                            <small>South Korea</small>
+                            <img src="/Assets/Age ratings/0.svg" alt="">
+                            <my-tooltip></my-tooltip>
+                        </span>
+                        </span>
+                    </div>
                 </section>
             </section>
 
