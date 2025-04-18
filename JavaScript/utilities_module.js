@@ -45,7 +45,14 @@ export function colorToLuma(color) {
     var g = (rgb >> 8) & 0xff;
     var b = (rgb >> 0) & 0xff;
 
-    const luma = 0.2126 * r + 0.7152 * g + 0.0722 * b;
-    console.log(luma);
     return .2126*r + .7152*g + .0722*b;
+}
+
+export function capitalize(string) {
+     string = string.replace("_", " ");
+     var split = string.toLowerCase().split(" ");
+     for (let i = 0; i < split.length; i++) {
+       split[i] = split[i].charAt(0).toUpperCase() + split[i].substring(1);
+     }
+     return split.join(" ");
 }

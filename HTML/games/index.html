@@ -7,6 +7,7 @@
     <title>Game (0000)</title>
     <link rel="stylesheet" href="/CSS/games.css">
     <link rel="stylesheet" href="/node_modules/@fortawesome/fontawesome-free/css/all.min.css">
+    <script src="/node_modules/jquery/dist/jquery.min.js"></script>
     <script type="module"  src="/JavaScript/script.js"></script>
     <script type="module" src="/JavaScript/games.js"></script>
 </head>
@@ -75,37 +76,37 @@
                 <section id="age">
                     <h3>Age ratings</h3>
                     <div>
-                        <span id="PEGI" class="card">
+                        <span id="PEGI">
                             <small>Europe</small>
                             <img src="/Assets/Age ratings/0.svg" alt="">
                             <my-tooltip></my-tooltip>
                         </span>
-                        <span id="USK" class="card">
+                        <span id="USK">
                             <small>Germany</small>
                             <img src="/Assets/Age ratings/0.svg" alt="">
                             <my-tooltip></my-tooltip>
                         </span>
-                        <span id="ESRB" class="card">
+                        <span id="ESRB">
                             <small>North America</small>
                             <img src="/Assets/Age ratings/0.svg" alt="">
                             <my-tooltip></my-tooltip>
                         </span>
-                        <span id="CLASS_IND" class="card">
+                        <span id="CLASS_IND">
                             <small>Brazil</small>
                             <img src="/Assets/Age ratings/0.svg" alt="">
                             <my-tooltip></my-tooltip>
                         </span>
-                        <span id="ACB" class="card">
+                        <span id="ACB">
                             <small>Australia</small>
                             <img src="/Assets/Age ratings/0.svg" alt="">
                             <my-tooltip></my-tooltip>
                         </span>
-                        <span id="CERO" class="card">
+                        <span id="CERO">
                             <small>Japan</small>
                             <img src="/Assets/Age ratings/0.svg" alt="">
                             <my-tooltip></my-tooltip>
                         </span>
-                        <span id="GRAC" class="card">
+                        <span id="GRAC">
                             <small>South Korea</small>
                             <img src="/Assets/Age ratings/0.svg" alt="">
                             <my-tooltip></my-tooltip>
@@ -117,6 +118,16 @@
 
             <section id="releases">
                 <h2>Releases</h2>
+                <table>
+                    <thead>
+                        <th>Date</th>
+                        <th>Release</th>
+                        <th>Platforms</th>
+                        <th>Regions</th>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+                <div class="content"></div>
                 <section id="editions">
                     <h3>Editions</h3>
                 </section>

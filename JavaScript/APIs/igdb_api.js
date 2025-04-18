@@ -2,6 +2,8 @@
 
 "use strict";
 
+import * as Utilities from "../utilities_module.js";
+
 const clientID = "wjrgwqzu6olj4dczprc3jx4kcvkcs4";
 const clientSecret = "2lr64wndvp5g2eqogk1sym4azconhc";
 const grantType = "client_credentials";
@@ -330,27 +332,43 @@ export function formatWebsites(websites) {
 function getWebsiteFromUrl(url) {
   if (url.toLowerCase().includes("gog"))
     return { url: url, site: "GOG", color: "#B001DF", icon: "/Assets/Sites/gog.svg" };
-  else if (url.toLowerCase().includes("twitter"))
-    return { url: url, site: "Twitter", color: "#000000", icon: "/Assets/Sites/twitter.svg" };
-  else if (url.toLowerCase().includes("steam"))
-    return { url: url, site: "Steam", color: "#12366A", icon: "/Assets/Sites/steam.svg" };
-  else if (url.toLowerCase().includes("twitch"))
-    return { url: url, site: "Twitch", color: "#A441F7", icon: "/Assets/Sites/twitch.svg" };
-  else if (url.toLowerCase().includes("wikipedia"))
-    return { url: url, site: "Wikipedia", color: "#E7E7E7", icon: "/Assets/Sites/wikipedia.svg" };
-  else if (url.toLowerCase().includes("reddit"))
-    return { url: url, site: "Reddit", color: "#F74300", icon: "/Assets/Sites/reddit.svg" };
+  else if (url.toLowerCase().includes("twitter") || url.toLowerCase().includes("x.com")) return { url: url, site: "Twitter", color: "#000000", icon: "/Assets/Sites/twitter.svg" };
+  else if (url.toLowerCase().includes("steam")) return { url: url, site: "Steam", color: "#12366A", icon: "/Assets/Sites/steam.svg" };
+  else if (url.toLowerCase().includes("twitch")) return { url: url, site: "Twitch", color: "#A441F7", icon: "/Assets/Sites/twitch.svg" };
+  else if (url.toLowerCase().includes("wikipedia")) return { url: url, site: "Wikipedia", color: "#E7E7E7", icon: "/Assets/Sites/wikipedia.svg" };
+  else if (url.toLowerCase().includes("reddit")) return { url: url, site: "Reddit", color: "#F74300", icon: "/Assets/Sites/reddit.svg" };
   else if (url.toLowerCase().includes(".wiki") || url.toLowerCase().includes("fandom") || url.toLowerCase().includes("gamepedia")) return { url: url, site: "Wiki", color: "#F20057", icon: "/Assets/Sites/wiki.svg" };
-  else if (url.toLowerCase().includes("youtube"))
-    return { url: url, site: "YouTube", color: "#F70000", icon: "/Assets/Sites/youtube.svg" };
-  else if (url.toLowerCase().includes("facebook"))
-    return { url: url, site: "Facebook", color: "#2F8CF7", icon: "/Assets/Sites/facebook.svg" };
-  else if (url.toLowerCase().includes("instagram"))
-    return { url: url, site: "Instagram", color: "#C7507C", icon: "/Assets/Sites/instagram.svg" };
-  else if (url.toLowerCase().includes("discord"))
-    return { url: url, site: "Discord", color: "#4E63EF", icon: "/Assets/Sites/discord.svg" };
-  else if (url.toLowerCase().includes("bsky"))
-    return { url: url, site: "Bluesky", color: "#1185FE", icon: "/Assets/Sites/bluesky.svg" };
-  else
-  return { url: url, site: "", color: "#E6E6E6", icon: "/Assets/Sites/link.svg" };
+  else if (url.toLowerCase().includes("youtube")) return { url: url, site: "YouTube", color: "#F70000", icon: "/Assets/Sites/youtube.svg" };
+  else if (url.toLowerCase().includes("facebook")) return { url: url, site: "Facebook", color: "#2F8CF7", icon: "/Assets/Sites/facebook.svg" };
+  else if (url.toLowerCase().includes("instagram")) return { url: url, site: "Instagram", color: "#C7507C", icon: "/Assets/Sites/instagram.svg" };
+  else if (url.toLowerCase().includes("discord")) return { url: url, site: "Discord", color: "#4E63EF", icon: "/Assets/Sites/discord.svg" };
+  else if (url.toLowerCase().includes("bsky")) return { url: url, site: "Bluesky", color: "#1185FE", icon: "/Assets/Sites/bluesky.svg" };
+  else if (url.toLowerCase().includes("apps.apple")) return { url: url, site: "Apple App Store", color: "#1B97F0", icon: "/Assets/Sites/apple.svg" };
+  else if (url.toLowerCase().includes("play.google")) return { url: url, site: "Google Play", color: "#167B36", icon: "/Assets/Sites/google.svg" };
+  else if (url.toLowerCase().includes("epic")) return { url: url, site: "Epic Games Store", color: "#2B292A", icon: "/Assets/Sites/epic.svg" };
+  else return { url: url, site: "", color: "#E6E6E6", icon: "/Assets/Sites/link.svg" };
+}
+
+export function formatReleases(releases) {
+  let newReleases = [];
+
+  releases.forEach(release => {
+    let newRelease = newReleases.find((e) => e.date == release.date);
+    if (newRelease) {
+      if (newRelease.platforms.includes(release.platform.name) == false) newRelease.platforms.push(release.platform.name);
+      if (newRelease.regions.includes(Utilities.capitalize(release.release_region.region)) == false) newRelease.platforms.push(Utilities.capitalize(release.release_region.region));
+    } else {
+      newRelease = {
+        date: release.date,
+        release: release.status?.name ?? "Full release",
+        platforms: [release.platform.name],
+        regions: [Utilities.capitalize(release.release_region.region)],
+      };
+      newReleases.push(newRelease);
+    }
+  });
+
+  newReleases.sort((a,b) => a.date - b.date);
+
+  return newReleases;
 }

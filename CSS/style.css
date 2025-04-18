@@ -45,7 +45,7 @@ select:focus-visible,
 textarea:focus-visible,
 button:focus-visible {
   border: none;
-  outline: 3px solid var(--secondary-color);
+  outline: 2px solid var(--secondary-color);
 }
 
 header {
@@ -119,8 +119,8 @@ div:has(> .user-profile) {
 .user-profile {
   display: flex;
   flex-direction: row;
-  gap: calc(0.5rem + 6px);
-  padding: 0 0.5rem 0 6px;
+  gap: calc(0.5rem + 4px);
+  padding: 0 0.5rem 0 4px;
   border: none;
   background-color: transparent;
   align-items: center;
@@ -140,11 +140,11 @@ div:has(> .user-profile) {
 }
 
 .profile-picture {
-  width: calc(2.5rem - 12px);
+  width: calc(2.5rem - 8px);
   aspect-ratio: 1;
   border-radius: 50%;
-  outline: 3px solid var(--text-color);
-  outline-offset: 3px;
+  outline: 2px solid var(--text-color);
+  outline-offset: 2px;
   transition: all 100ms ease;
 }
 
@@ -201,7 +201,7 @@ section > .content {
   color: var(--text-color);
   background-color: var(--surface-color);
   box-shadow: 0 0.125rem 0.125rem 0 rgba(0, 0, 0, 0.1);
-  outline: 3px solid transparent;
+  outline: 2px solid transparent;
   transition: all 200ms ease;
   flex: 1 1 0px;
   min-width: 0;
@@ -216,6 +216,13 @@ section > .content {
   white-space: nowrap;
   min-height: 1lh;
 }
+.card small {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-height: 1lh;
+  max-width: 100%;
+}
 .card.hidden {
   pointer-events: none;
   opacity: 0%;
@@ -226,6 +233,7 @@ section > .content {
 .card .cover {
   background-size: cover;
   background-position: center;
+  background-color: var(--hover-color);
 }
 .card .cover.landscape {
   aspect-ratio: 460/215;
@@ -236,7 +244,7 @@ section > .content {
 .card > .content {
   display: flex;
   flex-direction: column;
-  gap: 0;
+  gap: 0.25rem;
   padding: 1rem;
   justify-content: center;
 }
@@ -247,7 +255,7 @@ section > .content {
   scale: 1.02;
   background-color: var(--hover-color);
   border-radius: 0.5rem;
-  outline: 3px solid var(--secondary-color);
+  outline: 2px solid var(--secondary-color);
   z-index: 1;
 }
 .card:active {
@@ -285,7 +293,11 @@ ul.subtexts {
   list-style-type: none;
 }
 ul.subtexts li {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
   height: min-content;
+  max-width: 100%;
 }
 
 small {
@@ -342,7 +354,7 @@ small a {
   position: relative;
 }
 .countdown hr {
-  width: 3px;
+  width: 2px;
   height: 1rem;
 }
 .countdown span {
@@ -366,14 +378,14 @@ small a {
 hr {
   background-color: var(--background-color);
   border: none;
-  border-radius: 1.5px;
+  border-radius: 1px;
 }
 hr .vertical {
   height: 100%;
-  width: 3px;
+  width: 2px;
 }
 hr .horizontal {
-  height: 3px;
+  height: 2px;
   width: 100%;
 }
 

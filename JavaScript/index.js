@@ -220,8 +220,10 @@ function displayUpcomingCards() {
 
     card.querySelector("b").textContent = game.name;
 
-    const cover = card.querySelector(".cover");
-    cover.style.backgroundImage = `url(${game.cover.portrait_url})`;
+    if (game.cover) {
+        const cover = card.querySelector(".cover");
+        cover.style.backgroundImage = `url(${game.cover.portrait_url})`;
+    }
 
     const date = card.querySelector(".subtexts small");
     date.textContent = Utilities.dateFromUnix(game.first_release_date);

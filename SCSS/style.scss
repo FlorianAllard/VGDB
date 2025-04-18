@@ -48,11 +48,11 @@ $dark-mode: (
     }
 }
 
-$side-padding: calc(calc(100vw - 1200px) / 2);
+$side-padding: calc((100vw - 1200px) / 2);
 $transition-duration-instant: 100ms;
 $transition-duration-smooth: 200ms;
 $border-radius: .5rem;
-$outline-width: 3px;
+$outline-width: 2px;
 $shadow: 0 .125rem .125rem 0 rgba(0, 0, 0, .1);
 
 @mixin flex($direction: row, $gap: 1rem) {
@@ -274,6 +274,14 @@ section {
         min-height: 1lh;
     }
 
+    small {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        min-height: 1lh;
+        max-width: 100%;
+    }
+
     &.hidden {
         pointer-events: none;
         opacity: 0%;
@@ -285,6 +293,7 @@ section {
     .cover {
         background-size: cover;
         background-position: center;
+        background-color: var(--hover-color);
 
         &.landscape {
             aspect-ratio: 460/215;
@@ -296,7 +305,7 @@ section {
     }
 
     &>.content {
-        @include flex(column, 0);
+        @include flex(column, .25rem);
         padding: 1rem;
         justify-content: center;
     }
@@ -342,8 +351,11 @@ ul.subtexts {
     @include flex(row, .5rem);
     list-style-type: none;
 
-    li {
+    li 
+    {
+        @include flex();
         height: min-content;
+        max-width: 100%;
     }
 }
 

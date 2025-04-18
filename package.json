@@ -1,6 +1,7 @@
 {
   "dependencies": {
     "@fortawesome/fontawesome-free": "^6.7.2",
+    "jquery": "^3.7.1",
     "local-cors-proxy": "^1.1.0",
     "sass": "^1.86.1"
   }

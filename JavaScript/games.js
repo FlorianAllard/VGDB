@@ -22,7 +22,7 @@ requestPageData();
 async function requestPageData() {
   const id = new URLSearchParams(window.location.search).get("id") ?? "1";
 
-  let games = await IGDB.requestGames("*, genres.*, websites.*, videos.*, collections.*, franchises.*, cover.*, player_perspectives.*, game_modes.*, themes.*, involved_companies.*, involved_companies.company.*, game_engines.*, platforms.*, language_supports.*, language_supports.language.*, language_supports.language_support_type.*, age_ratings.*, age_ratings.content_descriptions.*, age_ratings.organization.*", "", 3, `id = (${parseInt(id) - 1},${id},${parseInt(id) + 1})`);
+  let games = await IGDB.requestGames("*, genres.*, websites.*, videos.*, collections.*, franchises.*, cover.*, player_perspectives.*, game_modes.*, themes.*, involved_companies.*, involved_companies.company.*, game_engines.*, platforms.*, language_supports.*, language_supports.language.*, language_supports.language_support_type.*, age_ratings.*, age_ratings.content_descriptions.*, age_ratings.organization.*, release_dates.*, release_dates.platform.*, release_dates.release_region.*, release_dates.status.*", "", 3, `id = (${parseInt(id) - 1},${id},${parseInt(id) + 1})`);
   games = IGDB.getCovers(games);
   for (let i = 0; i < games.length; i++) {
     if (games[i].id == id) {
@@ -38,6 +38,7 @@ async function requestPageData() {
   if (game.language_supports?.length > 0) game.language_supports = IGDB.formatLanguages(game.language_supports);
   if (game.age_ratings?.length > 0) game.age_ratings = IGDB.formatAgeRatings(game.age_ratings);
   if (game.websites?.length > 0) game.websites = IGDB.formatWebsites(game.websites);
+  if (game.release_dates?.length > 0) game.release_dates = IGDB.formatReleases(game.release_dates);
   console.log("Game: ", game);
 
   // reviews = await OpenCritic.requestReviews(game.name);
@@ -59,6 +60,7 @@ function fillPage() {
 
   fillLanguages();
   fillAgeRatings();
+  fillReleases();
 
   createTableOfContents();
   createExternalLinks();
@@ -182,26 +184,31 @@ function orderPlatforms() {
 }
 
 function fillLanguages() {
-  const table = document.querySelector("#languages tbody");
-  game.language_supports.forEach((language) => {
-    const tr = document.createElement("tr");
-    const td = document.createElement("td");
-    td.textContent = language.language.name;
-    tr.append(td);
-
-    const tds = [];
-    for (let i = 0; i < 3; i++) {
+  const section = document.querySelector("#languages");
+  if (game.language_supports?.length > 0) {
+    const table = section.querySelector("tbody");
+    game.language_supports.forEach((language) => {
+      const tr = document.createElement("tr");
       const td = document.createElement("td");
-      tds.push(td);
+      td.textContent = language.language.name;
       tr.append(td);
-    }
 
-    tds[0].innerHTML = language.audio ? '<i class="fa-solid fa-check"></i>' : "";
-    tds[1].innerHTML = language.subtitles ? '<i class="fa-solid fa-check"></i>' : "";
-    tds[2].innerHTML = language.interface ? '<i class="fa-solid fa-check"></i>' : "";
+      const tds = [];
+      for (let i = 0; i < 3; i++) {
+        const td = document.createElement("td");
+        tds.push(td);
+        tr.append(td);
+      }
 
-    table.append(tr);
-  });
+      tds[0].innerHTML = language.audio ? '<i class="fa-solid fa-check"></i>' : "";
+      tds[1].innerHTML = language.subtitles ? '<i class="fa-solid fa-check"></i>' : "";
+      tds[2].innerHTML = language.interface ? '<i class="fa-solid fa-check"></i>' : "";
+
+      table.append(tr);
+    });
+  } else {
+    section.remove();
+  }
 }
 
 function fillAgeRatings() {
@@ -245,4 +252,32 @@ function createExternalLinks() {
   });
 
   document.querySelector("#external-links").append(grid);
+}
+
+function fillReleases() {
+  const parent = document.querySelector("#releases tbody");
+  game.release_dates.forEach(release => {
+    const tr = document.createElement("tr");
+
+    if(release.date == game.first_release_date && game.release_dates.length > 1) tr.classList.add("first-release-date");
+
+    const tdDate = document.createElement("td");
+    tdDate.textContent = Utilities.dateFromUnix(release.date);
+    tr.append(tdDate);
+
+    const tdRelease = document.createElement("td");
+    tdRelease.textContent = release.release;
+    tr.append(tdRelease);
+
+    const tdPlatforms = document.createElement("td");
+    tdPlatforms.textContent = release.platforms.join(", ");
+    tr.append(tdPlatforms);
+
+    const tdRegions = document.createElement("td");
+    tdRegions.textContent = release.regions.join(", ");
+    tr.append(tdRegions);
+
+    console.log(tr)
+    parent.append(tr);
+  });
 }
