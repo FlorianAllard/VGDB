@@ -350,25 +350,55 @@ function getWebsiteFromUrl(url) {
 }
 
 export function formatReleases(releases) {
-  let newReleases = [];
+  let formattedReleases = [];
 
-  releases.forEach(release => {
-    let newRelease = newReleases.find((e) => e.date == release.date);
-    if (newRelease) {
-      if (newRelease.platforms.includes(release.platform.name) == false) newRelease.platforms.push(release.platform.name);
-      if (newRelease.regions.includes(Utilities.capitalize(release.release_region.region)) == false) newRelease.platforms.push(Utilities.capitalize(release.release_region.region));
+  releases.forEach((release) => {
+    // Find an existing release entry with the same date and release type
+    let existingRelease = formattedReleases.find((e) => e.date === release.date && e.release === (release.status?.name ?? "Full Release"));
+
+    if (existingRelease) {
+      // Check if a platform group with the same platforms and regions already exists
+      let platformGroup = existingRelease.platforms.find((p) => p.names.includes(release.platform.name) || p.regions.includes(Utilities.capitalize(release.release_region.region)));
+
+      if (platformGroup) {
+        // Add the platform name if it's not already in the group
+        if (!platformGroup.names.includes(release.platform.name)) {
+          platformGroup.names.push(release.platform.name);
+        }
+
+        // Add the region if it's not already in the group
+        if (!platformGroup.regions.includes(Utilities.capitalize(release.release_region.region))) {
+          platformGroup.regions.push(Utilities.capitalize(release.release_region.region));
+        }
+      } else {
+        // Add a new platform group
+        existingRelease.platforms.push({
+          names: [release.platform.name],
+          regions: [Utilities.capitalize(release.release_region.region)],
+        });
+      }
     } else {
-      newRelease = {
+      // Create a new release entry
+      formattedReleases.push({
         date: release.date,
-        release: release.status?.name ?? "Full release",
-        platforms: [release.platform.name],
-        regions: [Utilities.capitalize(release.release_region.region)],
-      };
-      newReleases.push(newRelease);
+        release: release.status?.name ?? "Full Release",
+        platforms: [
+          {
+            names: [release.platform.name],
+            regions: [Utilities.capitalize(release.release_region.region)],
+          },
+        ],
+      });
     }
   });
 
-  newReleases.sort((a,b) => a.date - b.date);
+  // Sort the releases by date
+  formattedReleases.forEach((release) => {
+    release.platforms.forEach((platform) => {platform.names.sort((a, b) => a.localeCompare(b));});
+    release.platforms.sort((a, b) => a.names[0].localeCompare(b.names[0]));
+  });
+  formattedReleases.sort((a, b) => a.date - b.date);
 
-  return newReleases;
+  console.log(formattedReleases);
+  return formattedReleases;
 }

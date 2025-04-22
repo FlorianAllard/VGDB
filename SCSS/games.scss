@@ -1,83 +1,74 @@
+// npx sass --watch ./SCSS:./CSS
 @import "./style";
 
-main {
+body {
     @include grid();
-    position: relative;
     grid-template-columns: 2fr 5fr;
-    justify-content: center;
-    padding: 2rem $side-padding;
-    background-size: contain;
-    background-position: top;
-    background-repeat: no-repeat;
+    justify-items: center;
+    padding: 0 $side-padding;
+    gap: 0 1rem;
 }
 
-#game-hero {
-    position: absolute;
-    left: 0;
-    width: 100%;
+#banner {
+    position: relative;
+    grid-column: 1 / -1;
     z-index: -1;
-    filter: brightness(75%);
-}
-
-#game-logo {
     @include center();
-    grid-column: span 2;
-    aspect-ratio: 1920/492;
-    margin-bottom: 1rem;
+    width: calc(100% + $side-padding * 2);
+    height: calc((100dvw * (413 / 1280)) - 2rem);
+    max-height: 24rem;
+    padding: 2rem;
 
-    img {
+    &--background {
+        position: absolute;
+        top: 0;
+        width: 100%;
+        aspect-ratio: 1280 / 413;
+        object-fit: cover;
+    }
+
+    &--logo {
+        aspect-ratio: 958 / 539;
         height: 100%;
-        width: 50%;
         object-fit: contain;
+        z-index: 1;
     }
 }
 
-.frame {
+nav > section,
+main {
     background-color: var(--surface-color);
-    box-shadow: var(--shadow);
     padding: 2rem;
+    box-shadow: $shadow;
 }
 
+nav,
+main,
 section {
     @include flex(column);
+    width: 100%;
 }
 
-#side {
+main {
+    gap: 2rem;
+}
+
+nav {
     position: sticky;
-    top: 6.5rem;
+    top: 6.75rem;
     height: fit-content;
 }
 
-#page {
-    @include flex(column, 2rem);
-}
+#main--top {
+    gap: 0.25rem;
 
-#table-of-contents, #external-links {
-    @include flex(column);
-
-    ul {
-        @include flex(column, .25rem);
-    }
-
-    li {
-        list-style: none;
-    }
-
-    a {
-        font-weight: normal;
-    }
-}
-
-#hero {
-    gap: .5rem;
-
-    div {
+    &--media {
         @include flex();
-        margin: .5rem 0;
+        margin: 0.75rem 0;
 
         img {
-            width: calc((100% - 1rem) * (264/352));
-            aspect-ratio: 264/352;
+            width: calc((100% - 1rem) * (600/900));
+            aspect-ratio: 600/900;
         }
 
         iframe {
@@ -87,170 +78,148 @@ section {
     }
 }
 
-hr {
-    width: 100%;
-    height: $outline-width;
-}
-
-.about-list,
-.release-list {
-    @include flex();
-    width: 100%;
-
-    &.about-platforms {
-        flex-direction: column;
-        gap: .5rem;
-    }
-
-    b {
-        width: 16rem;
-        min-width: 16rem;
-    }
-
-    ul {
-        @include flex(flex, .5rem);
-        flex-wrap: wrap;
-        flex-grow: 1;
-    }
-
-    &.release-list {
-        ul {
-            @include flex(column, .5rem);
-        }
-    }
-
-    li {
-        list-style: none;
-
-        b {
-            font-weight: 600;
-        }
-    }
-
-    a {
-        font-weight: normal;
-    }
-
-    .chip {
-        padding: .25rem .5rem;
-        border-radius: calc($border-radius / 2);
-
-        a {
-            color: white;
-        }
-    }
-}
-
 table {
-    table-layout: fixed;
+    table-layout: auto;
     border-spacing: 0;
+}
 
-    td,
+.table-small {
+    font-size: small;
+    vertical-align: top;
+
+    th, td {
+        padding: .5rem 0 calc(.5rem + $outline-width) 0;
+    }
+
     th {
-        vertical-align: top;
-        padding: .5rem 1rem;
-        border-bottom: $outline-width solid var(--background-color);
-        font-size: .75rem;
-
-        &:first-child{
-            padding-left: 0;
-        }
-        &:last-child{
-            padding-right: 0;
+        padding-top: 0;
+        &:first-child {
+            text-align: left;
         }
     }
 
-    td {
-        text-align: center;
+    tr:last-child td {
+        padding-bottom: 0;
+    }
+
+    tr:not(:last-child) td, th {
+        border-bottom: $outline-width solid var(--background-color);
     }
 
     i {
-        color: var(--primary-color);
-        font-size: 1rem;
+        font-size: medium;
+        color: $success-color;
     }
 }
 
-#languages {
-    *:first-child~td,
-    *:first-child~th {
-        width: 20%;
+.table-list {
+    tr:not(:last-child) td,
+    tr:not(:last-child) th {
+        padding-bottom: 1rem;
     }
-    td:nth-child(1),
-    th:nth-child(1) {
+
+    th {
         text-align: left;
+        vertical-align: top;
+        white-space: nowrap;
+        padding-right: 4rem;
     }
-}
-#releases {
-    table-layout: fixed;
-    td,th {
-        text-align: left;
 
-        &:nth-child(3) {
-            width: 40%;
+    .table-separator {
+        th, td {
+            border-bottom: $outline-width solid var(--background-color);
         }
-        &:nth-child(4) {
-            width: 25%;
+
+        & + tr th,
+        & + tr td {
+            padding-top: 1rem;
         }
-    }
-    .expandable {
-        width: auto;
-    }
-    .first-release-date {
-        font-weight: bold;
     }
 }
 
-#age div {
-    @include flex();
-    width: 100%;
+#main--localization--age-ratings {
+    ul {
+        @include flex();
+    }
 
-    span {
-        @include flex(column, .5rem);
+    li {
+        @include flex(column, 0.5rem);
+        @include transition();
         align-items: center;
-        padding: 1rem;
-        padding-top: .5rem;
+        flex: 1 1 0;
+        min-width: 0;
+        padding: 0.5rem;
+        list-style: none;
         border-radius: $border-radius;
         border: $outline-width solid var(--background-color);
-        flex: 1 1 0px;
-        min-width: 0;
-        position: relative;
-
-        small {
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            text-align: center;
-            max-width: calc(100%);
-        }
-
-        img {
-            aspect-ratio: 1/1;
-            width: 100%;
-            object-fit: contain;
-        }
 
         &:hover {
             cursor: pointer;
             background-color: var(--background-color);
         }
     }
+
+    small {
+        width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        text-align: center;
+    }
+
+    img {
+        aspect-ratio: 1 / 1;
+        width: 100%;
+        object-fit: contain;
+    }
 }
 
-#external-links .grid {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: .5rem;
+#main--localization .table-small {
+    tr *:not(:first-child) {
+            width: 20%;
+            text-align: center;
+        }
+}
+
+#main--releases .table-small {
+    text-align: left;
+
+    tr *:not(:nth-child(3)) {
+        white-space: nowrap;
+        padding-right: 2rem;
+    }
+
+    td {
+        vertical-align: top;
+        br {
+            content: "";
+            margin: 1em;
+            display: block;
+            font-size: 20%;
+        }
+    }
+}
+
+#nav--table-of-contents ul {
+    li {
+        list-style: none;
+    }
+}
+
+#nav--external-links {
+    .grid {
+        @include grid(7, .5rem);
+    }
 
     a {
-        aspect-ratio: 1;
-        border-radius: calc($border-radius / 2);
-        background-color: black;
+        width: 100%;
+        aspect-ratio: 1/1;
         @include center();
+        border-radius: $border-radius / 2;
+    }
 
-        img {
-            width: 66%;
-            height: 66%;
-            object-fit: contain;
-        }
+    img {
+        width: 66%;
+        height: 66%;
     }
 }

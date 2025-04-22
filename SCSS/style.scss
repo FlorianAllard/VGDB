@@ -113,6 +113,8 @@ header {
     top: 0;
     box-shadow: $shadow;
     z-index: 2;
+    grid-column: 1/-1;
+    width: calc(100% + $side-padding * 2);
 
     div {
         @include flex();
@@ -217,6 +219,7 @@ h2 {
 }
 
 p {
+    white-space: pre-wrap;
     font-weight: normal;
 }
 
@@ -228,7 +231,6 @@ p {
 a {
     color: var(--secondary-color);
     text-decoration: none;
-    font-weight: 600;
 
     &:hover {
         text-decoration: underline;
@@ -245,7 +247,7 @@ body {
 
 section {
     @include flex(column);
-    @extend %flexElement;
+    // @extend %flexElement;
 
     &>.content {
         @include flex();
@@ -589,6 +591,9 @@ footer {
     background-color: var(--background-color);
     color: var(--text-color);
     padding: 2rem $side-padding;
+    grid-column: 1/-1;
+    width: calc(100% + $side-padding * 2);
+    margin-top: 2rem;
 
     #community {
         @include flex(row, .5rem);
@@ -678,6 +683,8 @@ platform-prefab {
 }
 
 *:has(>my-tooltip) {
+    position: relative;
+
     my-tooltip {
         @include theme($dark-mode);
         position: absolute;

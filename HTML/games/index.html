@@ -8,170 +8,216 @@
     <link rel="stylesheet" href="/CSS/games.css">
     <link rel="stylesheet" href="/node_modules/@fortawesome/fontawesome-free/css/all.min.css">
     <script src="/node_modules/jquery/dist/jquery.min.js"></script>
-    <script type="module"  src="/JavaScript/script.js"></script>
+    <script type="module" src="/JavaScript/script.js"></script>
     <script type="module" src="/JavaScript/games.js"></script>
 </head>
 
 <body>
+    <figure id="banner">
+        <img id="banner--background" alt="">
+        <img id="banner--logo" alt="">
+    </figure>
+    
+    <nav>
+        <section id="nav--table-of-contents">
+            <h3>Table of contents</h3>
+        </section>
+    
+        <section id="nav--external-links">
+            <h3>External links</h3>
+        </section>
+    </nav>
+
     <main>
-        <img src="" alt="" id="game-hero">
-
-        <div id="game-logo">
-            <img src="" alt="">
-        </div>
-
-        <section id="side">
-            <div id="table-of-contents" class="frame">
-                <h3>Contents</h3>
+        <section id="main--top">
+            <h1>Game name</h1>
+            <small>Release date</small>
+            <div id="main--top--media">
+                <img src="" alt="" id="game-cover">
+                <iframe src=""
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
             </div>
-
-            <div id="external-links" class="frame">
-                <h3>External links</h3>
-            </div>
+            <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Facere error ab exercitationem quaerat sed
+                laboriosam
+                qui molestiae, architecto fuga amet.</p>
         </section>
 
-        <div id="page" class="frame">
-            <section id="hero">
-                <h1>Game name</h1>
-                <small>Release date</small>
-                <div>
-                    <img src="" alt="" id="game-cover">
-                    <iframe src=""
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                        referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-                </div>
-                <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Facere error ab exercitationem quaerat sed laboriosam qui molestiae, architecto fuga amet.</p>
-            </section>
-            
-            <section id="about">
-                <h2>About</h2>
-                <div class="content">
-                    
-                </div>
-            </section>
-            
-            <section id="plot">
-                <h2>Plot</h2>
-                <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Pariatur ab rerum dolorem quibusdam molestias voluptate commodi, vero debitis, porro aut cum quisquam nihil nemo ducimus autem excepturi explicabo officiis accusamus quos aliquid nam fugiat? Sint illum, recusandae vel reiciendis perferendis impedit provident incidunt facilis, officia exercitationem optio voluptatem accusantium tenetur.</p>
-            </section>
-            
-            <section id="localization">
-                <h2>Localization</h2>
-                <section id="languages">
-                    <h3>Supported languages</h3>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Language</th>
-                                <th>Audio</th>
-                                <th>Subtitles</th>
-                                <th>Interface</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            
-                        </tbody>
-                    </table>
-                </section>
-                <section id="age">
-                    <h3>Age ratings</h3>
-                    <div>
-                        <span id="PEGI">
-                            <small>Europe</small>
-                            <img src="/Assets/Age ratings/0.svg" alt="">
-                            <my-tooltip></my-tooltip>
-                        </span>
-                        <span id="USK">
-                            <small>Germany</small>
-                            <img src="/Assets/Age ratings/0.svg" alt="">
-                            <my-tooltip></my-tooltip>
-                        </span>
-                        <span id="ESRB">
-                            <small>North America</small>
-                            <img src="/Assets/Age ratings/0.svg" alt="">
-                            <my-tooltip></my-tooltip>
-                        </span>
-                        <span id="CLASS_IND">
-                            <small>Brazil</small>
-                            <img src="/Assets/Age ratings/0.svg" alt="">
-                            <my-tooltip></my-tooltip>
-                        </span>
-                        <span id="ACB">
-                            <small>Australia</small>
-                            <img src="/Assets/Age ratings/0.svg" alt="">
-                            <my-tooltip></my-tooltip>
-                        </span>
-                        <span id="CERO">
-                            <small>Japan</small>
-                            <img src="/Assets/Age ratings/0.svg" alt="">
-                            <my-tooltip></my-tooltip>
-                        </span>
-                        <span id="GRAC">
-                            <small>South Korea</small>
-                            <img src="/Assets/Age ratings/0.svg" alt="">
-                            <my-tooltip></my-tooltip>
-                        </span>
-                        </span>
-                    </div>
-                </section>
-            </section>
-
-            <section id="releases">
-                <h2>Releases</h2>
-                <table>
-                    <thead>
-                        <th>Date</th>
-                        <th>Release</th>
+        <section id="main--about">
+            <h2>About</h2>
+            <table class="table-list">
+                <tbody>
+                    <tr id="main--about--platforms" class="table-separator">
                         <th>Platforms</th>
-                        <th>Regions</th>
+                        <td></td>
+                    </tr>
+                    <tr id="main--about--genres">
+                        <th>Genres</th>
+                        <td></td>
+                    </tr>
+                    <tr id="main--about--game-modes">
+                        <th>Game modes</th>
+                        <td></td>
+                    </tr>
+                    <tr id="main--about--player-perspectives">
+                        <th>Player perspectives</th>
+                        <td></td>
+                    </tr>
+                    <tr id="main--about--themes" class="table-separator">
+                        <th>Themes</th>
+                        <td></td>
+                    </tr>
+
+                    <tr id="main--about--main-developers">
+                        <th>Main developers</th>
+                        <td></td>
+                    </tr>
+                    <tr id="main--about--supporting-developers">
+                        <th>Supporting developers</th>
+                        <td></td>
+                    </tr>
+                    <tr id="main--about--publishers">
+                        <th>Publishers</th>
+                        <td></td>
+                    </tr>
+                    <tr id="main--about--game-engines" class="table-separator">
+                        <th>Game engines</th>
+                        <td></td>
+                    </tr>
+
+                    <tr id="main--about--series">
+                        <th>Series</th>
+                        <td></td>
+                    </tr>
+                    <tr id="main--about--franchises">
+                        <th>Franchises</th>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section id="main--plot">
+            <h2>Plot</h2>
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Magni unde saepe sit nihil inventore natus pariatur facilis, earum ut alias culpa officiis at perferendis minus! Animi mollitia deserunt, velit et ipsam aperiam quasi, sapiente dolor at amet laboriosam vero nemo hic tenetur accusantium veniam dolorem delectus? At sit vero culpa!</p>
+        </section>
+
+        <section id="main--localization">
+            <h2>Localization</h2>
+
+            <section id="main--localization--languages">
+                <h3>Supported languages</h3>
+                <table class="table-small">
+                    <thead>
+                        <tr>
+                            <th>Language</th>
+                            <th>Audio</th>
+                            <th>Subtitles</th>
+                            <th>Interface</th>
+                        </tr>
                     </thead>
                     <tbody></tbody>
                 </table>
-                <div class="content"></div>
-                <section id="editions">
-                    <h3>Editions</h3>
-                </section>
             </section>
-            
-            <section id="additionnal-content">
-                <h2>Additionnal content</h2>
-                <section id="expansions">
-                    <h3>Expansions</h3>
-                </section>
-                <section id="dlcs">
-                    <h3>DLCs</h3>
-                </section>
+
+            <section id="main--localization--age-ratings">
+                <h3>Age ratings</h3>
+                <ul>
+                    <li id="main--localization--age-ratings--PEGI">
+                        <small>Europe</small>
+                        <img src="/Assets/Age ratings/0.svg" alt="">
+                        <my-tooltip></my-tooltip>
+                    </li>
+                    <li id="main--localization--age-ratings--USK">
+                        <small>Germany</small>
+                        <img src="/Assets/Age ratings/0.svg" alt="">
+                        <my-tooltip></my-tooltip>
+                    </li>
+                    <li id="main--localization--age-ratings--ESRB">
+                        <small>North America</small>
+                        <img src="/Assets/Age ratings/0.svg" alt="">
+                        <my-tooltip></my-tooltip>
+                    </li>
+                    <li id="main--localization--age-ratings--CLASS_IND">
+                        <small>Brazil</small>
+                        <img src="/Assets/Age ratings/0.svg" alt="">
+                        <my-tooltip></my-tooltip>
+                    </li>
+                    </li>
+                    <li id="main--localization--age-ratings--ACB">
+                        <small>Australia</small>
+                        <img src="/Assets/Age ratings/0.svg" alt="">
+                        <my-tooltip></my-tooltip>
+                    </li>
+                    <li id="main--localization--age-ratings--CERO">
+                        <small>Japan</small>
+                        <img src="/Assets/Age ratings/0.svg" alt="">
+                        <my-tooltip></my-tooltip>
+                    </li>
+                    <li id="main--localization--age-ratings--GRAC">
+                        <small>South Korea</small>
+                        <img src="/Assets/Age ratings/0.svg" alt="">
+                        <my-tooltip></my-tooltip>
+                    </li>
+                </ul>
             </section>
-            
-            <section id="reception">
-                <h2>Reception</h2>
-                <section id="reviews">
-                    <h3>Reviews</h3>
-                </section>
+        </section>
+
+        <section id="main--releases">
+            <h2>Releases</h2>
+            <table class="table-small">
+                <thead>
+                    <th>Date</th>
+                    <th>Release</th>
+                    <th>Platforms</th>
+                    <th>Regions</th>
+                </thead>
+                <tbody></tbody>
+            </table>
+
+            <section id="main--releases--editions">
+                <h3>Editions</h3>
             </section>
-            
-            <section id="time-to-beat">
-                <h2>Time to beat</h2>
+        </section>
+
+        <!-- <section id="additionnal-content">
+            <h2>Additionnal content</h2>
+            <section id="expansions">
+                <h3>Expansions</h3>
             </section>
-            
-            <section id="where-to-buy">
-                <h2>Where to buy</h2>
+            <section id="dlcs">
+                <h3>DLCs</h3>
             </section>
-            
-            <section id="media">
-                <h2>Media</h2>
-                <section id="videos">
-                    <h3>Videos</h3>
-                </section>
-                <section id="screenshots">
-                    <h3>Screenshots</h3>
-                </section>
-                </section>
-                <section id="artwork">
-                    <h3>Artwork</h3>
-                </section>
+        </section>
+
+        <section id="reception">
+            <h2>Reception</h2>
+            <section id="reviews">
+                <h3>Reviews</h3>
             </section>
-        </div>
+        </section>
+
+        <section id="time-to-beat">
+            <h2>Time to beat</h2>
+        </section>
+
+        <section id="where-to-buy">
+            <h2>Where to buy</h2>
+        </section>
+
+        <section id="media">
+            <h2>Media</h2>
+            <section id="videos">
+                <h3>Videos</h3>
+            </section>
+            <section id="screenshots">
+                <h3>Screenshots</h3>
+            </section>
+        </section>
+        <section id="artwork">
+            <h3>Artwork</h3>
+        </section>
+        </section> -->
     </main>
 </body>
 

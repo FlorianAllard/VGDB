@@ -22,7 +22,7 @@ requestPageData();
 async function requestPageData() {
   const id = new URLSearchParams(window.location.search).get("id") ?? "1";
 
-  let games = await IGDB.requestGames("*, genres.*, websites.*, videos.*, collections.*, franchises.*, cover.*, player_perspectives.*, game_modes.*, themes.*, involved_companies.*, involved_companies.company.*, game_engines.*, platforms.*, language_supports.*, language_supports.language.*, language_supports.language_support_type.*, age_ratings.*, age_ratings.content_descriptions.*, age_ratings.organization.*, release_dates.*, release_dates.platform.*, release_dates.release_region.*, release_dates.status.*", "", 3, `id = (${parseInt(id) - 1},${id},${parseInt(id) + 1})`);
+  let games = await IGDB.requestGames("*, genres.*, websites.*, videos.*, collections.*, franchises.*, cover.*, player_perspectives.*, game_modes.*, themes.*, involved_companies.*, involved_companies.company.*, game_engines.*, platforms.*, language_supports.*, language_supports.language.*, language_supports.language_support_type.*, age_ratings.*, age_ratings.content_descriptions.*, age_ratings.organization.*, release_dates.*, release_dates.platform.*, release_dates.release_region.*, release_dates.status.*, external_games.*", "", 3, `id = (${parseInt(id) - 1},${id},${parseInt(id) + 1})`);
   games = IGDB.getCovers(games);
   for (let i = 0; i < games.length; i++) {
     if (games[i].id == id) {
@@ -48,12 +48,12 @@ async function requestPageData() {
 }
 
 function fillPage() {
-  fillHero();
+  fillTop();
   fillAbout();
 
-  const plot = document.querySelector("#plot");
+  const plot = document.querySelector("#main--plot");
   if (game.storyline) {
-    plot.querySelector("p").textContent = game.storyline;
+    plot.querySelector("p").innerHTML = game.storyline;
   } else {
     plot.remove();
   }
@@ -66,96 +66,76 @@ function fillPage() {
   createExternalLinks();
 }
 
-function fillHero() {
-  const logo = document.querySelector("#game-logo");
+function fillTop() {
+  const banner = document.querySelector("#banner");
   if (game.cover.logo_url) {
-    document.querySelector("#game-hero").setAttribute("src", game.cover.hero_url);
-    logo.querySelector("img").setAttribute("src", game.cover.logo_url);
+    banner.querySelector("#banner--background").setAttribute("src", game.cover.hero_url);
+    banner.querySelector("#banner--logo").setAttribute("src", game.cover.logo_url);
   } else {
-    logo.remove();
+    banner.remove();
   }
 
-  const hero = document.querySelector("#hero");
-  hero.querySelector("h1").textContent = game.name;
-  hero.querySelector("small").textContent = game.first_release_date < Date.now() / 1000 ? `${Utilities.dateFromUnix(game.first_release_date)} (${Utilities.timeAgoFromUnix(game.first_release_date)})` : `${Utilities.dateFromUnix(game.first_release_date)}`;
-  hero.querySelector("p").textContent = game.summary;
-  hero.querySelector("img").setAttribute("src", game.cover.portrait_url);
+  const top = document.querySelector("#main--top");
+  top.querySelector("h1").textContent = game.name;
+  top.querySelector("small").textContent = game.first_release_date < Date.now() / 1000 ? `${Utilities.dateFromUnix(game.first_release_date)} (${Utilities.timeAgoFromUnix(game.first_release_date)})` : `${Utilities.dateFromUnix(game.first_release_date)}`;
+  top.querySelector("p").textContent = game.summary;
+  top.querySelector("img").setAttribute("src", game.cover.portrait_url);
   const video = game.videos.find((v) => v.name.includes("Launch")) ?? game.videos.at(-1);
-  hero.querySelector("iframe").setAttribute("src", `https://www.youtube.com/embed/${video.video_id}?mute=1`);
+  top.querySelector("iframe").setAttribute("src", `https://www.youtube.com/embed/${video.video_id}?mute=1`);
 }
 
 function fillAbout() {
-  const parent = document.body.querySelector("#about .content");
   orderPlatforms();
-  createAboutList(parent, "Platforms", game.platforms, "name");
-  parent.append(document.createElement("hr"));
-  createAboutList(parent, "Genres", game.genres, "name");
-  createAboutList(parent, "Game modes", game.game_modes, "name");
-  createAboutList(parent, "Player perspectives", game.player_perspectives, "name");
-  createAboutList(parent, "Themes", game.themes, "name");
-  parent.append(document.createElement("hr"));
-  createAboutList(
-    parent,
-    "Main developers",
-    game.involved_companies.filter((e) => e.developer).map((e) => e.company),
-    "name"
-  );
-  createAboutList(
-    parent,
-    "Supporting developers",
-    game.involved_companies.filter((e) => e.supporting).map((e) => e.company),
-    "name"
-  );
-  createAboutList(
-    parent,
-    "Publishers",
-    game.involved_companies.filter((e) => e.publisher).map((e) => e.company),
-    "name"
-  );
-  createAboutList(parent, "Game engine", game.game_engines, "name");
-  parent.append(document.createElement("hr"));
-  createAboutList(parent, "Series", game.collections, "name");
-  createAboutList(parent, "Franchises", game.franchises, "name");
+  createAboutList("#main--about--platforms", game.platforms, "name");
+  //
+  createAboutList("#main--about--genres", game.genres, "name");
+  createAboutList("#main--about--game-modes", game.game_modes, "name");
+  createAboutList("#main--about--player-perspectives", game.player_perspectives, "name");
+  createAboutList("#main--about--themes", game.themes, "name");
+  //
+  createAboutList("#main--about--main-developers", game.involved_companies.filter((e) => e.developer).map((e) => e.company), "name");
+  createAboutList("#main--about--supporting-developers", game.involved_companies.filter((e) => e.supporting).map((e) => e.company), "name");
+  createAboutList("#main--about--publishers", game.involved_companies.filter((e) => e.publisher).map((e) => e.company), "name");
+  createAboutList("#main--about--game-engines", game.game_engines, "name");
+  //
+  createAboutList("#main--about--series", game.collections, "name");
+  createAboutList("#main--about--franchises", game.franchises, "name");
 }
 
-function createAboutList(parent, label, array, key) {
-  const container = document.createElement("div");
-  container.classList.add("about-list");
+function createAboutList(parent, array, key) {
+  const container = document.querySelector(`${parent} td`);
 
-  const b = document.createElement("b");
-  b.textContent = label;
-  container.append(b);
-
-  const ul = document.createElement("ul");
   if (array?.length > 0) {
     for (let i = 0; i < array.length; i++) {
       const value = array[i];
-      const li = document.createElement("li");
       const a = document.createElement("a");
       a.textContent = value[key];
-      li.append(a);
+      container.append(a);
 
       if (i < array.length - 1) {
-        li.innerHTML += ",";
+        container.innerHTML += ", ";
       }
-      ul.append(li);
     }
   } else {
-    ul.textContent = "-";
+    container.textContent = "-";
   }
-  container.append(ul);
-
-  parent.append(container);
 }
 
 function createTableOfContents() {
-  const page = document.querySelector("#page");
+  const page = document.querySelector("main");
   const headings = page.querySelectorAll("h2, h3");
   const table = document.createElement("ul");
 
+  let item = document.createElement("li");
+  let link = document.createElement("a");
+  link.href = `#banner`;
+  link.textContent = "(Top)";
+  item.append(link);
+  table.append(item);
+
   headings.forEach((heading) => {
-    const item = document.createElement("li");
-    const link = document.createElement("a");
+    item = document.createElement("li");
+    link = document.createElement("a");
     link.href = `#${heading.parentElement.id}`;
     link.textContent = heading.textContent;
 
@@ -167,7 +147,7 @@ function createTableOfContents() {
     table.append(item);
   });
 
-  document.querySelector("#table-of-contents").append(table);
+  document.querySelector("#nav--table-of-contents").append(table);
 }
 
 function orderPlatforms() {
@@ -184,7 +164,7 @@ function orderPlatforms() {
 }
 
 function fillLanguages() {
-  const section = document.querySelector("#languages");
+  const section = document.querySelector("#main--localization--languages");
   if (game.language_supports?.length > 0) {
     const table = section.querySelector("tbody");
     game.language_supports.forEach((language) => {
@@ -212,10 +192,10 @@ function fillLanguages() {
 }
 
 function fillAgeRatings() {
-  const parent = document.querySelector("#age div");
+  const section = document.querySelector("#main--localization--age-ratings");
   if (game.age_ratings?.length > 0) {
     game.age_ratings.forEach((rating) => {
-      const element = parent.querySelector(`#${rating.organization}`);
+      const element = section.querySelector(`#main--localization--age-ratings--${rating.organization}`);
       if (element) {
         element.querySelector("img").setAttribute("src", `/Assets/Age ratings/${rating.rating}.svg`);
         const tooltip = element.querySelector("my-tooltip");
@@ -229,7 +209,7 @@ function fillAgeRatings() {
       }
     });
   } else {
-    document.querySelector("#age").remove();
+    section.remove();
   }
 }
 
@@ -251,15 +231,15 @@ function createExternalLinks() {
     grid.append(a);
   });
 
-  document.querySelector("#external-links").append(grid);
+  document.querySelector("#nav--external-links").append(grid);
 }
 
 function fillReleases() {
-  const parent = document.querySelector("#releases tbody");
+  const parent = document.querySelector("#main--releases tbody");
   game.release_dates.forEach(release => {
     const tr = document.createElement("tr");
 
-    if(release.date == game.first_release_date && game.release_dates.length > 1) tr.classList.add("first-release-date");
+    if(release.date == game.first_release_date && game.release_dates.length > 1) tr.style.fontWeight = 600;
 
     const tdDate = document.createElement("td");
     tdDate.textContent = Utilities.dateFromUnix(release.date);
@@ -270,11 +250,13 @@ function fillReleases() {
     tr.append(tdRelease);
 
     const tdPlatforms = document.createElement("td");
-    tdPlatforms.textContent = release.platforms.join(", ");
-    tr.append(tdPlatforms);
-
     const tdRegions = document.createElement("td");
-    tdRegions.textContent = release.regions.join(", ");
+    for (let i = 0; i < release.platforms.length; i++) {
+      const platform = release.platforms[i];
+      tdPlatforms.innerHTML += platform.names.join(", ") + (i < release.platforms.length - 1 ? "<br>" : "");
+      tdRegions.innerHTML += platform.regions.join(", ") + (i < release.platforms.length - 1 ? "<br>" : "");  
+    }
+    tr.append(tdPlatforms);
     tr.append(tdRegions);
 
     console.log(tr)
