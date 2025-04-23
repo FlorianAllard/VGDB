@@ -4,384 +4,263 @@
 
 import * as Utilities from "../utilities_module.js";
 
+// Constants for IGDB API authentication
 const clientID = "wjrgwqzu6olj4dczprc3jx4kcvkcs4";
 const clientSecret = "2lr64wndvp5g2eqogk1sym4azconhc";
 const grantType = "client_credentials";
-var queryParameters = `?client_id=${clientID}&client_secret=${clientSecret}&grant_type=${grantType}`;
+const queryParameters = `?client_id=${clientID}&client_secret=${clientSecret}&grant_type=${grantType}`;
 
+/**
+ * Handles IGDB API authentication and token management.
+ */
 export default function authentification() {
   const lastTokenCreation = localStorage.getItem("token_creation");
   const lastTokenDuration = localStorage.getItem("token_duration");
-  if (localStorage.getItem("client_id") == null) {
+
+  if (!localStorage.getItem("client_id")) {
     localStorage.setItem("client_id", clientID);
   }
-  if (lastTokenCreation == null || Date.now() / 1000 - lastTokenCreation > lastTokenDuration) {
-    console.log(`Getting new IGDB token... (expired ${Math.abs(Math.round(lastTokenDuration - (Date.now() / 1000 - lastTokenCreation)))} seconds ago)`);
+
+  if (!lastTokenCreation || Date.now() / 1000 - lastTokenCreation > lastTokenDuration) {
+    console.log(
+      `Getting new IGDB token... (expired ${Math.abs(
+        Math.round(lastTokenDuration - (Date.now() / 1000 - lastTokenCreation))
+      )} seconds ago)`
+    );
+
     fetch("https://id.twitch.tv/oauth2/token" + queryParameters, {
       method: "POST",
-    }).then((response) => {
-      if (response.ok) {
-        response.json().then((data) => {
-          localStorage.setItem("token", data.access_token);
-          localStorage.setItem("token_creation", Date.now() / 1000);
-          localStorage.setItem("token_duration", data.expires_in);
-        });
-      }
-    });
-  } else {
-    console.log(`IGDB token still valid (${Math.round(lastTokenDuration - (Date.now() / 1000 - lastTokenCreation))} seconds remaining)`);
+    })
+      .then((response) => {
+        if (response.ok) {
+          response.json().then((data) => {
+            localStorage.setItem("token", data.access_token);
+            localStorage.setItem("token_creation", Date.now() / 1000);
+            localStorage.setItem("token_duration", data.expires_in);
+          });
+        }
+      })
+      .catch((error) => console.error("Error during authentication:", error));
   }
 }
 
+/**
+ * Generic function to make POST requests to IGDB API endpoints.
+ */
+async function makeRequest(endpoint, fields, sort, limit, where, additionalBody = "") {
+  authentification();
+
+  const body = `fields ${fields};` +
+    (sort ? ` sort ${sort};` : "") +
+    (limit ? ` limit ${limit};` : "") +
+    (where ? ` where ${where};` : "") +
+    additionalBody;
+
+  try {
+    const response = await fetch(`http://localhost:8010/proxy/${endpoint}/`, {
+      method: "POST",
+      headers: {
+        "Client-ID": localStorage.getItem("client_id"),
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+        Accept: "application/json",
+      },
+      body,
+    });
+
+    if (response.ok) {
+      return await response.json();
+    } else {
+      console.error(`Failed to fetch ${endpoint}:`, response.statusText);
+      return null;
+    }
+  } catch (error) {
+    console.error(`Error fetching ${endpoint}:`, error);
+    return null;
+  }
+}
+
+// Specific API request functions
 export async function requestPopularityPrimitives(fields, sort = "", limit = "", where = "", popularityType = 9) {
-  try {
-    const response = await fetch("http://localhost:8010/proxy/popularity_primitives/", {
-      method: "POST",
-      headers: {
-        "Client-ID": localStorage.getItem("client_id"),
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-        Accept: "application/json",
-      },
-      body: `fields ${fields};` + (sort ? ` sort ${sort};` : "") + (limit ? ` limit ${limit};` : "") + ` where popularity_type = ${popularityType}` + (where ? ` & ${where};` : ";"),
-    });
-
-    if (response.ok) {
-      const games = await response.json();
-      return games.map((game) => game.game_id);
-    } else {
-      console.error("Failed to fetch popularity primitives:", response.statusText);
-      return null;
-    }
-  } catch (error) {
-    console.error("Error fetching popularity primitives:", error);
-    return null;
-  }
+  const additionalBody = ` where popularity_type = ${popularityType}` + (where ? ` & ${where};` : ";");
+  const data = await makeRequest("popularity_primitives", fields, sort, limit, "", additionalBody);
+  return data ? data.map((item) => item.game_id) : null;
 }
-
 export async function requestGames(fields, sort = "", limit = "", where = "") {
-  try {
-    const response = await fetch("http://localhost:8010/proxy/games/", {
-      method: "POST",
-      headers: {
-        "Client-ID": localStorage.getItem("client_id"),
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-        Accept: "application/json",
-      },
-      body: `fields ${fields};` + (sort ? ` sort ${sort};` : "") + (limit ? ` limit ${limit};` : "") + (where ? ` where ${where};` : ""),
-    });
-
-    if (response.ok) {
-      const games = await response.json();
-      return games;
-    } else {
-      console.error("Failed to fetch games:", response.statusText);
-      return null;
-    }
-  } catch (error) {
-    console.error("Error fetching games:", error);
-    return null;
-  }
+  return await makeRequest("games", fields, sort, limit, where);
 }
-
+export async function requestGameVersions(fields, sort = "", limit = "", where = "") {
+  return await makeRequest("game_versions", fields, sort, limit, where);
+}
 export async function requestGenres(fields, sort = "", limit = "", where = "") {
-  try {
-    const response = await fetch("http://localhost:8010/proxy/genres/", {
-      method: "POST",
-      headers: {
-        "Client-ID": localStorage.getItem("client_id"),
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-        Accept: "application/json",
-      },
-      body: `fields ${fields};` + (sort ? ` sort ${sort};` : "") + (limit ? ` limit ${limit};` : "") + (where ? ` where ${where};` : ""),
-    });
-
-    if (response.ok) {
-      const genres = await response.json();
-      return genres;
-    } else {
-      console.error("Failed to fetch genres:", response.statusText);
-      return null;
-    }
-  } catch (error) {
-    console.error("Error fetching genres:", error);
-    return null;
-  }
+  return await makeRequest("genres", fields, sort, limit, where);
 }
-
 export async function requestWebsites(fields, sort = "", limit = "", where = "") {
-  try {
-    const response = await fetch("http://localhost:8010/proxy/websites/", {
-      method: "POST",
-      headers: {
-        "Client-ID": localStorage.getItem("client_id"),
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-        Accept: "application/json",
-      },
-      body: `fields ${fields};` + (sort ? ` sort ${sort};` : "") + (limit ? ` limit ${limit};` : "") + (where ? ` where ${where};` : ""),
-    });
-
-    if (response.ok) {
-      const websites = await response.json();
-      return websites;
-    } else {
-      console.error("Failed to fetch websites:", response.statusText);
-      return null;
-    }
-  } catch (error) {
-    console.error("Error fetching websites:", error);
-    return null;
-  }
+  return await makeRequest("websites", fields, sort, limit, where);
 }
-
 export async function requestCovers(fields, sort = "", limit = "", where = "") {
-  try {
-    const response = await fetch("http://localhost:8010/proxy/covers/", {
-      method: "POST",
-      headers: {
-        "Client-ID": localStorage.getItem("client_id"),
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-        Accept: "application/json",
-      },
-      body: `fields ${fields};` + (sort ? ` sort ${sort};` : "") + (limit ? ` limit ${limit};` : "") + (where ? ` where ${where};` : ""),
-    });
-
-    if (response.ok) {
-      const games = await response.json();
-      return games;
-    } else {
-      console.error("Failed to fetch websites:", response.statusText);
-      return null;
-    }
-  } catch (error) {
-    console.error("Error fetching websites:", error);
-    return null;
-  }
+  return await makeRequest("covers", fields, sort, limit, where);
 }
-
 export async function requestVideos(fields, sort = "", limit = "", where = "") {
-  try {
-    const response = await fetch("http://localhost:8010/proxy/game_videos/", {
-      method: "POST",
-      headers: {
-        "Client-ID": localStorage.getItem("client_id"),
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-        Accept: "application/json",
-      },
-      body: `fields ${fields};` + (sort ? ` sort ${sort};` : "") + (limit ? ` limit ${limit};` : "") + (where ? ` where ${where};` : ""),
-    });
-
-    if (response.ok) {
-      const videos = await response.json();
-      return videos;
-    } else {
-      console.error("Failed to fetch videos:", response.statusText);
-      return null;
-    }
-  } catch (error) {
-    console.error("Error fetching videos:", error);
-    return null;
-  }
+  return await makeRequest("game_videos", fields, sort, limit, where);
 }
-
 export async function requestSeries(fields, sort = "", limit = "", where = "") {
-  try {
-    const response = await fetch("http://localhost:8010/proxy/collections/", {
-      method: "POST",
-      headers: {
-        "Client-ID": localStorage.getItem("client_id"),
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-        Accept: "application/json",
-      },
-      body: `fields ${fields};` + (sort ? ` sort ${sort};` : "") + (limit ? ` limit ${limit};` : "") + (where ? ` where ${where};` : ""),
-    });
-
-    if (response.ok) {
-      const series = await response.json();
-      return series;
-    } else {
-      console.error("Failed to fetch series:", response.statusText);
-      return null;
-    }
-  } catch (error) {
-    console.error("Error fetching series:", error);
-    return null;
-  }
+  return await makeRequest("collections", fields, sort, limit, where);
 }
-
 export async function requestFranchises(fields, sort = "", limit = "", where = "") {
-  try {
-    const response = await fetch("http://localhost:8010/proxy/franchises/", {
-      method: "POST",
-      headers: {
-        "Client-ID": localStorage.getItem("client_id"),
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-        Accept: "application/json",
-      },
-      body: `fields ${fields};` + (sort ? ` sort ${sort};` : "") + (limit ? ` limit ${limit};` : "") + (where ? ` where ${where};` : ""),
-    });
-
-    if (response.ok) {
-      const franchises = await response.json();
-      return franchises;
-    } else {
-      console.error("Failed to fetch franchises:", response.statusText);
-      return null;
-    }
-  } catch (error) {
-    console.error("Error fetching franchises:", error);
-    return null;
-  }
+  return await makeRequest("franchises", fields, sort, limit, where);
 }
 
-export function getCovers(games) {
-  games.forEach((game) => {
-    if (game.cover != null) {
+/**
+ * Enhances game objects with cover URLs.
+ */
+export function getCovers(elements, skipSteam = false) {
+  elements.forEach((element) => {
+    if (element.cover) {
       let steamURL;
-      if (game.websites?.length > 0) steamURL = game.websites.find((website) => website.url.includes("steam"));
-      if (steamURL) {
+      if (skipSteam == false) {
+        steamURL = element.websites?.find((website) => website.url.includes("steam"));
+      }
+      if (steamURL && skipSteam == false) {
         const match = steamURL.url.match(/\/app\/(\d+)/);
-        game.cover = {
+        element.cover = {
           landscape_url: `https://steamcdn-a.akamaihd.net/steam/apps/${match[1]}/header.jpg`,
           portrait_url: `https://steamcdn-a.akamaihd.net/steam/apps/${match[1]}/library_600x900_2x.jpg`,
           hero_url: `https://steamcdn-a.akamaihd.net/steam/apps/${match[1]}/library_hero.jpg`,
           logo_url: `https://steamcdn-a.akamaihd.net/steam/apps/${match[1]}/logo.png`,
         };
       } else {
-        game.cover = {
-          landscape_url: `https://images.igdb.com/igdb/image/upload/t_screenshot_big/image_id.webp`.replace("image_id", game.cover.image_id),
-          portrait_url: `https://images.igdb.com/igdb/image/upload/t_cover_big/image_id.webp`.replace("image_id", game.cover.image_id),
-          hero_url: `https://images.igdb.com/igdb/image/upload/t_1080p/image_id.webp`.replace("image_id", game.cover.image_id),
+        element.cover = {
+          landscape_url: `https://images.igdb.com/igdb/image/upload/t_screenshot_big/${element.cover.image_id}.webp`,
+          portrait_url: `https://images.igdb.com/igdb/image/upload/t_cover_big/${element.cover.image_id}.webp`,
+          hero_url: `https://images.igdb.com/igdb/image/upload/t_1080p/${element.cover.image_id}.webp`,
           logo_url: ``,
         };
       }
     }
   });
 
-  return games;
+  return elements;
 }
 
+/**
+ * Formats language support data.
+ */
 export function formatLanguages(languages) {
-  let newLanguages = [];
+  const newLanguages = [];
 
   languages.forEach((supp) => {
-    let language = newLanguages.find((e) => e.language.name == supp.language.name);
-    if (language == null) {
+    let language = newLanguages.find((e) => e.language.name === supp.language.name);
+    if (!language) {
       language = {
         language: supp.language,
-        audio: supp.language_support_type == "Audio",
-        subtitles: supp.language_support_type == "Subtitles",
-        interface: supp.language_support_type == "Interface",
+        audio: supp.language_support_type === "Audio",
+        subtitles: supp.language_support_type === "Subtitles",
+        interface: supp.language_support_type === "Interface",
       };
       newLanguages.push(language);
     }
-    language.audio = supp.language_support_type.name == "Audio" || language.audio;
-    language.subtitles = supp.language_support_type.name == "Subtitles" || language.subtitles;
-    language.interface = supp.language_support_type.name == "Interface" || language.interface;
+    language.audio ||= supp.language_support_type.name === "Audio";
+    language.subtitles ||= supp.language_support_type.name === "Subtitles";
+    language.interface ||= supp.language_support_type.name === "Interface";
   });
 
   return newLanguages.sort((a, b) => a.language.name.localeCompare(b.language.name));
 }
 
+/**
+ * Formats age ratings data.
+ */
 export function formatAgeRatings(ageRatings) {
-  let newRatings = [];
-
-  ageRatings.forEach(rating => {
-    const newRating = {
-      country: getCountryFromRating(rating.organization.name),
-      organization: rating.organization.name,
-      rating: rating.rating,
-      logo_url: `/Assets/Age ratings/${rating.rating}.svg`,
-      descriptions: rating.content_descriptions?.map(e => e.description)
-    };
-    newRatings.push(newRating);
-  });
-
-  return newRatings;
+  return ageRatings.map((rating) => ({
+    country: getCountryFromRating(rating.organization.name),
+    organization: rating.organization.name,
+    rating: rating.rating,
+    logo_url: `/Assets/Age ratings/${rating.rating}.svg`,
+    descriptions: rating.content_descriptions?.map((e) => e.description),
+  }));
 }
 
 function getCountryFromRating(rating) {
-  switch(rating) {
-    case "ESRB":
-      return "USA & Canada";
-    case "PEGI":
-      return "Europe";
-    case "CERO":
-      return "Japan";
-    case "USK":
-      return "Germany";
-    case "GRAC":
-      return "South Korea";
-    case "CLASS_IND":
-      return "Brazil";
-    case "ACB":
-      return "Australia";
-  }
+  const countries = {
+    ESRB: "USA & Canada",
+    PEGI: "Europe",
+    CERO: "Japan",
+    USK: "Germany",
+    GRAC: "South Korea",
+    CLASS_IND: "Brazil",
+    ACB: "Australia",
+  };
+  return countries[rating] || "Unknown";
 }
 
+/**
+ * Formats website data.
+ */
 export function formatWebsites(websites) {
-  let newWebsites = [];
-
-  websites.forEach(wb => {
-    const newWebsite = getWebsiteFromUrl(wb.url);
-    newWebsites.push(newWebsite);
-  });
-  
-  return newWebsites;
+  return websites.map((wb) => getWebsiteFromUrl(wb.url));
 }
 
 function getWebsiteFromUrl(url) {
-  if (url.toLowerCase().includes("gog"))
-    return { url: url, site: "GOG", color: "#B001DF", icon: "/Assets/Sites/gog.svg" };
-  else if (url.toLowerCase().includes("twitter") || url.toLowerCase().includes("x.com")) return { url: url, site: "Twitter", color: "#000000", icon: "/Assets/Sites/twitter.svg" };
-  else if (url.toLowerCase().includes("steam")) return { url: url, site: "Steam", color: "#12366A", icon: "/Assets/Sites/steam.svg" };
-  else if (url.toLowerCase().includes("twitch")) return { url: url, site: "Twitch", color: "#A441F7", icon: "/Assets/Sites/twitch.svg" };
-  else if (url.toLowerCase().includes("wikipedia")) return { url: url, site: "Wikipedia", color: "#E7E7E7", icon: "/Assets/Sites/wikipedia.svg" };
-  else if (url.toLowerCase().includes("reddit")) return { url: url, site: "Reddit", color: "#F74300", icon: "/Assets/Sites/reddit.svg" };
-  else if (url.toLowerCase().includes(".wiki") || url.toLowerCase().includes("fandom") || url.toLowerCase().includes("gamepedia")) return { url: url, site: "Wiki", color: "#F20057", icon: "/Assets/Sites/wiki.svg" };
-  else if (url.toLowerCase().includes("youtube")) return { url: url, site: "YouTube", color: "#F70000", icon: "/Assets/Sites/youtube.svg" };
-  else if (url.toLowerCase().includes("facebook")) return { url: url, site: "Facebook", color: "#2F8CF7", icon: "/Assets/Sites/facebook.svg" };
-  else if (url.toLowerCase().includes("instagram")) return { url: url, site: "Instagram", color: "#C7507C", icon: "/Assets/Sites/instagram.svg" };
-  else if (url.toLowerCase().includes("discord")) return { url: url, site: "Discord", color: "#4E63EF", icon: "/Assets/Sites/discord.svg" };
-  else if (url.toLowerCase().includes("bsky")) return { url: url, site: "Bluesky", color: "#1185FE", icon: "/Assets/Sites/bluesky.svg" };
-  else if (url.toLowerCase().includes("apps.apple")) return { url: url, site: "Apple App Store", color: "#1B97F0", icon: "/Assets/Sites/apple.svg" };
-  else if (url.toLowerCase().includes("play.google")) return { url: url, site: "Google Play", color: "#167B36", icon: "/Assets/Sites/google.svg" };
-  else if (url.toLowerCase().includes("epic")) return { url: url, site: "Epic Games Store", color: "#2B292A", icon: "/Assets/Sites/epic.svg" };
-  else return { url: url, site: "", color: "#E6E6E6", icon: "/Assets/Sites/link.svg" };
+  const sites = [
+    { keyword: "gog", site: "GOG", color: "#B001DF", icon: "/Assets/Sites/gog.svg" },
+    { keyword: "twitter", site: "Twitter", color: "#000000", icon: "/Assets/Sites/twitter.svg" },
+    { keyword: "x.com", site: "Twitter", color: "#000000", icon: "/Assets/Sites/twitter.svg" },
+    { keyword: "steam", site: "Steam", color: "#12366A", icon: "/Assets/Sites/steam.svg" },
+    { keyword: "twitch", site: "Twitch", color: "#A441F7", icon: "/Assets/Sites/twitch.svg" },
+    { keyword: "wikipedia", site: "Wikipedia", color: "#E7E7E7", icon: "/Assets/Sites/wikipedia.svg" },
+    { keyword: "reddit", site: "Reddit", color: "#F74300", icon: "/Assets/Sites/reddit.svg" },
+    { keyword: "youtube", site: "YouTube", color: "#F70000", icon: "/Assets/Sites/youtube.svg" },
+    { keyword: "facebook", site: "Facebook", color: "#2F8CF7", icon: "/Assets/Sites/facebook.svg" },
+    { keyword: "instagram", site: "Instagram", color: "#C7507C", icon: "/Assets/Sites/instagram.svg" },
+    { keyword: "discord", site: "Discord", color: "#4E63EF", icon: "/Assets/Sites/discord.svg" },
+    { keyword: "apps.apple", site: "Apple App Store", color: "#1B97F0", icon: "/Assets/Sites/apple.svg" },
+    { keyword: "play.google", site: "Google Play", color: "#167B36", icon: "/Assets/Sites/google.svg" },
+    { keyword: "epic", site: "Epic Games Store", color: "#2B292A", icon: "/Assets/Sites/epic.svg" },
+    { keyword: "bsky", site: "Epic Games Store", color: "#1081F6", icon: "/Assets/Sites/bluesky.svg" },
+    { keyword: "wiki", site: "Game wiki", color: "#F20057", icon: "/Assets/Sites/wiki.svg" },
+  ];
+
+  const site = sites.find((s) => url.toLowerCase().includes(s.keyword));
+  return site
+    ? { url, site: site.site, color: site.color, icon: site.icon }
+    : { url, site: "", color: "#E6E6E6", icon: "/Assets/Sites/link.svg" };
 }
 
+/**
+ * Formats release data.
+ */
 export function formatReleases(releases) {
-  let formattedReleases = [];
+  const formattedReleases = [];
 
   releases.forEach((release) => {
-    // Find an existing release entry with the same date and release type
-    let existingRelease = formattedReleases.find((e) => e.date === release.date && e.release === (release.status?.name ?? "Full Release"));
+    let existingRelease = formattedReleases.find(
+      (e) => e.date === release.date && e.release === (release.status?.name || "Full Release")
+    );
 
     if (existingRelease) {
-      // Check if a platform group with the same platforms and regions already exists
-      let platformGroup = existingRelease.platforms.find((p) => p.names.includes(release.platform.name) || p.regions.includes(Utilities.capitalize(release.release_region.region)));
+      let platformGroup = existingRelease.platforms.find(
+        (p) =>
+          p.names.includes(release.platform.name) ||
+          p.regions.includes(Utilities.capitalize(release.release_region.region))
+      );
 
       if (platformGroup) {
-        // Add the platform name if it's not already in the group
         if (!platformGroup.names.includes(release.platform.name)) {
           platformGroup.names.push(release.platform.name);
         }
-
-        // Add the region if it's not already in the group
         if (!platformGroup.regions.includes(Utilities.capitalize(release.release_region.region))) {
           platformGroup.regions.push(Utilities.capitalize(release.release_region.region));
         }
       } else {
-        // Add a new platform group
         existingRelease.platforms.push({
           names: [release.platform.name],
           regions: [Utilities.capitalize(release.release_region.region)],
         });
       }
     } else {
-      // Create a new release entry
       formattedReleases.push({
         date: release.date,
-        release: release.status?.name ?? "Full Release",
+        release: release.status?.name || "Full Release",
         platforms: [
           {
             names: [release.platform.name],
@@ -392,13 +271,14 @@ export function formatReleases(releases) {
     }
   });
 
-  // Sort the releases by date
   formattedReleases.forEach((release) => {
-    release.platforms.forEach((platform) => {platform.names.sort((a, b) => a.localeCompare(b));});
+    release.platforms.forEach((platform) => {
+      platform.names.sort((a, b) => a.localeCompare(b));
+    });
     release.platforms.sort((a, b) => a.names[0].localeCompare(b.names[0]));
   });
+
   formattedReleases.sort((a, b) => a.date - b.date);
 
-  console.log(formattedReleases);
   return formattedReleases;
 }

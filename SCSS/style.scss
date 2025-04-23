@@ -304,6 +304,10 @@ section {
         &.portrait {
             aspect-ratio: 359/539;
         }
+
+        &.thumb {
+            aspect-ratio: 264/352;
+        }
     }
 
     &>.content {
@@ -396,6 +400,10 @@ small {
 
     &:has(>.cover.portrait) {
         height: 4rem;
+    }
+
+    &:has(>.cover.thumb) {
+        height: 8rem;
     }
 
     .content {

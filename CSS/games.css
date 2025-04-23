@@ -243,6 +243,9 @@ section > .content {
 .card .cover.portrait {
   aspect-ratio: 359/539;
 }
+.card .cover.thumb {
+  aspect-ratio: 264/352;
+}
 .card > .content {
   display: flex;
   flex-direction: column;
@@ -336,6 +339,9 @@ small a {
 }
 .card.horizontal:has(> .cover.portrait) {
   height: 4rem;
+}
+.card.horizontal:has(> .cover.thumb) {
+  height: 8rem;
 }
 .card.horizontal .content {
   flex-grow: 1;
@@ -604,8 +610,8 @@ nav {
   aspect-ratio: 600/900;
 }
 #main--top--media iframe {
-  width: calc((100% - 1rem) * 1.5418994413);
-  aspect-ratio: 552/358;
+  width: calc((100% - 1rem) * 1.6869369369);
+  aspect-ratio: 749/444;
 }
 
 table {
@@ -617,7 +623,8 @@ table {
   font-size: small;
   vertical-align: top;
 }
-.table-small th, .table-small td {
+.table-small th,
+.table-small td {
   padding: 0.5rem 0 calc(0.5rem + 2px) 0;
 }
 .table-small th {
@@ -629,7 +636,8 @@ table {
 .table-small tr:last-child td {
   padding-bottom: 0;
 }
-.table-small tr:not(:last-child) td, .table-small th {
+.table-small tr:not(:last-child) td,
+.table-small th {
   border-bottom: 2px solid var(--background-color);
 }
 .table-small i {
@@ -647,7 +655,8 @@ table {
   white-space: nowrap;
   padding-right: 4rem;
 }
-.table-list .table-separator th, .table-list .table-separator td {
+.table-list .table-separator th,
+.table-list .table-separator td {
   border-bottom: 2px solid var(--background-color);
 }
 .table-list .table-separator + tr th, .table-list .table-separator + tr td {
@@ -667,8 +676,8 @@ table {
   align-items: center;
   flex: 1 1 0;
   min-width: 0;
-  padding: 0.5rem;
   list-style: none;
+  padding: 0.5rem;
   border-radius: 0.5rem;
   border: 2px solid var(--background-color);
 }
@@ -696,6 +705,7 @@ table {
 
 #main--releases .table-small {
   text-align: left;
+  margin-bottom: 1rem;
 }
 #main--releases .table-small tr *:not(:nth-child(3)) {
   white-space: nowrap;
@@ -731,6 +741,31 @@ table {
 #nav--external-links img {
   width: 66%;
   height: 66%;
+}
+
+#main--additional-content--editions .card,
+#main--additional-content--expansions .card,
+#main--additional-content--dlcs .card {
+  overflow: hidden;
+  box-shadow: none;
+  border-radius: 0.5rem;
+  border: 2px solid var(--background-color);
+  outline: none;
+}
+#main--additional-content--editions .card:hover,
+#main--additional-content--expansions .card:hover,
+#main--additional-content--dlcs .card:hover {
+  scale: 1;
+  outline: none;
+  background-color: var(--background-color);
+}
+#main--additional-content--editions > div,
+#main--additional-content--expansions > div,
+#main--additional-content--dlcs > div {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
 }
 
 /*# sourceMappingURL=games.css.map */

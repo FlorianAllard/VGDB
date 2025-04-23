@@ -243,6 +243,9 @@ section > .content {
 .card .cover.portrait {
   aspect-ratio: 359/539;
 }
+.card .cover.thumb {
+  aspect-ratio: 264/352;
+}
 .card > .content {
   display: flex;
   flex-direction: column;
@@ -336,6 +339,9 @@ small a {
 }
 .card.horizontal:has(> .cover.portrait) {
   height: 4rem;
+}
+.card.horizontal:has(> .cover.thumb) {
+  height: 8rem;
 }
 .card.horizontal .content {
   flex-grow: 1;

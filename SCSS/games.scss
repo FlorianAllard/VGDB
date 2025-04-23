@@ -67,13 +67,13 @@ nav {
         margin: 0.75rem 0;
 
         img {
-            width: calc((100% - 1rem) * (600/900));
-            aspect-ratio: 600/900;
+            width: calc((100% - 1rem) * (600 / 900));
+            aspect-ratio: 600 / 900;
         }
 
         iframe {
-            width: calc((100% - 1rem) * (552/358));
-            aspect-ratio: 552/358;
+            width: calc((100% - 1rem) * (749 / 444));
+            aspect-ratio: 749 / 444;
         }
     }
 }
@@ -87,12 +87,14 @@ table {
     font-size: small;
     vertical-align: top;
 
-    th, td {
-        padding: .5rem 0 calc(.5rem + $outline-width) 0;
+    th,
+    td {
+        padding: 0.5rem 0 calc(0.5rem + $outline-width) 0;
     }
 
     th {
         padding-top: 0;
+
         &:first-child {
             text-align: left;
         }
@@ -102,7 +104,8 @@ table {
         padding-bottom: 0;
     }
 
-    tr:not(:last-child) td, th {
+    tr:not(:last-child) td,
+    th {
         border-bottom: $outline-width solid var(--background-color);
     }
 
@@ -126,7 +129,8 @@ table {
     }
 
     .table-separator {
-        th, td {
+        th,
+        td {
             border-bottom: $outline-width solid var(--background-color);
         }
 
@@ -148,8 +152,8 @@ table {
         align-items: center;
         flex: 1 1 0;
         min-width: 0;
-        padding: 0.5rem;
         list-style: none;
+        padding: 0.5rem;
         border-radius: $border-radius;
         border: $outline-width solid var(--background-color);
 
@@ -176,13 +180,14 @@ table {
 
 #main--localization .table-small {
     tr *:not(:first-child) {
-            width: 20%;
-            text-align: center;
-        }
+        width: 20%;
+        text-align: center;
+    }
 }
 
 #main--releases .table-small {
     text-align: left;
+    margin-bottom: 1rem;
 
     tr *:not(:nth-child(3)) {
         white-space: nowrap;
@@ -191,6 +196,7 @@ table {
 
     td {
         vertical-align: top;
+
         br {
             content: "";
             margin: 1em;
@@ -208,12 +214,12 @@ table {
 
 #nav--external-links {
     .grid {
-        @include grid(7, .5rem);
+        @include grid(7, 0.5rem);
     }
 
     a {
         width: 100%;
-        aspect-ratio: 1/1;
+        aspect-ratio: 1 / 1;
         @include center();
         border-radius: $border-radius / 2;
     }
@@ -221,5 +227,28 @@ table {
     img {
         width: 66%;
         height: 66%;
+    }
+}
+
+#main--additional-content--editions,
+#main--additional-content--expansions,
+#main--additional-content--dlcs{
+    .card {
+        overflow: hidden;
+        box-shadow: none;
+        border-radius: $border-radius;
+        border: $outline-width solid var(--background-color);
+        outline: none;
+
+        &:hover {
+            scale: 1;
+            outline: none;
+            background-color: var(--background-color);
+        }
+    }
+
+    >div{
+        list-style: none;
+        @include grid(4);
     }
 }
