@@ -67,3 +67,7 @@ export function imageExists(url, callback) {
     callback(false);
   }
 }
+
+export function getVideoThumbnail(id) {
+  return `https://img.youtube.com/vi/${id}/0.jpg`;
+}

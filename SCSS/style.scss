@@ -48,7 +48,7 @@ $dark-mode: (
     }
 }
 
-$side-padding: calc((100vw - 1200px) / 2);
+$side-padding: calc((100dvw - 1200px) / 2);
 $transition-duration-instant: 100ms;
 $transition-duration-smooth: 200ms;
 $border-radius: .5rem;
@@ -114,7 +114,6 @@ header {
     box-shadow: $shadow;
     z-index: 2;
     grid-column: 1/-1;
-    width: calc(100% + $side-padding * 2);
 
     div {
         @include flex();
@@ -211,7 +210,8 @@ div:has(>.user-profile) {
 }
 
 h1 {
-    line-height: 1.5rem;
+    font-size: 2rem;
+    line-height: 2rem;
 }
 
 h2 {
@@ -239,10 +239,18 @@ a {
 }
 
 body {
-    width: 100%;
+    width: 100dvw;
+    height: 100dvh;
     background-color: var(--background-color);
-    overflow-y: auto;
+    overflow: hidden;
     scroll-padding-top: 7rem;
+}
+
+main {
+    width: 100dvw;
+    height: 100dvh;
+    @include flex(column, 0);
+    overflow-y: scroll;
 }
 
 section {
@@ -600,7 +608,6 @@ footer {
     color: var(--text-color);
     padding: 2rem $side-padding;
     grid-column: 1/-1;
-    width: calc(100% + $side-padding * 2);
     margin-top: 2rem;
 
     #community {
@@ -729,5 +736,23 @@ platform-prefab {
             opacity: 100%;
             translate: -50% calc(-100% - 1rem);
         }
+    }
+}
+
+dialog {
+    position: fixed;
+    top: 0;
+    background-color: color-mix(in srgb, var(--text-color), transparent 50%);
+    border: none;
+    width: 100vw;
+    height: 100vh;
+    z-index: 20;
+    pointer-events: none;
+    opacity: 0%;
+    @include transition(opacity, $transition-duration-smooth);
+
+    &[show] {
+        pointer-events: all;
+        opacity: 100%;
     }
 }

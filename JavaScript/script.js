@@ -12,13 +12,13 @@ Promise.all([headerFetch, footerFetch]).then((responses) => {
     // document.body.innerHTML = data + document.body.innerHTML;
     const header = document.createElement("header");
     header.innerHTML = data
-    document.body.prepend(header);
+    document.querySelector("main").prepend(header);
   });
   responses[1].text().then((data) => {
     // document.body.innerHTML = document.body.innerHTML + data;
     const footer = document.createElement("footer");
     footer.innerHTML = data;
     footer.classList.add("dark-mode");
-    document.body.append(footer);
+    document.querySelector("main").append(footer);
   });
 });

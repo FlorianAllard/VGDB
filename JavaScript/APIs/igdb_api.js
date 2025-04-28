@@ -114,6 +114,8 @@ export async function requestFranchises(fields, sort = "", limit = "", where = "
  * Enhances game objects with cover URLs.
  */
 export function getCovers(elements, skipSteam = false) {
+  if (elements == null || elements.length <= 0) return;
+
   elements.forEach((element) => {
     if (element.cover) {
       let steamURL;
@@ -130,9 +132,9 @@ export function getCovers(elements, skipSteam = false) {
         };
       } else {
         element.cover = {
-          landscape_url: `https://images.igdb.com/igdb/image/upload/t_screenshot_big/${element.cover.image_id}.webp`,
-          portrait_url: `https://images.igdb.com/igdb/image/upload/t_cover_big/${element.cover.image_id}.webp`,
-          hero_url: `https://images.igdb.com/igdb/image/upload/t_1080p/${element.cover.image_id}.webp`,
+          landscape_url: getImage(element.cover.image_id, "landscape"),
+          portrait_url: getImage(element.cover.image_id, "portrait"),
+          hero_url: getImage(element.cover.image_id, "hero"),
           logo_url: ``,
         };
       }
@@ -281,4 +283,18 @@ export function formatReleases(releases) {
   formattedReleases.sort((a, b) => a.date - b.date);
 
   return formattedReleases;
+}
+
+export function getImage(id, format) {
+  switch (format) {
+    case "landscape":
+      return `https://images.igdb.com/igdb/image/upload/t_screenshot_big/${id}.webp`;
+    case "portrait":
+      return `https://images.igdb.com/igdb/image/upload/t_cover_big/${id}.webp`;
+    case "hero":
+      return `https://images.igdb.com/igdb/image/upload/t_1080p/${id}.webp`;
+
+    default:
+      break;
+  }
 }

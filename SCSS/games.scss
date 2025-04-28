@@ -1,23 +1,14 @@
 // npx sass --watch ./SCSS:./CSS
 @import "./style";
 
-body {
-    @include grid();
-    grid-template-columns: 2fr 5fr;
-    justify-items: center;
-    padding: 0 $side-padding;
-    gap: 0 1rem;
-}
-
 #banner {
     position: relative;
     grid-column: 1 / -1;
     z-index: -1;
     @include center();
-    width: calc(100% + $side-padding * 2);
-    height: calc((100dvw * (413 / 1280)) - 2rem);
-    max-height: 24rem;
-    padding: 2rem;
+    width: calc(100% + (2 * $side-padding));
+    aspect-ratio: 1280 / 413;
+    padding: 4rem;
 
     &--background {
         position: absolute;
@@ -36,20 +27,25 @@ body {
 }
 
 nav > section,
-main {
+ #main-content {
     background-color: var(--surface-color);
     padding: 2rem;
     box-shadow: $shadow;
 }
 
 nav,
-main,
+#main-content,
 section {
     @include flex(column);
     width: 100%;
 }
 
-main {
+#body {
+    width: 100%;
+    position: relative;
+    @include grid(4);
+    justify-items: center;
+    padding: 0 $side-padding;
     gap: 2rem;
 }
 
@@ -57,6 +53,10 @@ nav {
     position: sticky;
     top: 6.75rem;
     height: fit-content;
+}
+
+#main-content {
+    grid-column: span 3;
 }
 
 #main--top {
@@ -72,8 +72,8 @@ nav {
         }
 
         iframe {
-            width: calc((100% - 1rem) * (749 / 444));
-            aspect-ratio: 749 / 444;
+            width: calc((100% - 1rem) * (16 / 9));
+            aspect-ratio: 16 / 9;
         }
     }
 }
@@ -239,6 +239,7 @@ table {
         border-radius: $border-radius;
         border: $outline-width solid var(--background-color);
         outline: none;
+        scale: 1;
 
         &:hover {
             scale: 1;
@@ -248,7 +249,67 @@ table {
     }
 
     >div{
-        list-style: none;
         @include grid(4);
+    }
+}
+
+#main--media {
+    ul{
+        @include grid(2);
+
+        li {
+            list-style: none;
+            @include flex(column, .25rem);
+            align-items: center;
+            overflow: hidden;
+
+            div {
+                width: 100%;
+                aspect-ratio: 16/9;
+                background-size: 100%;
+                background-position: center;
+                @include center();
+                @include transition(all, $transition-duration-smooth, ease);
+
+                img {
+                    width: 20%;
+                }
+            }
+
+            >img {
+                width: 100%;
+                @include transition(all, $transition-duration-smooth, ease);
+            }
+
+            &:hover {
+                >img {
+                    scale: 1.2;
+                    filter: brightness(110%);
+                    opacity: 80%;
+                    cursor: pointer;
+                }
+                div {
+                    background-size: 120%;
+                    filter: brightness(110%);
+                    opacity: 80%;
+                    cursor: pointer;
+                }
+            }
+        }
+    }
+}
+
+#media-overlay {
+    @include center();
+    padding: 2rem;
+
+    img {
+        width: 100%;
+        object-fit: contain;
+    }
+
+    iframe {
+        width: 100%;
+        aspect-ratio: 16 / 9;
     }
 }
