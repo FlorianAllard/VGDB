@@ -1,8 +1,8 @@
 @import "./style";
 
-main {
+#body {
     @include flex(column, 4rem);
-    padding: 4rem $side-padding 4rem $side-padding;
+    padding: 2rem $side-padding;
 }
 
 #most-anticipated {
@@ -16,12 +16,15 @@ main {
 
 #coming-soon {
     flex: 2 1 0px;
+    .content {
+        @extend %flexElement;
+    }
 }
 
-section:has(>section) {
-    @include flex(row, 4rem);
-
-    &>section .content {
-        flex-direction: column;
-    }
+section:not(#body):has(>section) {
+        @include flex(row, 4rem);
+    
+        &>section>.content {
+            flex-direction: column;
+        }
 }

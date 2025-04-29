@@ -18,7 +18,6 @@ Promise.all([headerFetch, footerFetch]).then((responses) => {
     // document.body.innerHTML = document.body.innerHTML + data;
     const footer = document.createElement("footer");
     footer.innerHTML = data;
-    footer.classList.add("dark-mode");
     document.querySelector("main").append(footer);
   });
 });

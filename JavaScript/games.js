@@ -115,8 +115,13 @@ function fillTop() {
     }
   });
 
-  const video = game.videos.find((v) => v.name.includes("Launch")) ?? game.videos.at(-1);
-  top.querySelector("iframe").setAttribute("src", `https://www.youtube.com/embed/${video.video_id}?mute=1`);
+  const iframe = top.querySelector("iframe");
+  if (game.videos?.length > 0) {
+    const video = game.videos.find((v) => v.name.includes("Launch")) ?? game.videos.at(-1);
+    iframe.setAttribute("src", `https://www.youtube.com/embed/${video.video_id}?mute=1`);
+  } else {
+    iframe.style.visibility = "hidden";
+  }
 }
 
 /**
@@ -131,17 +136,17 @@ function fillAbout() {
   createAboutList("#main--about--themes", game.themes, "name");
   createAboutList(
     "#main--about--main-developers",
-    game.involved_companies.filter((e) => e.developer).map((e) => e.company),
+    game.involved_companies?.length > 0 ? game.involved_companies.filter((e) => e.developer).map((e) => e.company) : [],
     "name"
   );
   createAboutList(
     "#main--about--supporting-developers",
-    game.involved_companies.filter((e) => e.supporting).map((e) => e.company),
+    game.involved_companies?.length > 0 ? game.involved_companies.filter((e) => e.supporting).map((e) => e.company) : [],
     "name"
   );
   createAboutList(
     "#main--about--publishers",
-    game.involved_companies.filter((e) => e.publisher).map((e) => e.company),
+    game.involved_companies?.length > 0 ? game.involved_companies.filter((e) => e.publisher).map((e) => e.company) : [],
     "name"
   );
   createAboutList("#main--about--game-engines", game.game_engines, "name");
@@ -279,7 +284,7 @@ function fillReleases() {
  * Creates a table of contents for the page.
  */
 function createTableOfContents() {
-  const page = document.querySelector("main");
+  const page = document.querySelector("#main-content");
   const headings = page.querySelectorAll("h2, h3");
   const table = document.createElement("ul");
 
@@ -349,13 +354,11 @@ function fillEditions() {
       const card = cards[i];
       const version = game.versions[i];
 
-      card.querySelector("b").textContent = version.name.replace(`${game.name}: `, "").replace(`${game.name} - `, "");
+      const versionName = version.name.replace(game.name, "").replace(/[:\-–]\s*/, "");
+      card.querySelector("b").textContent = versionName;
 
       const cover = card.querySelector(".cover");
       cover.style.backgroundImage = `url(${version.cover.portrait_url})`;
-
-      const date = card.querySelector(".subtexts small");
-      // date.textContent = version.name.replace(`${game.name}: `, "").replace(`${game.name} - `, "");
 
       card.setAttribute("href", `/HTML/games/?id=${version.id}`);
     }

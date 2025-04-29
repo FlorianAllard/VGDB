@@ -28,9 +28,8 @@
 
 nav > section,
  #main-content {
-    background-color: var(--surface-color);
+    @extend %surface;
     padding: 2rem;
-    box-shadow: $shadow;
 }
 
 nav,
@@ -106,7 +105,7 @@ table {
 
     tr:not(:last-child) td,
     th {
-        border-bottom: $outline-width solid var(--background-color);
+        border-bottom: $outline-width solid var(--detail-color);
     }
 
     i {
@@ -131,7 +130,7 @@ table {
     .table-separator {
         th,
         td {
-            border-bottom: $outline-width solid var(--background-color);
+            border-bottom: $outline-width solid var(--detail-color);
         }
 
         & + tr th,
@@ -148,19 +147,12 @@ table {
 
     li {
         @include flex(column, 0.5rem);
-        @include transition();
+        @extend %interactable;
         align-items: center;
         flex: 1 1 0;
         min-width: 0;
         list-style: none;
         padding: 0.5rem;
-        border-radius: $border-radius;
-        border: $outline-width solid var(--background-color);
-
-        &:hover {
-            cursor: pointer;
-            background-color: var(--background-color);
-        }
     }
 
     small {
@@ -234,17 +226,12 @@ table {
 #main--additional-content--expansions,
 #main--additional-content--dlcs{
     .card {
+        @extend %interactable;
         overflow: hidden;
-        box-shadow: none;
-        border-radius: $border-radius;
-        border: $outline-width solid var(--background-color);
-        outline: none;
         scale: 1;
 
         &:hover {
             scale: 1;
-            outline: none;
-            background-color: var(--background-color);
         }
     }
 
@@ -259,9 +246,17 @@ table {
 
         li {
             list-style: none;
-            @include flex(column, .25rem);
+            @include flex(column, 0);
             align-items: center;
             overflow: hidden;
+            background-color: var(--secondary-color);
+
+            span {
+                background-color: var(--surface-color);
+                width: 100%;
+                padding-top: .25rem;
+                text-align: center;
+            }
 
             div {
                 width: 100%;
@@ -284,14 +279,12 @@ table {
             &:hover {
                 >img {
                     scale: 1.2;
-                    filter: brightness(110%);
-                    opacity: 80%;
+                    opacity: 60%;
                     cursor: pointer;
                 }
                 div {
                     background-size: 120%;
-                    filter: brightness(110%);
-                    opacity: 80%;
+                    opacity: 60%;
                     cursor: pointer;
                 }
             }
