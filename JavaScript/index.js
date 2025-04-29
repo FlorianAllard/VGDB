@@ -137,14 +137,14 @@ function displayTrendingCards() {
     card.querySelector("b").textContent = game.name;
 
     const criticsScore = card.querySelector(".rating-critics");
-    if (game.aggregated_rating) {
+    if (criticsScore && game.aggregated_rating) {
       criticsScore.textContent = Math.round(game.aggregated_rating);
-    } else criticsScore.remove();
+    } else if (criticsScore) criticsScore.remove();
 
     const usersScore = card.querySelector(".rating-users");
-    if (game.rating) {
+    if (usersScore && game.rating) {
       usersScore.textContent = Math.round(game.rating);
-    } else usersScore.remove();
+    } else if (usersScore) usersScore.remove();
 
     const cover = card.querySelector(".cover");
     const isLandscape = cover.classList.contains("landscape");

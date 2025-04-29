@@ -2,10 +2,13 @@
 
 // Importing modules
 import * as IGDB from "./APIs/igdb_api.js";
+import * as OpenCritic from "./APIs/opencritic_api.js";
 import * as Utilities from "./utilities_module.js";
 
 // Global variables
 let game;
+let rating;
+let reviews;
 let previousGame;
 let nextGame;
 
@@ -49,6 +52,11 @@ async function requestPageData() {
 
   console.log("Game: ", game);
 
+  rating = (await OpenCritic.requestGame(game.name));
+  console.log("Rating: ", rating);
+  reviews = (await OpenCritic.requestReviews(rating.id)).slice(0, 6);
+  console.log("Reviews: ", reviews);
+
   // Fill the page with game data
   fillPage();
 }
@@ -62,6 +70,7 @@ function fillPage() {
   fillLanguages();
   fillAgeRatings();
   fillReleases();
+  fillReviews();
   fillEditions();
   fillExpansions();
   fillDLCs();
@@ -336,6 +345,36 @@ function createExternalLinks() {
   document.querySelector("#nav--external-links").append(grid);
 }
 
+function fillReviews() {
+  const section = document.querySelector("#main--reception");
+  const usersRating = section.querySelector("#main--reception--users");
+  usersRating.querySelector("small").textContent = `Based on ${game.rating_count} reviews`;
+  usersRating.querySelector(".rating-users span").textContent = Math.round(game.rating);
+  const criticsRating = section.querySelector("#main--reception--critics");
+  criticsRating.querySelector("small").textContent = `Based on ${rating.numTopCriticReviews} reviews`;
+  criticsRating.querySelector(".rating-critics span").textContent = Math.round(rating.topCriticScore);
+  
+  if (reviews?.length > 0) {
+    reviews.forEach(review => {
+      const template = section.querySelector("template");
+    let clone = template.content.firstElementChild.cloneNode(true);
+    clone.querySelector("img").setAttribute("src", `https://img.opencritic.com/${review.Outlet.imageSrc.og}`);
+    clone.querySelector("b").textContent = review.Outlet.name;
+    clone.querySelector("small").textContent = review.alias;
+    clone.querySelector("p").textContent = review.snippet;
+    clone.setAttribute("href", review.externalUrl);
+    const score = clone.querySelector(".rating-critics");
+    if(review.score) {
+      score.querySelector("span").textContent = review.score;
+    } else {
+      score.remove();
+    }
+
+    template.parentElement.append(clone);
+    });
+  }
+}
+
 function fillEditions() {
   const section = document.querySelector("#main--additional-content--editions");
   if (game.versions?.length > 0) {
@@ -494,7 +533,6 @@ function fillVideos() {
     section.remove();
   }
 }
-
 
 const overlay = document.querySelector("#media-overlay");
 const overlayImage = overlay.querySelector("img");

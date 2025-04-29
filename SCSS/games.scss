@@ -56,6 +56,14 @@ nav {
 
 #main-content {
     grid-column: span 3;
+
+    >section:not(:first-of-type) {
+        margin-top: 2rem;
+    }
+
+    >section>section:not(:first-of-type) {
+        margin-top: 1rem;
+    }
 }
 
 #main--top {
@@ -227,6 +235,7 @@ table {
 #main--additional-content--dlcs{
     .card {
         @extend %interactable;
+        padding: 0;
         overflow: hidden;
         scale: 1;
 
@@ -304,5 +313,79 @@ table {
     iframe {
         width: 100%;
         aspect-ratio: 16 / 9;
+    }
+}
+#main--reception ul {
+    list-style: none;
+    @include grid(2);
+
+    li {
+        @include flex();
+        justify-content: space-between;
+        align-items: center;
+        @extend %surface;
+        height: fit-content;
+
+        div:has(b) {
+            @include flex(column, 0);
+        }
+    }
+
+    .main--reception--review {
+        @extend %interactable;
+        position: relative;
+        color: var(--text-color);
+        padding: 0;
+
+        &--top {
+            @include flex(row, .75rem);
+            padding: 1rem 1rem 0 1rem;
+            align-items: center;
+
+            &--title {
+                @include flex(column, 0);
+                flex-grow: 1;
+                height: fit-content;
+            }
+
+            img {
+                height: 2.5rem;
+                aspect-ratio: 1/1;
+                object-fit: contain;
+            }
+        }
+
+        &--text {
+            p {
+                margin: 1rem;
+                margin-top: .75rem;
+                    display: -webkit-box;
+                    -webkit-line-clamp: 5;
+                    -webkit-box-orient: vertical;
+                    overflow: hidden;
+            }
+        }
+
+&--hover {
+    position: absolute;
+    bottom: 1rem;
+    left: 0;
+    opacity: 0%;
+    width: 100%;
+    font-weight: bold;
+    @include transition();
+    color: var(--secondary-color);
+    @include flex();
+    justify-content: flex-end;
+    padding: 3rem 1rem 0 1rem;
+    background: linear-gradient(transparent, transparent, var(--detail-color), var(--detail-color));
+}
+
+        &:hover {
+            text-decoration: none;
+            .main--reception--review--hover {
+                opacity: 100%;
+            }
+        }
     }
 }

@@ -28,7 +28,10 @@ $light-mode: (
     detail: #E5E5E5,
     primary: #FE7E01,
     primary-detail: color-mix(in srgb, #FE7E01, black 20%),
+    primary-hover: color-mix(in srgb, #FE7E01, white 33%),
     secondary: #1CB0F6,
+    secondary-detail: color-mix(in srgb, #1CB0F6, black 20%),
+    secondary-hover: color-mix(in srgb, #1CB0F6, white 33%),
     text: #4B4B4B,
 );
 
@@ -38,7 +41,10 @@ $dark-mode: (
     detail: #3a464e,
     primary: #FE7E01,
     primary-detail: color-mix(in srgb, #FE7E01, black 20%),
+    primary-hover: color-mix(in srgb, #FE7E01, white 33%),
     secondary: #1CB0F6,
+    secondary-detail: color-mix(in srgb, #1CB0F6, black 20%),
+    secondary-hover: color-mix(in srgb, #1CB0F6, white 33%),
     text: #f0f6fb,
 );
 
@@ -94,6 +100,7 @@ $shadow: 0 .125rem .125rem 0 rgba(0, 0, 0, .1);
 }
 
 %surface {
+    padding: 1rem;
     background-color: var(--surface-color);
     border-radius: $border-radius;
     border: $outline-width solid var(--detail-color);
@@ -130,6 +137,40 @@ button {
     &:focus-visible {
         border: none;
         outline: $outline-width solid var(--secondary-color);
+    }
+}
+
+button {
+    @include flex(row, .25rem);
+    @include center();
+    padding: 0 1rem;
+    height: 3rem;
+    color: var(--secondary-color);
+    text-transform: uppercase;
+    font-weight: bold;
+    @extend %interactable;
+
+    &.primary {
+        color: var(--surface-color);
+        background-color: var(--primary-color);
+        border-color: var(--primary-detail-color);
+        box-shadow: 0 $outline-width 0 var(--primary-detail-color);
+        &:hover {
+                background-color: var(--primary-hover-color);
+                border-color: var(--primary-color);
+                box-shadow: 0 $outline-width 0 var(--primary-color);
+        }
+    }
+    &.secondary {
+        color: var(--surface-color);
+        background-color: var(--secondary-color);
+        border-color: var(--secondary-detail-color);
+        box-shadow: 0 $outline-width 0 var(--secondary-detail-color);
+        &:hover {
+            background-color: var(--secondary-hover-color);
+            border-color: var(--secondary-color);
+            box-shadow: 0 $outline-width 0 var(--secondary-color);
+        }
     }
 }
 
@@ -214,6 +255,7 @@ div:has(>.user-profile) {
     color: $neutral100-color;
     border-radius: 1.25rem $border-radius $border-radius 1.25rem;
     transition: all $transition-duration-instant ease;
+    box-shadow: none;
 
     &:hover {
         cursor: pointer;
@@ -297,6 +339,7 @@ section {
 
 .card {
     @extend %interactable;
+    padding: 0;
     color: var(--text-color);
     flex: 1 1 0px;
     min-width: 0;
@@ -400,22 +443,28 @@ small {
 
 %rating {
     @include theme($light-mode);
+    @include flex(row, 0);
     display: inline-block;
-    font-weight: bold;
-    padding: 0 1rem .1rem .5rem;
-    border-radius: .25rem 0 0 .25rem;
-    color: var(--surface-color);
-    width: calc(3.5ch + 1.5rem);
+    
+    border-radius: 50%;
+    span {
+        font-weight: bold;
+        font-size: 1.5rem;
+    }
 }
 
 .rating-critics {
     @extend %rating;
-    background-color: var(--primary-color);
+    span {
+        color: var(--primary-color);
+    }
 }
 
 .rating-users {
     @extend %rating;
-    background-color: var(--secondary-color);
+    span {
+        color: var(--secondary-color);
+    }
 }
 
 .card.horizontal {
