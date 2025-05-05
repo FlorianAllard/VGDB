@@ -8,19 +8,11 @@
     box-sizing: border-box;
 }
 
-$neutral100-color: #FFFFFF;
-$neutral95-color: #F2F2F2;
-$neutral90-color: #E6E6E6;
-$neutral85-color: #D9D9D9;
-$neutral40-color: #666666;
-$neutral35-color: #595959;
-$neutral30-color: #4D4D4D;
-$neutral25-color: #151424;
-$neutral20-color: #333333;
-$primary-color: #FE7E01;
-$secondary-color: #00BBCA;
-$error-color: #ff4444;
 $success-color: #00c851;
+$success-color-alt: #B7DD29;
+$warning-color: #FFE234;
+$warning-color-alt: #FFA534;
+$error-color: #ff4444;
 
 $light-mode: (
     surface: #FFFFFF,
@@ -106,6 +98,11 @@ $shadow: 0 .125rem .125rem 0 rgba(0, 0, 0, .1);
     border: $outline-width solid var(--detail-color);
 }
 
+%bubble {
+    @extend %surface;
+    background-color: var(--detail-color);
+}
+
 %interactable {
     @extend %surface;
     box-shadow: 0 $outline-width 0 var(--detail-color);
@@ -176,6 +173,8 @@ button {
 
 header {
     @include flex();
+    height: calc(2.5rem + 2rem);
+    align-items: center;
     background-color: var(--primary-color);
     padding: 1rem $side-padding;
     position: sticky;
@@ -252,7 +251,7 @@ div:has(>.user-profile) {
     border: none;
     background-color: transparent;
     align-items: center;
-    color: $neutral100-color;
+    color: var(--text-color);
     border-radius: 1.25rem $border-radius $border-radius 1.25rem;
     transition: all $transition-duration-instant ease;
     box-shadow: none;
@@ -453,17 +452,34 @@ small {
     }
 }
 
-.rating-critics {
+.rating-5 {
     @extend %rating;
     span {
-        color: var(--primary-color);
+        color: $success-color;
     }
 }
-
-.rating-users {
+.rating-4 {
     @extend %rating;
     span {
-        color: var(--secondary-color);
+        color: $success-color-alt;
+    }
+}
+.rating-3 {
+    @extend %rating;
+    span {
+        color: $warning-color;
+    }
+}
+.rating-2 {
+    @extend %rating;
+    span {
+        color: $warning-color-alt;
+    }
+}
+.rating-1 {
+    @extend %rating;
+    span {
+        color: $error-color;
     }
 }
 

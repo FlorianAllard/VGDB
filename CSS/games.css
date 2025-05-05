@@ -38,14 +38,18 @@ header div {
   flex: 1 1 0px;
 }
 
-#main--reception ul li, nav > section,
+nav > section,
 #main-content, #main--reception ul .main--reception--review, #main--additional-content--editions .card,
 #main--additional-content--expansions .card,
-#main--additional-content--dlcs .card, #main--localization--age-ratings li, .card, button {
+#main--additional-content--dlcs .card, #main--localization--age-ratings li, .card, button, #main--time-to-beat ul b, #main--reception ul li {
   padding: 1rem;
   background-color: var(--surface-color);
   border-radius: 0.5rem;
   border: 2px solid var(--detail-color);
+}
+
+#main--time-to-beat ul b, #main--reception ul li {
+  background-color: var(--detail-color);
 }
 
 #main--reception ul .main--reception--review, #main--additional-content--editions .card,
@@ -135,6 +139,8 @@ header {
   display: flex;
   flex-direction: row;
   gap: 1rem;
+  height: 4.5rem;
+  align-items: center;
   background-color: var(--primary-color);
   padding: 1rem calc((100dvw - 1200px) / 2);
   position: sticky;
@@ -218,7 +224,7 @@ div:has(> .user-profile) {
   border: none;
   background-color: transparent;
   align-items: center;
-  color: #FFFFFF;
+  color: var(--text-color);
   border-radius: 1.25rem 0.5rem 0.5rem 1.25rem;
   transition: all 100ms ease;
   box-shadow: none;
@@ -406,7 +412,7 @@ small a {
   color: var(--text-color);
 }
 
-.rating-users, .rating-critics {
+.rating-1, .rating-2, .rating-3, .rating-4, .rating-5 {
   --surface-color: #FFFFFF;
   --background-color: #F7F7F7;
   --detail-color: #E5E5E5;
@@ -423,17 +429,29 @@ small a {
   display: inline-block;
   border-radius: 50%;
 }
-.rating-users span, .rating-critics span {
+.rating-1 span, .rating-2 span, .rating-3 span, .rating-4 span, .rating-5 span {
   font-weight: bold;
   font-size: 1.5rem;
 }
 
-.rating-critics span {
-  color: var(--primary-color);
+.rating-5 span {
+  color: #00c851;
 }
 
-.rating-users span {
-  color: var(--secondary-color);
+.rating-4 span {
+  color: #B7DD29;
+}
+
+.rating-3 span {
+  color: #FFE234;
+}
+
+.rating-2 span {
+  color: #FFA534;
+}
+
+.rating-1 span {
+  color: #ff4444;
 }
 
 .card.horizontal {
@@ -709,6 +727,16 @@ section {
   gap: 1rem;
   width: 100%;
 }
+nav #main-content,
+#main-content #main-content,
+section #main-content {
+  gap: 0.5rem;
+}
+nav #main-content > section:not(:has(> table)),
+#main-content #main-content > section:not(:has(> table)),
+section #main-content > section:not(:has(> table)) {
+  margin-bottom: 0.5rem;
+}
 
 #body {
   width: 100%;
@@ -763,6 +791,8 @@ table {
 .table-small {
   font-size: small;
   vertical-align: top;
+  text-align: left;
+  border-collapse: collapse;
 }
 .table-small th,
 .table-small td {
@@ -774,12 +804,12 @@ table {
 .table-small th:first-child {
   text-align: left;
 }
-.table-small tr:last-child td {
-  padding-bottom: 0;
+.table-small tbody tr td,
+.table-small tbody tr th {
+  border-top: 2px solid var(--detail-color);
 }
-.table-small tr:not(:last-child) td,
-.table-small th {
-  border-bottom: 2px solid var(--detail-color);
+.table-small tr:last-child td {
+  border-bottom: none;
 }
 .table-small i {
   font-size: medium;
@@ -1032,6 +1062,53 @@ table {
 }
 #main--reception ul .main--reception--review:hover .main--reception--review--hover {
   opacity: 100%;
+}
+
+#main--time-to-beat ul {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 1rem;
+}
+#main--time-to-beat ul li:last-of-type {
+  grid-column: span 2;
+}
+#main--time-to-beat ul li {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  align-items: center;
+}
+#main--time-to-beat ul b {
+  align-self: stretch;
+  text-align: center;
+}
+
+#main--prices i {
+  color: var(--text-color);
+}
+
+.table-interactable tbody tr {
+  transition: all 100ms ease;
+}
+.table-interactable tbody tr:hover {
+  background-color: var(--detail-color);
+  z-index: 2;
+  cursor: pointer;
+}
+.table-interactable tbody tr:hover td {
+  transition: all 100ms ease;
+  border-color: var(--secondary-color);
+}
+.table-interactable tbody tr:hover + tr td {
+  border-top: 2px solid var(--secondary-color);
+}
+.table-interactable tr:last-child td {
+  border-bottom: 2px solid transparent;
+}
+.table-interactable img {
+  width: 1rem;
+  vertical-align: middle;
 }
 
 /*# sourceMappingURL=games.css.map */

@@ -11,6 +11,23 @@ export function timeRemainingFromUnix(unix) {
   return [String(days).padStart(2, "0"), String(hours).padStart(2, "0"), String(minutes).padStart(2, "0")];
 }
 
+export function durationFromUnix(unix, format = "default") {
+  const hours = Math.floor(unix / 3600);
+  const minutes = Math.floor((unix % 3600) / 60);
+  const seconds = Math.floor(unix % 60);
+  const milliseconds = Math.floor((unix * 1000) % 1000);
+
+  if(hours) {
+     switch (format) {
+       case "hours":
+         return `${String(hours).padStart(2, "0")}h`;
+
+       default:
+         return `${hours > 0 ? String(hours).padStart(2, "0") + "h " : ""}${String(minutes).padStart(2, "0")}m ${String(seconds).padStart(2, "0")}s ${String(milliseconds).padStart(3, "0")}ms`;
+     }
+  } else return "-";
+}
+
 export function dateFromUnix(unix) {
   const date = new Date(unix * 1000);
 
@@ -70,4 +87,28 @@ export function imageExists(url, callback) {
 
 export function getVideoThumbnail(id) {
   return `https://img.youtube.com/vi/${id}/0.jpg`;
+}
+
+export async function getObjectFromUrl(url) {
+  try {
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error fetching data from URL:", error);
+    return null;
+  }
+}
+
+export function getCurrencyGlyph(currency) {
+  switch (currency) {
+    case "EUR":
+        return "€";
+  
+    default:
+      return "?";
+  }
 }

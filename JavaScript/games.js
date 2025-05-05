@@ -1,16 +1,18 @@
 "use strict";
 
 // Importing modules
+import * as Utilities from "./utilities_module.js";
 import * as IGDB from "./APIs/igdb_api.js";
 import * as OpenCritic from "./APIs/opencritic_api.js";
-import * as Utilities from "./utilities_module.js";
+import * as Speedrun from "./APIs/speedrun_api.js";
+import * as IsThereAnyDeal from "./APIs/isthereanydeal_api.js";
 
 // Global variables
 let game;
 let rating;
 let reviews;
-let previousGame;
-let nextGame;
+let timeToBeat;
+let prices;
 
 // Main entry point
 requestPageData();
@@ -22,19 +24,8 @@ async function requestPageData() {
   const id = new URLSearchParams(window.location.search).get("id") ?? "1";
 
   // Fetch games data (current, previous, and next)
-  let games = await IGDB.requestGames("*, genres.*, websites.*, videos.*, collections.*, franchises.*, cover.*, player_perspectives.*, game_modes.*, themes.*, involved_companies.*, involved_companies.company.*, game_engines.*, platforms.*, language_supports.*, language_supports.language.*, language_supports.language_support_type.*, age_ratings.*, age_ratings.content_descriptions.*, age_ratings.organization.*, release_dates.*, release_dates.platform.*, release_dates.release_region.*, release_dates.status.*, external_games.*, dlcs.*, dlcs.cover.*, expansions.*, expansions.cover.*, artworks.*, screenshots.*", "", 3, `id = (${parseInt(id) - 1},${id},${parseInt(id) + 1})`);
-  games = IGDB.getCovers(games);
-
-  // Assign current, previous, and next games
-  for (let i = 0; i < games.length; i++) {
-    if (games[i].id == id) {
-      game = games[i];
-    } else if (game == null) {
-      previousGame = games[i];
-    } else {
-      nextGame = games[i];
-    }
-  }
+  let games = await IGDB.requestGames("*, genres.*, websites.*, videos.*, collections.*, franchises.*, cover.*, player_perspectives.*, game_modes.*, themes.*, involved_companies.*, involved_companies.company.*, game_engines.*, platforms.*, language_supports.*, language_supports.language.*, language_supports.language_support_type.*, age_ratings.*, age_ratings.content_descriptions.*, age_ratings.organization.*, release_dates.*, release_dates.platform.*, release_dates.release_region.*, release_dates.status.*, external_games.*, dlcs.*, dlcs.cover.*, expansions.*, expansions.cover.*, artworks.*, screenshots.*", "", 3, `id = ${id}`);
+  game = IGDB.getCovers(games)[0];
 
   let versions = await IGDB.requestGames("*, cover.*, websites.*", "", "", `version_parent = ${game.id}`);
   versions = IGDB.getCovers(versions, true);
@@ -52,10 +43,21 @@ async function requestPageData() {
 
   console.log("Game: ", game);
 
-  rating = (await OpenCritic.requestGame(game.name));
+  rating = await OpenCritic.requestGame(game.name);
   console.log("Rating: ", rating);
-  reviews = (await OpenCritic.requestReviews(rating.id)).slice(0, 6);
-  console.log("Reviews: ", reviews);
+  if(rating) {
+    reviews = (await OpenCritic.requestReviews(rating.id)).slice(0, 6);
+    console.log("Reviews: ", reviews);
+  }
+
+  timeToBeat = await IGDB.requestTimeToBeat("*", "", "", `game_id = ${game.id}`);
+  if(timeToBeat) timeToBeat.speedrun = await Speedrun.getWorldRecord(game.slug);
+  console.log("Time to beat: ", timeToBeat);
+  
+  const itadGame = await IsThereAnyDeal.requestGame(game.slug);
+  prices = await IsThereAnyDeal.requestPrices(itadGame.id);
+  prices = prices[0];
+  console.log("Prices: ", prices);
 
   // Fill the page with game data
   fillPage();
@@ -74,6 +76,8 @@ function fillPage() {
   fillEditions();
   fillExpansions();
   fillDLCs();
+  fillTimeToBeat();
+  fillPrices();
   fillArtworks();
   fillScreenshots();
   fillVideos();
@@ -254,6 +258,10 @@ function fillAgeRatings() {
     });
   } else {
     section.remove();
+     const parent = document.querySelector("#main--localization");
+     if (parent.lastElementChild.tagName !== "SECTION") {
+       parent.remove();
+     }
   }
 }
 
@@ -347,31 +355,38 @@ function createExternalLinks() {
 
 function fillReviews() {
   const section = document.querySelector("#main--reception");
-  const usersRating = section.querySelector("#main--reception--users");
-  usersRating.querySelector("small").textContent = `Based on ${game.rating_count} reviews`;
-  usersRating.querySelector(".rating-users span").textContent = Math.round(game.rating);
-  const criticsRating = section.querySelector("#main--reception--critics");
-  criticsRating.querySelector("small").textContent = `Based on ${rating.numTopCriticReviews} reviews`;
-  criticsRating.querySelector(".rating-critics span").textContent = Math.round(rating.topCriticScore);
-  
-  if (reviews?.length > 0) {
-    reviews.forEach(review => {
-      const template = section.querySelector("template");
-    let clone = template.content.firstElementChild.cloneNode(true);
-    clone.querySelector("img").setAttribute("src", `https://img.opencritic.com/${review.Outlet.imageSrc.og}`);
-    clone.querySelector("b").textContent = review.Outlet.name;
-    clone.querySelector("small").textContent = review.alias;
-    clone.querySelector("p").textContent = review.snippet;
-    clone.setAttribute("href", review.externalUrl);
-    const score = clone.querySelector(".rating-critics");
-    if(review.score) {
-      score.querySelector("span").textContent = review.score;
-    } else {
-      score.remove();
-    }
+  if(rating && (game.rating || rating.topCriticScore >= 0)){
+    const usersRating = section.querySelector("#main--reception--users");
+    usersRating.querySelector("small").textContent = `Based on ${game.rating_count} reviews`;
+    usersRating.querySelector(".rating span").textContent = Math.round(game.rating);
+    usersRating.querySelector(".rating").classList.add(`rating-${Math.ceil(game.rating / 20)}`);
+    const criticsRating = section.querySelector("#main--reception--critics");
+    criticsRating.querySelector("small").textContent = `Based on ${rating.numTopCriticReviews} reviews`;
+    criticsRating.querySelector(".rating span").textContent = Math.round(rating.topCriticScore);
+    criticsRating.querySelector(".rating").classList.add(`rating-${Math.ceil(rating.topCriticScore / 20)}`);
 
-    template.parentElement.append(clone);
-    });
+    if (reviews?.length > 0) {
+      reviews.forEach((review) => {
+        const template = section.querySelector("template");
+        let clone = template.content.firstElementChild.cloneNode(true);
+        clone.querySelector("img").setAttribute("src", `https://img.opencritic.com/${review.Outlet.imageSrc.og}`);
+        clone.querySelector("b").textContent = review.Outlet.name;
+        clone.querySelector("small").textContent = review.alias;
+        clone.querySelector("p").textContent = review.snippet;
+        clone.setAttribute("href", review.externalUrl);
+        const score = clone.querySelector(".rating");
+        if (review.score) {
+          score.querySelector("span").textContent = review.score;
+          score.classList.add(`rating-${Math.ceil(review.score / 20)}`);
+        } else {
+          score.remove();
+        }
+
+        template.parentElement.append(clone);
+      });
+    }
+  } else {
+    section.remove();
   }
 }
 
@@ -467,6 +482,87 @@ function fillDLCs() {
 
       card.setAttribute("href", `/HTML/games/?id=${dlc.id}`);
     }
+  } else {
+    section.remove();
+    const parent = document.querySelector("#main--additional-content");
+    if (parent.lastElementChild.tagName !== "SECTION") {
+      parent.remove();
+    }
+  }
+}
+
+function fillTimeToBeat() {
+  const section = document.querySelector("#main--time-to-beat");
+  if (timeToBeat) {
+    section.querySelector("#main--time-to-beat--minimum").textContent = Utilities.durationFromUnix(timeToBeat.hastily, "hours");
+    section.querySelector("#main--time-to-beat--normal").textContent = Utilities.durationFromUnix(timeToBeat.normaly, "hours");
+    section.querySelector("#main--time-to-beat--completionist").textContent = Utilities.durationFromUnix(timeToBeat.completely, "hours");
+    section.querySelector("#main--time-to-beat--speedrun").textContent = Utilities.durationFromUnix(timeToBeat.speedrun);
+  } else {
+    section.remove();
+  }
+}
+
+function fillPrices() {
+  const section = document.querySelector("#main--prices");
+  if (prices.deals?.length > 0) {
+    const table = section.querySelector("tbody");
+    prices.deals.forEach((deal) => {
+      const tr = document.createElement("tr");
+
+      let td = document.createElement("td");
+      td.textContent = deal.shop.name;
+      tr.append(td);
+
+      td = document.createElement("td");
+      if (deal.drm?.length > 0) {
+        deal.drm.forEach((d) => {
+          if(d.name == "Drm Free") {
+            td.textContent = "-"
+          } else {
+            let img = document.createElement("img");
+            img.setAttribute("src", IGDB.getWebsiteFromUrl(d.name).icon);
+            td.append(img);
+          }
+        });
+      } else {
+        let img = document.createElement("img");
+        img.setAttribute("src", IGDB.getWebsiteFromUrl(deal.shop.name).icon);
+        td.append(img);
+      }
+      
+      tr.append(td);
+    
+      td = document.createElement("td");
+      td.textContent = `${deal.regular.amount}${Utilities.getCurrencyGlyph(deal.regular.currency)}`;
+      tr.append(td);
+
+      td = document.createElement("td");
+      const storeLowPercentage = (1 - (deal.storeLow.amountInt / deal.regular.amountInt)) * 100;
+      const storeLowString = storeLowPercentage > 0 ? ` (-${Math.round(storeLowPercentage)}%)` : "";
+      td.textContent = `${deal.storeLow.amount}${Utilities.getCurrencyGlyph(deal.storeLow.currency)}` + storeLowString;
+      if (deal.storeLow.amount == deal.price.amount && deal.storeLow.amount < deal.regular.amount) {
+        td.style.fontWeight = "600";
+        td.style.color = "#00c851";
+      }
+      tr.append(td);
+
+      td = document.createElement("td");
+      const pricePercentage = (1 - deal.price.amountInt / deal.regular.amountInt) * 100;
+      const pricePercentageString = pricePercentage > 0 ? ` (-${Math.round(pricePercentage)}%)` : "";
+      td.textContent = `${deal.price.amount}${Utilities.getCurrencyGlyph(deal.price.currency)}` + pricePercentageString;
+      if(deal.price.amount < deal.regular.amount) {
+        td.style.fontWeight = "600";
+        td.style.color = "#00c851";
+      }
+      tr.append(td);
+
+      table.append(tr);
+      
+      tr.addEventListener("click", () => {
+        window.open(deal.url, "_blank").focus();
+      });
+    });
   } else {
     section.remove();
   }

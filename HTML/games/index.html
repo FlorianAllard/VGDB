@@ -7,7 +7,6 @@
     <title>Game (0000)</title>
     <link rel="stylesheet" href="/CSS/games.css">
     <link rel="stylesheet" href="/node_modules/@fortawesome/fontawesome-free/css/all.min.css">
-    <script src="/node_modules/jquery/dist/jquery.min.js"></script>
     <script type="module" src="/JavaScript/script.js"></script>
     <script type="module" src="/JavaScript/games.js"></script>
 </head>
@@ -191,7 +190,7 @@
                                 <b>Users average score</b>
                                 <small>Based on x reviews</small>
                             </div>
-                            <div class="rating-users">
+                            <div class="rating">
                                 <span>95</span>
                                 <small>/100</small>
                             </div>
@@ -201,7 +200,7 @@
                                 <b>Critics average score</b>
                                 <small>Based on x reviews</small>
                             </div>
-                            <div class="rating-critics">
+                            <div class="rating">
                                 <span>95</span>
                                 <small>/100</small>
                             </div>
@@ -214,7 +213,7 @@
                                         <b>Fextralife</b>
                                         <small>Castielle</small>
                                     </div>
-                                    <div class="rating-critics">
+                                    <div class="rating">
                                         <span>95</span>
                                         <small>/100</small>
                                     </div>
@@ -271,6 +270,44 @@
                             </template>
                         </div>
                     </section>
+                </section>
+
+                <section id="main--time-to-beat">
+                    <h2>Time to beat</h2>
+                    <ul>
+                        <li>
+                            <span>Minimum</span>
+                            <b id="main--time-to-beat--minimum">50h</b>
+                        </li>
+                        <li>
+                            <span>Normal</span>
+                            <b id="main--time-to-beat--normal">122h</b>
+                        </li>
+                        <li>
+                            <span>Completionist</span>
+                            <b id="main--time-to-beat--completionist">379h</b>
+                        </li>
+                        <li>
+                            <span>Speedrun World Record</span>
+                            <b id="main--time-to-beat--speedrun">03m 19s 410ms</b>
+                        </li>
+                    </ul>
+                </section>
+
+                <section id="main--prices">
+                    <h2>Prices</h2>
+                    <table class="table-small table-interactable">
+                        <thead>
+                            <tr>
+                                <th>Store</th>
+                                <th>Platform/DRM</th>
+                                <th>Regular price</th>
+                                <th>Lowest price</th>
+                                <th>Current price</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
                 </section>
             
                 <section id="main--media">

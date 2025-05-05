@@ -1,4 +1,4 @@
-// npx lcp --proxyUrl https://api.igdb.com/v4
+// npx lcp --proxyUrl https://api.igdb.com/v4 --port 8010
 
 "use strict";
 
@@ -109,6 +109,10 @@ export async function requestSeries(fields, sort = "", limit = "", where = "") {
 export async function requestFranchises(fields, sort = "", limit = "", where = "") {
   return await makeRequest("franchises", fields, sort, limit, where);
 }
+export async function requestTimeToBeat(fields, sort = "", limit = "", where = "") {
+  const result = await makeRequest("game_time_to_beats", fields, sort, limit, where);
+  return result[0];
+}
 
 /**
  * Enhances game objects with cover URLs.
@@ -202,7 +206,7 @@ export function formatWebsites(websites) {
   return websites.map((wb) => getWebsiteFromUrl(wb.url));
 }
 
-function getWebsiteFromUrl(url) {
+export function getWebsiteFromUrl(url) {
   const sites = [
     { keyword: "gog", site: "GOG", color: "#B001DF", icon: "/Assets/Sites/gog.svg" },
     { keyword: "twitter", site: "Twitter", color: "#000000", icon: "/Assets/Sites/twitter.svg" },
@@ -220,6 +224,7 @@ function getWebsiteFromUrl(url) {
     { keyword: "epic", site: "Epic Games Store", color: "#2B292A", icon: "/Assets/Sites/epic.svg" },
     { keyword: "bsky", site: "Epic Games Store", color: "#1081F6", icon: "/Assets/Sites/bluesky.svg" },
     { keyword: "wiki", site: "Game wiki", color: "#F20057", icon: "/Assets/Sites/wiki.svg" },
+    { keyword: "microsoft", site: "Microsoft Store", color: "#F20057", icon: "/Assets/Sites/microsoft-store.svg" },
   ];
 
   const site = sites.find((s) => url.toLowerCase().includes(s.keyword));

@@ -37,6 +37,14 @@ nav,
 section {
     @include flex(column);
     width: 100%;
+
+    #main-content {
+        gap: 0.5rem;
+
+        >section:not(:has(>table)) {
+            margin-bottom: 0.5rem;
+        }
+    }
 }
 
 #body {
@@ -93,6 +101,8 @@ table {
 .table-small {
     font-size: small;
     vertical-align: top;
+    text-align: left;
+    border-collapse: collapse;
 
     th,
     td {
@@ -107,13 +117,15 @@ table {
         }
     }
 
-    tr:last-child td {
-        padding-bottom: 0;
+    tbody tr td,
+    tbody tr th {
+        border-top: $outline-width solid var(--detail-color);
     }
 
-    tr:not(:last-child) td,
-    th {
-        border-bottom: $outline-width solid var(--detail-color);
+    tr:last-child {
+        td {
+            border-bottom: none;
+        }
     }
 
     i {
@@ -323,7 +335,7 @@ table {
         @include flex();
         justify-content: space-between;
         align-items: center;
-        @extend %surface;
+        @extend %bubble;
         height: fit-content;
 
         div:has(b) {
@@ -387,5 +399,63 @@ table {
                 opacity: 100%;
             }
         }
+    }
+}
+
+#main--time-to-beat {
+    ul {
+        list-style: none;
+        @include grid(5);
+
+        li:last-of-type {
+            grid-column: span 2;
+        }
+
+        li {
+            @include flex(column, .5rem);
+            align-items: center;
+        }
+        b {
+            @extend %bubble;
+            align-self: stretch;
+            text-align: center;
+        }
+    }
+}
+
+#main--prices {
+    i {
+        color: var(--text-color);
+    }
+}
+.table-interactable {
+    tbody tr {
+        @include transition();
+
+        &:hover {
+            background-color: var(--detail-color);
+            z-index: 2;
+            cursor: pointer;
+
+            td {
+                @include transition();
+                border-color: var(--secondary-color);
+            }
+
+            &+tr td {
+                border-top: $outline-width solid var(--secondary-color);
+            }
+        }
+    }
+
+    tr:last-child {
+        td {
+            border-bottom: $outline-width solid transparent;
+        }
+    }
+    
+    img {  
+        width: 1rem;
+        vertical-align: middle;
     }
 }
