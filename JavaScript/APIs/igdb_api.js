@@ -138,7 +138,7 @@ export function getCovers(elements, skipSteam = false) {
         element.cover = {
           landscape_url: getImage(element.cover.image_id, "landscape"),
           portrait_url: getImage(element.cover.image_id, "portrait"),
-          hero_url: getImage(element.cover.image_id, "hero"),
+          hero_url: '',
           logo_url: ``,
         };
       }

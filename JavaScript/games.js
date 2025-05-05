@@ -55,10 +55,12 @@ async function requestPageData() {
   console.log("Time to beat: ", timeToBeat);
   
   const itadGame = await IsThereAnyDeal.requestGame(game.slug);
-  prices = await IsThereAnyDeal.requestPrices(itadGame.id);
-  prices = prices[0];
-  console.log("Prices: ", prices);
-
+  if (itadGame) {
+    prices = await IsThereAnyDeal.requestPrices(itadGame.id);
+    prices = prices[0];
+    console.log("Prices: ", prices);
+  }
+ 
   // Fill the page with game data
   fillPage();
 }
@@ -505,7 +507,7 @@ function fillTimeToBeat() {
 
 function fillPrices() {
   const section = document.querySelector("#main--prices");
-  if (prices.deals?.length > 0) {
+  if (prices && prices.deals?.length > 0) {
     const table = section.querySelector("tbody");
     prices.deals.forEach((deal) => {
       const tr = document.createElement("tr");
@@ -534,13 +536,13 @@ function fillPrices() {
       tr.append(td);
     
       td = document.createElement("td");
-      td.textContent = `${deal.regular.amount}${Utilities.getCurrencyGlyph(deal.regular.currency)}`;
+      td.textContent = `${deal.regular.amount.toFixed(2)}${Utilities.getCurrencyGlyph(deal.regular.currency)}`;
       tr.append(td);
 
       td = document.createElement("td");
       const storeLowPercentage = (1 - (deal.storeLow.amountInt / deal.regular.amountInt)) * 100;
       const storeLowString = storeLowPercentage > 0 ? ` (-${Math.round(storeLowPercentage)}%)` : "";
-      td.textContent = `${deal.storeLow.amount}${Utilities.getCurrencyGlyph(deal.storeLow.currency)}` + storeLowString;
+      td.textContent = `${deal.storeLow.amount.toFixed(2)}${Utilities.getCurrencyGlyph(deal.storeLow.currency)}` + storeLowString;
       if (deal.storeLow.amount == deal.price.amount && deal.storeLow.amount < deal.regular.amount) {
         td.style.fontWeight = "600";
         td.style.color = "#00c851";
@@ -550,7 +552,7 @@ function fillPrices() {
       td = document.createElement("td");
       const pricePercentage = (1 - deal.price.amountInt / deal.regular.amountInt) * 100;
       const pricePercentageString = pricePercentage > 0 ? ` (-${Math.round(pricePercentage)}%)` : "";
-      td.textContent = `${deal.price.amount}${Utilities.getCurrencyGlyph(deal.price.currency)}` + pricePercentageString;
+      td.textContent = `${deal.price.amount.toFixed(2)}${Utilities.getCurrencyGlyph(deal.price.currency)}` + pricePercentageString;
       if(deal.price.amount < deal.regular.amount) {
         td.style.fontWeight = "600";
         td.style.color = "#00c851";

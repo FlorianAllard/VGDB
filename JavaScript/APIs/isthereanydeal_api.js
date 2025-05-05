@@ -34,7 +34,7 @@ async function makeKeyRequest(method = "GET", endpoint, params, body = "") {
 
 export async function requestGame(slug) {
   const games = await makeKeyRequest("GET", "games/search/v1", `title=${slug}&results=1`);
-  return games[0];
+  return games[0].slug == slug ? games[0] : null;
 }
 
 export async function requestPrices(id) {
