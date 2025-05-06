@@ -28,14 +28,14 @@ export function durationFromUnix(unix, format = "default") {
   } else return "-";
 }
 
-export function dateFromUnix(unix) {
+export function dateFromUnix(unix, day = true, month = true) {
   const date = new Date(unix * 1000);
 
-  const day = String(date.getDate());
-  const month = date.toLocaleString("en-US", { month: "long" });
-  const year = date.getFullYear();
+  const dayStr = String(date.getDate());
+  const monthStr = date.toLocaleString("en-US", { month: "long" });
+  const yearStr = date.getFullYear();
 
-  return `${day} ${month} ${year}`;
+  return `${day ? dayStr + " " : ""}${month ? monthStr + " " : ""}${yearStr}`;
 }
 
 export function timeAgoFromUnix(unix) {

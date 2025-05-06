@@ -85,8 +85,8 @@ export async function requestPopularityPrimitives(fields, sort = "", limit = "",
   const data = await makeRequest("popularity_primitives", fields, sort, limit, "", additionalBody);
   return data ? data.map((item) => item.game_id) : null;
 }
-export async function requestGames(fields, sort = "", limit = "", where = "") {
-  return await makeRequest("games", fields, sort, limit, where);
+export async function requestGames(fields, sort = "", limit = "", where = "", search = "") {
+  return await makeRequest("games", fields, sort, limit, where, search);
 }
 export async function requestGameVersions(fields, sort = "", limit = "", where = "") {
   return await makeRequest("game_versions", fields, sort, limit, where);

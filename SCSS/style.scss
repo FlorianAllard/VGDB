@@ -149,24 +149,34 @@ button {
 
     &.primary {
         color: var(--surface-color);
-        background-color: var(--primary-color);
-        border-color: var(--primary-detail-color);
-        box-shadow: 0 $outline-width 0 var(--primary-detail-color);
-        &:hover {
-                background-color: var(--primary-hover-color);
-                border-color: var(--primary-color);
-                box-shadow: 0 $outline-width 0 var(--primary-color);
-        }
-    }
-    &.secondary {
-        color: var(--surface-color);
         background-color: var(--secondary-color);
         border-color: var(--secondary-detail-color);
         box-shadow: 0 $outline-width 0 var(--secondary-detail-color);
         &:hover {
-            background-color: var(--secondary-hover-color);
+                background-color: var(--secondary-hover-color);
+                border-color: var(--secondary-color);
+                box-shadow: 0 $outline-width 0 var(--secondary-color);
+        }
+    }
+    &.secondary {
+        color: var(--secondary-color);
+        background-color: var(--surface-color);
+        border-color: var(--secondary-color);
+        box-shadow: 0 $outline-width 0 var(--secondary-color);
+        &:hover {
+            background-color: var(--detail-color);
             border-color: var(--secondary-color);
             box-shadow: 0 $outline-width 0 var(--secondary-color);
+        }
+    }
+    &.tertiary {
+        background-color: transparent;
+        color: var(--text-color);
+        border: none;
+        box-shadow: none;
+
+        &:hover {
+            background-color: var(--detail-color);
         }
     }
 }
@@ -182,9 +192,97 @@ header {
     z-index: 2;
     grid-column: 1/-1;
 
-    div {
+    >div {
         @include flex();
         @extend %flexElement;
+    }
+
+    div:has(search) {
+        flex-grow: 2;
+    }
+}
+
+search {
+    position: relative;
+    @include theme($light-mode);
+    flex-grow: 2;
+    height: 2.5rem;
+
+    form {
+        @include flex();
+        height: 100%;
+        position: relative;
+
+        input {
+            width: 100%;
+            height: 100%;
+            padding-left: 1rem;
+            padding-right: 3.5rem;
+            border: none;
+            border-radius: $border-radius;
+        }
+
+        button {
+            position: absolute;
+            right: 0;
+            height: 100%;
+            width: 2.5rem;
+            border-radius: 50%;
+        }
+    }
+
+    menu {
+        position: absolute;
+        @extend %surface;
+        padding: 0;
+        top: bottom;
+        width: 100%;
+        translate: 0 0.5rem;
+        max-height: Min(calc(100dvh - 4rem), 24rem);
+        @include flex(column, 0);
+        align-items: stretch;
+        overflow: hidden;
+
+        ul {
+            flex-grow: 1;
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+
+        >div {
+            @include flex();
+            padding: 1rem;
+            justify-content: space-between;
+            align-items: center;
+            background-color: var(--background-color);
+            max-height: fit-content;
+            z-index: 3;
+        }
+    }
+}
+
+.searchbar--item {
+    @include flex();
+    align-items: center;
+    width: 100%;
+    height: 5rem;
+    padding: 0.5rem 1rem;
+    color: var(--text-color);
+    border-top: $outline-width solid var(--surface-color);
+    border-bottom: $outline-width solid var(--surface-color);
+
+    .cover {
+        height: 100%;
+        aspect-ratio: 264/352;
+        background-color: var(--background-color);
+        background-size: contain;
+    }
+
+    &:hover {
+        background-color: var(--detail-color);
+        text-decoration: none;
+        border-color: var(--secondary-color);
+        z-index: 2;
     }
 }
 
@@ -214,30 +312,6 @@ header {
 
     i {
         color: var(--text-color);
-    }
-}
-
-.search-bar {
-    @include theme($light-mode);
-    flex-grow: 2;
-    position: relative;
-
-    i {
-        position: absolute;
-        left: .75rem;
-        top: 50%;
-        translate: 0 -50%;
-        color: var(--text-color);
-    }
-
-    input[type="text"] {
-        padding: 0 1rem .1rem 2.5rem;
-        height: 2.5rem;
-        border-radius: $border-radius;
-        background-color: var(--surface-color);
-        border: none;
-        flex-grow: 1;
-        font-size: 1rem;
     }
 }
 

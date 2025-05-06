@@ -3,8 +3,29 @@
     <a href="/HTML/"><img src="/Assets/logo.svg" alt="logo"></a>
 </div>
 <div class="search-bar">
-    <i class="fa-solid fa-magnifying-glass"></i>
-    <input type="text" name="search" id="search" placeholder="Search">
+    <search>
+        <form action="/HTML/search/">
+            <input type="search" name="q" id="game" placeholder="Search VGDB">
+            <button type="submit" class="tertiary"><i class="fa-solid fa-magnifying-glass"></i></button>
+        </form>
+        <menu>
+            <ul>
+                <template>
+                    <li><a href="" class="searchbar--item">
+                        <div class="cover portrait"></div>
+                        <div class="content">
+                            <span>-</span>
+                            <small></small>
+                        </div>
+                    </a></li>
+                </template>
+            </ul>
+            <div>
+                <a href="">See all results</a>
+                <button class="primary">Advanced search</button>
+            </div>
+        </menu>
+    </search>
 </div>
 <div>
     <button class="user-profile dark-mode">

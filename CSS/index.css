@@ -34,11 +34,11 @@
     --text-color: #4B4B4B;
   }
 }
-#coming-soon .content, header div {
+#coming-soon .content, header > div {
   flex: 1 1 0px;
 }
 
-.card, button {
+search menu, .card, button {
   padding: 1rem;
   background-color: var(--surface-color);
   border-radius: 0.5rem;
@@ -103,25 +103,34 @@ button {
 }
 button.primary {
   color: var(--surface-color);
-  background-color: var(--primary-color);
-  border-color: var(--primary-detail-color);
-  box-shadow: 0 2px 0 var(--primary-detail-color);
-}
-button.primary:hover {
-  background-color: var(--primary-hover-color);
-  border-color: var(--primary-color);
-  box-shadow: 0 2px 0 var(--primary-color);
-}
-button.secondary {
-  color: var(--surface-color);
   background-color: var(--secondary-color);
   border-color: var(--secondary-detail-color);
   box-shadow: 0 2px 0 var(--secondary-detail-color);
 }
-button.secondary:hover {
+button.primary:hover {
   background-color: var(--secondary-hover-color);
   border-color: var(--secondary-color);
   box-shadow: 0 2px 0 var(--secondary-color);
+}
+button.secondary {
+  color: var(--secondary-color);
+  background-color: var(--surface-color);
+  border-color: var(--secondary-color);
+  box-shadow: 0 2px 0 var(--secondary-color);
+}
+button.secondary:hover {
+  background-color: var(--detail-color);
+  border-color: var(--secondary-color);
+  box-shadow: 0 2px 0 var(--secondary-color);
+}
+button.tertiary {
+  background-color: transparent;
+  color: var(--text-color);
+  border: none;
+  box-shadow: none;
+}
+button.tertiary:hover {
+  background-color: var(--detail-color);
 }
 
 header {
@@ -137,10 +146,105 @@ header {
   z-index: 2;
   grid-column: 1/-1;
 }
-header div {
+header > div {
   display: flex;
   flex-direction: row;
   gap: 1rem;
+}
+header div:has(search) {
+  flex-grow: 2;
+}
+
+search {
+  position: relative;
+  --surface-color: #FFFFFF;
+  --background-color: #F7F7F7;
+  --detail-color: #E5E5E5;
+  --primary-color: #FE7E01;
+  --primary-detail-color: color-mix(in srgb, #FE7E01, black 20%);
+  --primary-hover-color: color-mix(in srgb, #FE7E01, white 33%);
+  --secondary-color: #1CB0F6;
+  --secondary-detail-color: color-mix(in srgb, #1CB0F6, black 20%);
+  --secondary-hover-color: color-mix(in srgb, #1CB0F6, white 33%);
+  --text-color: #4B4B4B;
+  flex-grow: 2;
+  height: 2.5rem;
+}
+search form {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  height: 100%;
+  position: relative;
+}
+search form input {
+  width: 100%;
+  height: 100%;
+  padding-left: 1rem;
+  padding-right: 3.5rem;
+  border: none;
+  border-radius: 0.5rem;
+}
+search form button {
+  position: absolute;
+  right: 0;
+  height: 100%;
+  width: 2.5rem;
+  border-radius: 50%;
+}
+search menu {
+  position: absolute;
+  padding: 0;
+  top: bottom;
+  width: 100%;
+  translate: 0 0.5rem;
+  max-height: min(100dvh - 4rem, 24rem);
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  align-items: stretch;
+  overflow: hidden;
+}
+search menu ul {
+  flex-grow: 1;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+search menu > div {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  padding: 1rem;
+  justify-content: space-between;
+  align-items: center;
+  background-color: var(--background-color);
+  max-height: fit-content;
+  z-index: 3;
+}
+
+.searchbar--item {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  align-items: center;
+  width: 100%;
+  height: 5rem;
+  padding: 0.5rem 1rem;
+  color: var(--text-color);
+  border-top: 2px solid var(--surface-color);
+  border-bottom: 2px solid var(--surface-color);
+}
+.searchbar--item .cover {
+  height: 100%;
+  aspect-ratio: 264/352;
+  background-color: var(--background-color);
+  background-size: contain;
+}
+.searchbar--item:hover {
+  background-color: var(--detail-color);
+  text-decoration: none;
+  border-color: var(--secondary-color);
+  z-index: 2;
 }
 
 .icon-button {
@@ -168,37 +272,6 @@ header div {
 }
 .icon-button i {
   color: var(--text-color);
-}
-
-.search-bar {
-  --surface-color: #FFFFFF;
-  --background-color: #F7F7F7;
-  --detail-color: #E5E5E5;
-  --primary-color: #FE7E01;
-  --primary-detail-color: color-mix(in srgb, #FE7E01, black 20%);
-  --primary-hover-color: color-mix(in srgb, #FE7E01, white 33%);
-  --secondary-color: #1CB0F6;
-  --secondary-detail-color: color-mix(in srgb, #1CB0F6, black 20%);
-  --secondary-hover-color: color-mix(in srgb, #1CB0F6, white 33%);
-  --text-color: #4B4B4B;
-  flex-grow: 2;
-  position: relative;
-}
-.search-bar i {
-  position: absolute;
-  left: 0.75rem;
-  top: 50%;
-  translate: 0 -50%;
-  color: var(--text-color);
-}
-.search-bar input[type=text] {
-  padding: 0 1rem 0.1rem 2.5rem;
-  height: 2.5rem;
-  border-radius: 0.5rem;
-  background-color: var(--surface-color);
-  border: none;
-  flex-grow: 1;
-  font-size: 1rem;
 }
 
 div:has(> .user-profile) {

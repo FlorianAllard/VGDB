@@ -161,7 +161,7 @@ function displayTrendingCards() {
       }
     }
 
-    card.setAttribute("href", `/HTML/games/?id=${game.id}`);
+    card.setAttribute("href", `/HTML/game/?id=${game.id}`);
 
     card.classList.remove("hidden");
   }
