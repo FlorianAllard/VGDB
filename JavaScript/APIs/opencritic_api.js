@@ -14,7 +14,7 @@ export async function searchGameByName(name) {
       },
     });
     let result = await response.json();
-    return result[0].dist < searchTolerance ? result[0] : null;
+    return result[0]?.dist < searchTolerance ? result[0] : null;
   } catch (error) {
     console.error(error);
   }

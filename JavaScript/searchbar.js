@@ -8,7 +8,6 @@ const searchbar = document.querySelector("search");
 const searchInput = searchbar.querySelector("input");
 const searchMenu = searchbar.querySelector("menu");
 const items = [];
-searchInput.value = new URLSearchParams(window.location.search).get("q") ?? "";
 
 searchInput.addEventListener("input", () => updateSearchDelay());
 searchInput.addEventListener("focusin", (event) => toggle(event, true));
@@ -24,26 +23,38 @@ function updateSearchDelay() {
 }
 
 async function updateSearch() {
-    const results = await IGDB.requestGames("*, cover.*, genres.*", "", 10, "", ` search "${searchInput.value}";`);
-    const games = IGDB.getCovers(results, true);
+  const results = await IGDB.requestGames("*, cover.*, genres.*, websites.*", "", 10, "", ` search "${searchInput.value}";`);
+  const games = IGDB.getCovers(results);
 
-    items.forEach((item) => {
-      item.remove();
-    });
-    
+  items.forEach((item) => {
+    item.remove();
+  });
+
+  if (games?.length > 0) {
     const template = searchbar.querySelector("template");
     games.forEach((game) => {
-        let clone = template.content.cloneNode(true);
-        let item = clone.querySelector("li");
-
-      item.querySelector(".cover").style.backgroundImage = `url(${game.cover.portrait_url})`;
+      let clone = template.content.cloneNode(true);
+      let item = clone.querySelector("li");
+      if (game.cover) {
+        item.querySelector(".cover").style.backgroundImage = `url(${game.cover.portrait_url})`;
+      }
       item.querySelector("span").textContent = game.name + (game.first_release_date ? ` (${Utilities.dateFromUnix(game.first_release_date, false, false)})` : "");
 
-        item.querySelector("a").setAttribute("href", `/HTML/game/?id=${game.id}`);
+      const platformsParent = item.querySelector(".subtexts");
+      for (let i = 0; i < game.platforms.length; i++) {
+        const newElement = document.createElement("li");
+        const small = document.createElement("small");
+        small.textContent = game.platforms[i].abbreviation;
+        newElement.appendChild(small);
+        platformsParent.appendChild(newElement);
+      }
+
+      item.querySelector("a").setAttribute("href", `/HTML/game/?id=${game.id}`);
 
       items.push(item);
       template.parentElement.appendChild(clone);
     });
+  }
 }
 
 function toggle(event, bool) {

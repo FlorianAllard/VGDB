@@ -50,7 +50,8 @@ export default function authentification() {
 async function makeRequest(endpoint, fields, sort, limit, where, additionalBody = "") {
   authentification();
 
-  const body = `fields ${fields};` +
+  const body =
+    (fields ? ` fields ${fields};` : "") +
     (sort ? ` sort ${sort};` : "") +
     (limit ? ` limit ${limit};` : "") +
     (where ? ` where ${where};` : "") +
@@ -87,6 +88,9 @@ export async function requestPopularityPrimitives(fields, sort = "", limit = "",
 }
 export async function requestGames(fields, sort = "", limit = "", where = "", search = "") {
   return await makeRequest("games", fields, sort, limit, where, search);
+}
+export async function requestTotalGames(where="", search="") {
+  return await makeRequest("games/count", "", "", "", where, search);
 }
 export async function requestGameVersions(fields, sort = "", limit = "", where = "") {
   return await makeRequest("game_versions", fields, sort, limit, where);
@@ -126,20 +130,22 @@ export function getCovers(elements, skipSteam = false) {
       if (skipSteam == false) {
         steamURL = element.websites?.find((website) => website.url.includes("steam"));
       }
-      if (steamURL && skipSteam == false) {
-        const match = steamURL.url.match(/\/app\/(\d+)/);
+      const match = steamURL ? steamURL.url.match(/\/app\/(\d+)/) : undefined;
+      if (match && skipSteam == false) {
         element.cover = {
           landscape_url: `https://steamcdn-a.akamaihd.net/steam/apps/${match[1]}/header.jpg`,
           portrait_url: `https://steamcdn-a.akamaihd.net/steam/apps/${match[1]}/library_600x900_2x.jpg`,
           hero_url: `https://steamcdn-a.akamaihd.net/steam/apps/${match[1]}/library_hero.jpg`,
           logo_url: `https://steamcdn-a.akamaihd.net/steam/apps/${match[1]}/logo.png`,
+          fit: `contain`
         };
       } else {
         element.cover = {
-          landscape_url: getImage(element.cover.image_id, "landscape"),
+          landscape_url: getImage(element.cover.image_id, "hero"),
           portrait_url: getImage(element.cover.image_id, "portrait"),
-          hero_url: '',
+          hero_url: "",
           logo_url: ``,
+          fit: `contain`,
         };
       }
     }

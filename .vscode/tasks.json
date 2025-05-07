@@ -1,0 +1,30 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+       {
+            "label": "SCSS compiler",
+            "type": "shell",
+            "command": "npx sass --watch ./SCSS:./CSS"
+        },
+        {
+            "label": "IGDB proxy",
+            "type": "shell",
+            "command": "npx lcp --proxyUrl https://api.igdb.com/v4 --port 8010"
+        },
+        {
+            "label": "ITAD proxy",
+            "type": "shell",
+            "command": "npx lcp --proxyUrl https://api.isthereanydeal.com --port 8011"
+        },
+        {
+            "label": "Run all tasks",
+            "dependsOn": [
+                "SCSS compiler",
+                "IGDB proxy",
+                "ITAD proxy"
+            ]
+        }
+    ]
+}

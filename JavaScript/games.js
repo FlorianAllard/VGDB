@@ -413,10 +413,12 @@ function fillEditions() {
       const versionName = version.name.replace(game.name, "").replace(/[:\-–]\s*/, "");
       card.querySelector("b").textContent = versionName;
 
-      const cover = card.querySelector(".cover");
-      cover.style.backgroundImage = `url(${version.cover.portrait_url})`;
+      if(version.cover) {
+        const cover = card.querySelector(".cover");
+        cover.style.backgroundImage = `url(${version.cover.portrait_url})`;
+      }
 
-      card.setAttribute("href", `/HTML/games/?id=${version.id}`);
+      card.setAttribute("href", `/HTML/game/?id=${version.id}`);
     }
   } else {
     section.remove();
@@ -443,13 +445,15 @@ function fillExpansions() {
 
       card.querySelector("b").textContent = expansion.name.replace(`${game.name}: `, "").replace(`${game.name} - `, "");
 
-      const cover = card.querySelector(".cover");
-      cover.style.backgroundImage = `url(${expansion.cover.portrait_url})`;
+      if(expansion.cover) {
+        const cover = card.querySelector(".cover");
+        cover.style.backgroundImage = `url(${expansion.cover.portrait_url})`;
+      }
 
       const date = card.querySelector(".subtexts small");
       // date.textContent = expansion.name.replace(`${game.name}: `, "").replace(`${game.name} - `, "");
 
-      card.setAttribute("href", `/HTML/games/?id=${expansion.id}`);
+      card.setAttribute("href", `/HTML/game/?id=${expansion.id}`);
     }
   } else {
     section.remove();
@@ -476,13 +480,15 @@ function fillDLCs() {
 
       card.querySelector("b").textContent = dlc.name.replace(`${game.name}: `, "").replace(`${game.name} - `, "");
 
-      const cover = card.querySelector(".cover");
-      cover.style.backgroundImage = `url(${dlc.cover.portrait_url})`;
+      if(dlc.cover) {
+        const cover = card.querySelector(".cover");
+        cover.style.backgroundImage = `url(${dlc.cover.portrait_url})`;
+      }
 
       const date = card.querySelector(".subtexts small");
       // date.textContent = game.name;
 
-      card.setAttribute("href", `/HTML/games/?id=${dlc.id}`);
+      card.setAttribute("href", `/HTML/game/?id=${dlc.id}`);
     }
   } else {
     section.remove();

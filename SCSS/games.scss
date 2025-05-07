@@ -8,6 +8,7 @@
     @include center();
     width: calc(100% + (2 * $side-padding));
     aspect-ratio: 1280 / 413;
+    max-height: 28rem;
     padding: 4rem;
 
     &--background {
@@ -52,7 +53,7 @@ section {
     position: relative;
     @include grid(4);
     justify-items: center;
-    padding: 0 $side-padding;
+    padding: 0 $side-padding 2rem $side-padding;
     gap: 0 2rem;
 }
 
@@ -373,7 +374,8 @@ table {
         &--text {
             p {
                 margin: 1rem;
-                margin-top: .75rem;
+                margin-top: 0.75rem;
+                padding-bottom: 0.25rem;
                     display: -webkit-box;
                     -webkit-line-clamp: 5;
                     -webkit-box-orient: vertical;
