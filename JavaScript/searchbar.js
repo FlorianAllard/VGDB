@@ -49,7 +49,7 @@ async function updateSearch() {
         platformsParent.appendChild(newElement);
       }
 
-      item.querySelector("a").setAttribute("href", `/game/?id=${game.id}`);
+      item.querySelector("a").setAttribute("href", `/HTML/game/?id=${game.id}`);
 
       items.push(item);
       template.parentElement.appendChild(clone);

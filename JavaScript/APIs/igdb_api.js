@@ -59,7 +59,7 @@ async function makeRequest(endpoint, fields, sort, limit, where, additionalBody 
   console.log(body);
 
   try {
-    const response = await fetch(`https://api.igdb.com/v4/${endpoint}/`, {
+    const response = await fetch(`http://localhost:8010/proxy/${endpoint}/`, {
       method: "POST",
       headers: {
         "Client-ID": localStorage.getItem("client_id"),

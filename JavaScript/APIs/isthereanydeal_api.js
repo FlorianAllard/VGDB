@@ -18,7 +18,7 @@ async function makeKeyRequest(method = "GET", endpoint, params, body = "") {
     if (body !== "") {
       options.body = body;
     }
-    const response = await fetch(`https://api.isthereanydeal.com/${endpoint}?key=${key}&${params}`, options);
+    const response = await fetch(`http://localhost:8011/proxy/${endpoint}?key=${key}&${params}`, options);
 
     if (response.ok) {
       return await response.json();

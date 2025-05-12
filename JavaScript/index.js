@@ -159,7 +159,7 @@ function displayTrendingCards() {
       }
     }
 
-    card.setAttribute("href", `/game/?id=${game.id}`);
+    card.setAttribute("href", `/HTML/game/?id=${game.id}`);
 
     card.classList.remove("hidden");
   }
@@ -180,7 +180,7 @@ function displayAnticipatedCard() {
     const date = card.querySelector(".subtexts small");
     date.textContent = Utilities.dateFromUnix(game.first_release_date);
 
-    card.setAttribute("href", `/game/?id=${game.id}`);
+    card.setAttribute("href", `/HTML/game/?id=${game.id}`);
 
     card.classList.remove("hidden");
   }
@@ -226,7 +226,7 @@ function displayUpcomingCards() {
     const date = card.querySelector(".subtexts small");
     date.textContent = Utilities.dateFromUnix(game.first_release_date);
 
-    card.setAttribute("href", `/game/?id=${game.id}`);
+    card.setAttribute("href", `/HTML/game/?id=${game.id}`);
     
     card.classList.remove("hidden");
   }
