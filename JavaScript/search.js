@@ -39,7 +39,7 @@ async function loadFilters() {
 
   try {
     // Fetch filters data from JSON file
-    const response = await fetch("/JavaScript/Data/filters.json");
+    const response = await fetch("../JavaScript/Data/filters.json");
     if (!response.ok) {
       throw new Error(`Failed to fetch filters.json: ${response.statusText}`);
     }

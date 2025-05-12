@@ -245,7 +245,7 @@ function fillAgeRatings() {
     game.age_ratings.forEach((rating) => {
       const element = section.querySelector(`#main--localization--age-ratings--${rating.organization}`);
       if (element) {
-        element.querySelector("img").setAttribute("src", `/Assets/Age ratings/${rating.rating}.svg`);
+        element.querySelector("img").setAttribute("src", `./Assets/Age ratings/${rating.rating}.svg`);
         const tooltip = element.querySelector("my-tooltip");
         if (rating.descriptions?.length > 0) {
           rating.descriptions.forEach((desc) => {

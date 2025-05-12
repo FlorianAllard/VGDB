@@ -3,9 +3,9 @@
 import { Tooltip } from "./tooltip.js";
 
 // Instantiate headers
-const headerFetch = fetch("/header.html");
+const headerFetch = fetch("../header.html");
 let headerHTML = "";
-const footerFetch = fetch("/footer.html");
+const footerFetch = fetch("../footer.html");
 let footerHTML = "";
 Promise.all([headerFetch, footerFetch]).then((responses) => {
   responses[0].text().then((data) => {
@@ -16,7 +16,7 @@ Promise.all([headerFetch, footerFetch]).then((responses) => {
 
     const script = document.createElement("script");
     script.setAttribute("type", "module");
-    script.setAttribute("src", "/JavaScript/searchbar.js");
+    script.setAttribute("src", "../JavaScript/searchbar.js");
     document.head.append(script);
   });
   responses[1].text().then((data) => {
