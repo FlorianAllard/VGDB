@@ -25,14 +25,15 @@ async function requestPageData() {
 
   // Fetch games data (current, previous, and next)
   let games = await IGDB.requestGames("*, genres.*, websites.*, videos.*, collections.*, franchises.*, cover.*, player_perspectives.*, game_modes.*, themes.*, involved_companies.*, involved_companies.company.*, game_engines.*, platforms.*, language_supports.*, language_supports.language.*, language_supports.language_support_type.*, age_ratings.*, age_ratings.content_descriptions.*, age_ratings.organization.*, release_dates.*, release_dates.platform.*, release_dates.release_region.*, release_dates.status.*, external_games.*, dlcs.*, dlcs.cover.*, expansions.*, expansions.cover.*, artworks.*, screenshots.*", "", 3, `id = ${id}`);
-  game = IGDB.getCovers(games)[0];
+  games = await IGDB.getCovers(games);
+  game = games[0];
 
   let versions = await IGDB.requestGames("*, cover.*, websites.*", "", "", `version_parent = ${game.id}`);
-  versions = IGDB.getCovers(versions, true);
-  game.versions = versions;
-
-  game.dlcs = IGDB.getCovers(game.dlcs, true);
-  game.expansions = IGDB.getCovers(game.expansions, true);
+  [game.versions, game.dlcs, game.expansions] = await Promise.all([
+    IGDB.getCovers(versions, true),
+    IGDB.getCovers(game.dlcs, true),
+    IGDB.getCovers(game.expansions, true)
+  ]);
 
   // Update document title and format game data
   document.title = game.name;
@@ -46,7 +47,8 @@ async function requestPageData() {
   rating = await OpenCritic.requestGame(game.name);
   console.log("Rating: ", rating);
   if(rating) {
-    reviews = (await OpenCritic.requestReviews(rating.id)).slice(0, 6);
+    const reviewsData = await OpenCritic.requestReviews(rating.id);
+    reviews = Array.isArray(reviewsData) ? reviewsData.slice(0, 6) : [];
     console.log("Reviews: ", reviews);
   }
 
@@ -105,13 +107,11 @@ function fillTop() {
     bannerBackground.setAttribute("src", game.cover.hero_url);
 
     const logo = banner.querySelector("#banner--logo");
-    Utilities.imageExists(game.cover.logo_url, (exists) => {
-      if (exists) {
+      if (game.cover.logo_url) {
         logo.setAttribute("src", game.cover.logo_url);
       } else {
         logo.remove();
       }
-    });
   } else {
     banner.remove();
   }
@@ -122,13 +122,11 @@ function fillTop() {
   top.querySelector("p").textContent = game.summary;
 
   const cover = top.querySelector("img");
-  Utilities.imageExists(game.cover.portrait_url, (exists) => {
-    if (exists) {
+    if (game.cover.portrait_url) {
       cover.setAttribute("src", game.cover.portrait_url);
     } else {
       cover.remove();
     }
-  });
 
   const iframe = top.querySelector("iframe");
   if (game.videos?.length > 0) {

@@ -4,7 +4,7 @@
 </div>
 <div class="search-bar">
     <search>
-        <form action="/HTML/search/">
+        <form id="searchbar-form" action="/HTML/search/">
             <input type="search" name="q" id="game" placeholder="Search VGDB">
             <button type="submit" class="tertiary"><i class="fa-solid fa-magnifying-glass"></i></button>
         </form>
@@ -22,8 +22,7 @@
                 </template>
             </ul>
             <div>
-                <a href="">See all results</a>
-                <button class="primary">Advanced search</button>
+                <button form="searchbar-form" class="primary">Advanced search</button>
             </div>
         </menu>
     </search>

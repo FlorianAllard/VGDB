@@ -146,15 +146,38 @@ button {
     }
 }
 
-input[type=search], input[type=text] {
+input[type=search], input[type=text], select {
     font-family: inherit;
     border: $outline-width solid var(--detail-color);
     border-radius: $border-radius;
     padding: 0 1rem;
+    background-color: var(--surface-color);
+    height: 2.5rem;
 
     &:focus-visible {
         border: $outline-width solid var(--secondary-color);
         outline: none;
+    }
+}
+
+form:has(select) {
+    position: relative;
+
+    select {
+        appearance: none;
+        background-image: url("/images/icons/caret-down-light.svg");
+        background-size: 24px;
+        background-repeat: no-repeat;
+        background-position: calc(100% - 8px) center;
+        padding-right: +2.5rem;
+    }
+
+    i {
+        position: absolute;
+        font-size: 0.75rem;
+        top: 50%;
+        right: 1rem;
+        translate: 0 -50%;
     }
 }
 
@@ -537,7 +560,12 @@ ul.subtexts {
         @include flex();
         height: min-content;
         max-width: 100%;
+        &:last-of-type {
+            flex: 1 1 0;
+            min-width: 0;
+        }
     }
+
 }
 
 small {
@@ -713,7 +741,7 @@ footer {
     }
 }
 
-.loading {
+i.loading {
     position: absolute;
     left: 50%;
     top: 50%;

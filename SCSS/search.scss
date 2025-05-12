@@ -9,12 +9,18 @@
     gap: 2rem;
 }
 
+#main-content--top--sort input {
+    
+}
+
 #filters {
     position: sticky;
     top: 6.5rem;
     height: fit-content;
     width: 100%;
     @include flex(column);
+    grid-column: span 1;
+    min-width: 0;
     
     >section {
         padding: 0;
@@ -108,7 +114,7 @@
 #main-content--grid {
     margin-top: 1rem;
     @include responsive-grid(30%, 4, 6);
-
+    
     .cover {
         padding: 0;
         background-size: cover;
@@ -123,7 +129,7 @@
             border-radius: 8px;
             z-index: 1;
         }
-
+        
         img {
             position: absolute;
             object-fit: contain;
@@ -132,4 +138,39 @@
             z-index: 2;
         }
     }
+    
+    &.loading {
+        @include transition(opacity, $transition-duration-instant/2);
+        opacity: 50%;
+    }
+}
+
+#main-content--pages {
+    @include flex(row, 0);
+    justify-content: center;
+    margin-top: 1rem;
+
+    button {
+        max-width: 2.5rem;
+        height: 2.5rem;
+        &.disabled{
+            opacity: 50%;
+    
+            &:hover {
+                cursor: default;
+                background-color: transparent;
+            }
+        }
+
+        &.current {
+            color: var(--secondary-color);
+            border: $outline-width solid var(--detail-color);
+
+            &:hover {
+                cursor: default;
+                background-color: transparent;
+            }
+        }
+    }
+
 }

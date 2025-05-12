@@ -56,6 +56,7 @@ async function makeRequest(endpoint, fields, sort, limit, where, additionalBody 
     (limit ? ` limit ${limit};` : "") +
     (where ? ` where ${where};` : "") +
     additionalBody;
+  console.log(body);
 
   try {
     const response = await fetch(`http://localhost:8010/proxy/${endpoint}/`, {
@@ -121,36 +122,58 @@ export async function requestTimeToBeat(fields, sort = "", limit = "", where = "
 /**
  * Enhances game objects with cover URLs.
  */
-export function getCovers(elements, skipSteam = false) {
+export async function getCovers(elements, skipSteam = false) {
   if (elements == null || elements.length <= 0) return;
 
-  elements.forEach((element) => {
+  // Map each element to a Promise
+  const promises = elements.map(async (element) => {
+    let cover = null;
+
+    if (element.cover) {
+      cover = {
+        landscape_url: getImage(element.cover.image_id, "hero"),
+        portrait_url: getImage(element.cover.image_id, "portrait"),
+        hero_url: "",
+        logo_url: "",
+        fit: "contain",
+      };
+    }
+
     if (element.cover) {
       let steamURL;
-      if (skipSteam == false) {
+      if (!skipSteam) {
         steamURL = element.websites?.find((website) => website.url.includes("steam"));
       }
       const match = steamURL ? steamURL.url.match(/\/app\/(\d+)/) : undefined;
-      if (match && skipSteam == false) {
-        element.cover = {
-          landscape_url: `https://steamcdn-a.akamaihd.net/steam/apps/${match[1]}/header.jpg`,
-          portrait_url: `https://steamcdn-a.akamaihd.net/steam/apps/${match[1]}/library_600x900_2x.jpg`,
-          hero_url: `https://steamcdn-a.akamaihd.net/steam/apps/${match[1]}/library_hero.jpg`,
-          logo_url: `https://steamcdn-a.akamaihd.net/steam/apps/${match[1]}/logo.png`,
-          fit: `contain`
-        };
-      } else {
-        element.cover = {
-          landscape_url: getImage(element.cover.image_id, "hero"),
-          portrait_url: getImage(element.cover.image_id, "portrait"),
-          hero_url: "",
-          logo_url: ``,
-          fit: `contain`,
-        };
+
+      if (match && !skipSteam) {
+        // Launch all imageExists calls concurrently for this element
+        const [landscapeExists, portraitExists, heroExists, logoExists] = await Promise.all([
+        Utilities.imageExists(`https://steamcdn-a.akamaihd.net/steam/apps/${match[1]}/header.jpg`), 
+        Utilities.imageExists(`https://steamcdn-a.akamaihd.net/steam/apps/${match[1]}/library_600x900_2x.jpg`),
+        Utilities.imageExists(`https://steamcdn-a.akamaihd.net/steam/apps/${match[1]}/library_hero.jpg`),
+        Utilities.imageExists(`https://steamcdn-a.akamaihd.net/steam/apps/${match[1]}/logo.png`)]);
+
+        // Update cover URLs based on the results
+        if (landscapeExists) cover.landscape_url =
+          `https://steamcdn-a.akamaihd.net/steam/apps/${match[1]}/header.jpg`;
+        if (portraitExists) cover.portrait_url =
+          `https://steamcdn-a.akamaihd.net/steam/apps/${match[1]}/library_600x900_2x.jpg`;
+        if (heroExists) cover.hero_url =
+          `https://steamcdn-a.akamaihd.net/steam/apps/${match[1]}/library_hero.jpg`;
+        if (logoExists) cover.logo_url =
+          `https://steamcdn-a.akamaihd.net/steam/apps/${match[1]}/logo.png`;
       }
     }
+
+    // Assign the cover to the element
+    element.cover = cover;
   });
 
+  // Wait for all promises to resolve
+  await Promise.all(promises);
+
+  console.log(elements);
   return elements;
 }
 

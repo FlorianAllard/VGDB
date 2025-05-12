@@ -35,6 +35,10 @@ export function dateFromUnix(unix, day = true, month = true) {
   const monthStr = date.toLocaleString("en-US", { month: "long" });
   const yearStr = date.getFullYear();
 
+  const isFuture = (unix * 1000) > Date.now();
+  day = !(isFuture && dayStr == "31");
+  month = !(isFuture && monthStr == "December");
+
   return `${day ? dayStr + " " : ""}${month ? monthStr + " " : ""}${yearStr}`;
 }
 
@@ -74,15 +78,17 @@ export function capitalize(string) {
   return split.join(" ");
 }
 
-export function imageExists(url, callback) {
-  var img = new Image();
-  img.src = url;
-  img.onload = () => {
-    callback(img.height != 0);
-  }
-  img.onerror = () => {
-    callback(false);
-  }
+export async function imageExists(url) {
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.src = url;
+    img.onload = () => {
+      resolve(img.height !== 0);
+    };
+    img.onerror = () => {
+      resolve(false);
+    };
+  });
 }
 
 export function getVideoThumbnail(id) {

@@ -89,15 +89,36 @@ button:focus-visible {
   outline: none;
 }
 
-input[type=search], input[type=text] {
+input[type=search], input[type=text], select {
   font-family: inherit;
   border: 2px solid var(--detail-color);
   border-radius: 0.5rem;
   padding: 0 1rem;
+  background-color: var(--surface-color);
+  height: 2.5rem;
 }
-input[type=search]:focus-visible, input[type=text]:focus-visible {
+input[type=search]:focus-visible, input[type=text]:focus-visible, select:focus-visible {
   border: 2px solid var(--secondary-color);
   outline: none;
+}
+
+form:has(select) {
+  position: relative;
+}
+form:has(select) select {
+  appearance: none;
+  background-image: url("/images/icons/caret-down-light.svg");
+  background-size: 24px;
+  background-repeat: no-repeat;
+  background-position: calc(100% - 8px) center;
+  padding-right: 2.5rem;
+}
+form:has(select) i {
+  position: absolute;
+  font-size: 0.75rem;
+  top: 50%;
+  right: 1rem;
+  translate: 0 -50%;
 }
 
 div:has(input[type=checkbox]) input[type=checkbox]:hover, div:has(input[type=checkbox]) label:hover {
@@ -485,6 +506,10 @@ ul.subtexts li {
   height: min-content;
   max-width: 100%;
 }
+ul.subtexts li:last-of-type {
+  flex: 1 1 0;
+  min-width: 0;
+}
 
 small {
   font-size: 0.75rem;
@@ -664,7 +689,7 @@ footer #legal a {
   color: var(--text-color);
 }
 
-.loading {
+i.loading {
   position: absolute;
   left: 50%;
   top: 50%;

@@ -36,17 +36,20 @@
             <section id="main-content">
                 <section id="main-content--top">
                     <search>
-                        <form action="" id="main-content--top--search">
+                        <form id="main-content--top--search" onsubmit="event.preventDefault();">
                             <input type="search" name="q" id="game" placeholder="Search for games by name"
                                 data-filter="search">
                             <button type="submit" class="tertiary"><i class="fa-solid fa-magnifying-glass"></i></button>
                         </form>
                     </search>
-                    <form action="" id="main-content--top--sort">
+                    <form id="main-content--top--sort" onsubmit="event.preventDefault();">
                         <label for="sortby">Sort by</label>
                         <select name="sortby">
-                            <option value="popularity">Popularity</option>
+                            <option value="SEARCH">Relevance</option>
+                            <option value="first_release_date">Release date</option>
+                            <option value="hypes">Pre-release hype</option>
                         </select>
+                        <i class="fa-solid fa-chevron-down"></i>
                     </form>
                 </section>
 
@@ -59,7 +62,6 @@
                             <div class="content">
                                 <b>-</b>
                                 <ul class="subtexts">
-                                    <li><small>-</small></li>
                                 </ul>
                             </div>
                         </a>
@@ -67,7 +69,15 @@
                 </section>
 
                 <section id="main-content--pages">
-                    
+                    <button class="tertiary disabled"><i class="fa-solid fa-chevron-left"></i></button>
+                    <button class="tertiary current">1</button>
+                    <button class="tertiary">2</button>
+                    <button class="tertiary">3</button>
+                    <button class="tertiary">4</button>
+                    <button class="tertiary">5</button>
+                    <button class="tertiary">...</button>
+                    <button class="tertiary">10</button>
+                    <button class="tertiary"><i class="fa-solid fa-chevron-right"></i></button>
                 </section>
             </section>
         </section>

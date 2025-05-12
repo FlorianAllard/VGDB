@@ -1141,5 +1141,72 @@
         "name": "Romance"
       }
     ]
+  },
+  {
+    "name": "Game types",
+    "body": "game_type",
+    "type": "checkboxes",
+    "values": [
+      {
+        "id": 3,
+        "name": "Bundle"
+      },
+      {
+        "id": 1,
+        "name": "DLC"
+      },
+      {
+        "id": 6,
+        "name": "Episode"
+      },
+      {
+        "id": 4,
+        "name": "Standalone Expansion"
+      },
+      {
+        "id": 5,
+        "name": "Mod"
+      },
+      {
+        "id": 8,
+        "name": "Remake"
+      },
+      {
+        "id": 11,
+        "name": "Port"
+      },
+      {
+        "id": 7,
+        "name": "Season"
+      },
+      {
+        "id": 12,
+        "name": "Fork"
+      },
+      {
+        "id": 14,
+        "name": "Update"
+      },
+      {
+        "id": 10,
+        "name": "Expanded Game"
+      },
+      {
+        "id": 13,
+        "name": "Pack / Addon"
+      },
+      {
+        "id": 9,
+        "name": "Remaster"
+      },
+      {
+        "id": 2,
+        "name": "Expansion"
+      },
+      {
+        "id": 0,
+        "name": "Main Game"
+      }
+    ]
   }
 ]

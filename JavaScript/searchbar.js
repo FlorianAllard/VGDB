@@ -24,7 +24,7 @@ function updateSearchDelay() {
 
 async function updateSearch() {
   const results = await IGDB.requestGames("*, cover.*, genres.*, websites.*", "", 10, "", ` search "${searchInput.value}";`);
-  const games = IGDB.getCovers(results);
+  const games = await IGDB.getCovers(results);
 
   items.forEach((item) => {
     item.remove();

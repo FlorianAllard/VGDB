@@ -119,10 +119,8 @@ async function requestPageData() {
     IDs.length,
     `id = (${IDs.toString()})`
   );
+  games = await IGDB.getCovers(games);
   console.log("Games: ", games);
-
-  //Get all covers
-  games = IGDB.getCovers(games);
 
   displayTrendingCards();
   displayAnticipatedCard();
