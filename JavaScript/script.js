@@ -3,9 +3,9 @@
 import { Tooltip } from "./tooltip.js";
 
 // Instantiate headers
-const headerFetch = fetch("/HTML/header.html");
+const headerFetch = fetch("/header.html");
 let headerHTML = "";
-const footerFetch = fetch("/HTML/footer.html");
+const footerFetch = fetch("/footer.html");
 let footerHTML = "";
 Promise.all([headerFetch, footerFetch]).then((responses) => {
   responses[0].text().then((data) => {

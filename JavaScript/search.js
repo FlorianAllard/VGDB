@@ -286,7 +286,7 @@ function updateCards(games) {
         card.querySelector(".cover img").remove();
       }
 
-      card.setAttribute("href", `/HTML/game/?id=${game.id}`);
+      card.setAttribute("href", `/game/?id=${game.id}`);
 
       // Add card to the DOM
       cards.push(card);

@@ -416,7 +416,7 @@ function fillEditions() {
         cover.style.backgroundImage = `url(${version.cover.portrait_url})`;
       }
 
-      card.setAttribute("href", `/HTML/game/?id=${version.id}`);
+      card.setAttribute("href", `/game/?id=${version.id}`);
     }
   } else {
     section.remove();
@@ -451,7 +451,7 @@ function fillExpansions() {
       const date = card.querySelector(".subtexts small");
       // date.textContent = expansion.name.replace(`${game.name}: `, "").replace(`${game.name} - `, "");
 
-      card.setAttribute("href", `/HTML/game/?id=${expansion.id}`);
+      card.setAttribute("href", `/game/?id=${expansion.id}`);
     }
   } else {
     section.remove();
@@ -486,7 +486,7 @@ function fillDLCs() {
       const date = card.querySelector(".subtexts small");
       // date.textContent = game.name;
 
-      card.setAttribute("href", `/HTML/game/?id=${dlc.id}`);
+      card.setAttribute("href", `/game/?id=${dlc.id}`);
     }
   } else {
     section.remove();
