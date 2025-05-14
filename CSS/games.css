@@ -1106,6 +1106,7 @@ table {
   max-width: 100%;
   max-height: 100%;
   object-fit: contain;
+  background-color: white;
 }
 #media-overlay iframe {
   width: 100%;

@@ -870,7 +870,6 @@ dialog[show] {
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
-  max-width: 40%;
   padding: 0.25rem 0.5rem;
   background-color: color-mix(in srgb, var(--secondary-color), transparent 75%);
   border-radius: 100rem;
@@ -929,6 +928,9 @@ dialog[show] {
   transition: opacity 50ms ease;
   opacity: 50%;
 }
+#main-content--grid.loading * {
+  pointer-events: none;
+}
 
 #main-content--pages {
   display: flex;
@@ -943,10 +945,7 @@ dialog[show] {
 }
 #main-content--pages button.disabled {
   opacity: 50%;
-}
-#main-content--pages button.disabled:hover {
-  cursor: default;
-  background-color: transparent;
+  pointer-events: none;
 }
 #main-content--pages button.current {
   color: var(--secondary-color);

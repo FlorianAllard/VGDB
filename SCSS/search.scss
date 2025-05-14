@@ -78,7 +78,6 @@
                 white-space: nowrap;
                 text-overflow: ellipsis;
                 overflow: hidden;
-                max-width: 40%;
                 padding: 0.25rem 0.5rem;
                 background-color: color-mix(in srgb, var(--secondary-color), transparent 75%);
                 border-radius: 100rem;
@@ -142,6 +141,9 @@
     &.loading {
         @include transition(opacity, $transition-duration-instant/2);
         opacity: 50%;
+        * {
+            pointer-events: none;
+        }
     }
 }
 
@@ -155,11 +157,7 @@
         height: 2.5rem;
         &.disabled{
             opacity: 50%;
-    
-            &:hover {
-                cursor: default;
-                background-color: transparent;
-            }
+            pointer-events: none;
         }
 
         &.current {

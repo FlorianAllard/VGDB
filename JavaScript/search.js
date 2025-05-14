@@ -13,6 +13,7 @@ let timeout;
 const cards = [];
 let amountPerPage = 30;
 let currentPage = 0;
+let totalGames;
 const sortBy = document.querySelector("#main-content--top--sort select");
 sortBy.addEventListener("change", () => applyFilters());
 
@@ -199,6 +200,7 @@ function updateFilters(input) {
 function delayBeforeApplyingFilters() {
   clearTimeout(timeout);
   timeout = window.setTimeout(() => {
+    currentPage = 0;
     applyFilters();
   }, 250);
 }
@@ -213,13 +215,14 @@ async function applyFilters() {
   let sort = `${sortBy.value} desc`;
   let where = "";
   let search = "";
+  let page = `offset ${currentPage * amountPerPage};`;
 
   if (currentFilters["search"]) {
     if (sortBy.value !== "SEARCH") {
       where += `name~*"${currentFilters["search"]}"* & `;
       fields += `, ${sortBy.value}`;
     } else {
-      search = ` search "${currentFilters["search"]}";`;
+      search = ` search "${currentFilters["search"]}"; `;
       sort = "";
     }
   }
@@ -236,8 +239,10 @@ async function applyFilters() {
       IGDB.requestGames(fields, sort, `${amountPerPage}; offset ${currentPage * amountPerPage}`, where, search),
     ]);
 
+    totalGames = total;
     const games = await IGDB.getCovers(results);
     updateCards(games);
+    updatePages();
   } catch (error) {
     console.error("Error applying filters:", error);
   }
@@ -303,4 +308,90 @@ function toggleLoading(b) {
   } else {
     grid.classList.remove("loading");
   }
+}
+
+function updatePages() {
+  const pageControls = document.querySelectorAll("#main-content--pages button");
+  const maxPages = Math.max(0, Math.ceil(totalGames.count / amountPerPage) - 1);
+  
+  for (let i = 0; i < pageControls.length; i++) {
+    // Remove eventListener
+    const control = pageControls[i].cloneNode(true);
+    pageControls[i].parentNode.replaceChild(control, pageControls[i]);
+    let index;
+
+    switch(i) {
+      case 0:
+        control.addEventListener("click", () => goToPage(currentPage-1));
+        control.classList.toggle("disabled", currentPage == 0);
+        break;
+
+      case 1:
+        index = 0;
+        control.textContent = index + 1;
+        control.classList.toggle("current", currentPage == index);
+        control.addEventListener("click", () => goToPage(index));
+        break;
+
+      case 2:
+        index = Utilities.clamp(currentPage - 2, 1, Math.max(maxPages - 5, 1));
+        control.textContent = index == 1 ? index + 1 : "...";
+        control.classList.toggle("current", currentPage == index);
+        control.addEventListener("click", () => goToPage(index));
+        control.style.display = maxPages >= 2 ? "" : "none";
+        break;
+
+      case 3:
+        index = Utilities.clamp(currentPage - 1, 2, Math.max(maxPages - 4, 2));
+        control.textContent = index + 1;
+        control.classList.toggle("current", currentPage == index);
+        control.addEventListener("click", () => goToPage(index));
+        control.style.display = maxPages >= 3 ? "" : "none";
+        break;
+
+      case 4:
+        index = Utilities.clamp(currentPage, 3, Math.max(maxPages - 3, 3));
+        control.textContent = index + 1;
+        control.classList.toggle("current", currentPage == index);
+        control.addEventListener("click", () => goToPage(index));
+        control.style.display = maxPages >= 4 ? "" : "none";
+        break;
+
+      case 5:
+        index = Utilities.clamp(currentPage + 1, 4, Math.max(maxPages - 2, 4));
+        control.textContent = index + 1;
+        control.classList.toggle("current", currentPage == index);
+        control.addEventListener("click", () => goToPage(index));
+        control.style.display = maxPages >= 5 ? "" : "none";
+        break;
+
+      case 6:
+        index = Utilities.clamp(currentPage + 2, 5, Math.max(maxPages - 1, 5));
+        control.textContent = index == maxPages - 1 ? index + 1 : "...";
+        control.classList.toggle("current", currentPage == index);
+        control.addEventListener("click", () => goToPage(index));
+        control.style.display = maxPages >= 6 ? "" : "none";
+        break;
+
+      case 7:
+        index = maxPages;
+        control.textContent = index + 1;
+        control.classList.toggle("current", currentPage == index);
+        control.addEventListener("click", () => goToPage(index));
+        control.style.display = maxPages >= 7 ? "" : "none";
+        break;
+
+      case 8:
+        control.addEventListener("click", () => goToPage(currentPage + 1));
+        control.classList.toggle("disabled", currentPage+1 == maxPages);
+        break;
+    }
+  }
+}
+
+async function goToPage(index) {
+  currentPage = index;
+  console.log("Go to page ", index);
+  await applyFilters();
+  document.querySelector("main").scrollTo({ top: 0, behavior: "smooth" });
 }

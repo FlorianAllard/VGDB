@@ -56,7 +56,6 @@ async function makeRequest(endpoint, fields, sort, limit, where, additionalBody 
     (limit ? ` limit ${limit};` : "") +
     (where ? ` where ${where};` : "") +
     additionalBody;
-  console.log(body);
 
   try {
     const response = await fetch(`http://localhost:8010/proxy/${endpoint}/`, {
