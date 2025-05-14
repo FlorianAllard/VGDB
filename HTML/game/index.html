@@ -14,7 +14,7 @@
 <body>
     <main>
         <section id="body">
-            <figure id="banner">
+            <figure id="banner" class="loading">
                 <img id="banner--background" alt="">
                 <img id="banner--logo" alt="">
             </figure>
@@ -33,15 +33,15 @@
             
             <section id="main-content">
                 <section id="main--top">
-                    <h1>Game name</h1>
-                    <small>Release date</small>
-                    <div id="main--top--media">
+                    <h1 class="loading">Game name</h1>
+                    <small class="loading">Release date</small>
+                    <div class="loading" id="main--top--media">
                         <img src="" alt="" id="game-cover">
                         <iframe src=""
                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                             referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
                     </div>
-                    <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Facere error ab exercitationem quaerat sed
+                    <p class="loading">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Facere error ab exercitationem quaerat sed
                         laboriosam
                         qui molestiae, architecto fuga amet.</p>
                 </section>
@@ -50,51 +50,58 @@
                     <h2>About</h2>
                     <table class="table-list">
                         <tbody>
-                            <tr id="main--about--platforms" class="table-separator">
+                            <tr id="main--about--platforms">
                                 <th>Platforms</th>
-                                <td></td>
+                                <td class="loading"></td>
                             </tr>
+
+                            <tr class="separator"></tr>
+
                             <tr id="main--about--genres">
                                 <th>Genres</th>
-                                <td></td>
+                                <td class="loading"></td>
                             </tr>
                             <tr id="main--about--game-modes">
                                 <th>Game modes</th>
-                                <td></td>
+                                <td class="loading"></td>
                             </tr>
                             <tr id="main--about--player-perspectives">
                                 <th>Player perspectives</th>
-                                <td></td>
+                                <td class="loading"></td>
                             </tr>
-                            <tr id="main--about--themes" class="table-separator">
+                            <tr id="main--about--themes">
                                 <th>Themes</th>
-                                <td></td>
+                                <td class="loading"></td>
                             </tr>
+
+                            <tr class="separator"></tr>
             
                             <tr id="main--about--main-developers">
                                 <th>Main developers</th>
-                                <td></td>
+                                <td class="loading"></td>
                             </tr>
                             <tr id="main--about--supporting-developers">
                                 <th>Supporting developers</th>
-                                <td></td>
+                                <td class="loading"></td>
                             </tr>
                             <tr id="main--about--publishers">
                                 <th>Publishers</th>
-                                <td></td>
+                                <td class="loading"></td>
                             </tr>
-                            <tr id="main--about--game-engines" class="table-separator">
+                            <tr id="main--about--game-engines">
                                 <th>Game engines</th>
-                                <td></td>
+                                <td class="loading"></td>
                             </tr>
+
+                            <tr class="separator"></tr>
             
                             <tr id="main--about--series">
                                 <th>Series</th>
-                                <td></td>
+                                <td class="loading"></td>
                             </tr>
                             <tr id="main--about--franchises">
                                 <th>Franchises</th>
-                                <td></td>
+                                <td class="loading"></td>
                             </tr>
                         </tbody>
                     </table>
@@ -102,7 +109,7 @@
             
                 <section id="main--plot">
                     <h2>Plot</h2>
-                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Magni unde saepe sit nihil inventore natus
+                    <p class="loading">Lorem ipsum dolor sit amet consectetur adipisicing elit. Magni unde saepe sit nihil inventore natus
                         pariatur facilis, earum ut alias culpa officiis at perferendis minus! Animi mollitia deserunt, velit et
                         ipsam aperiam quasi, sapiente dolor at amet laboriosam vero nemo hic tenetur accusantium veniam dolorem
                         delectus? At sit vero culpa!</p>
@@ -122,7 +129,7 @@
                                     <th>Interface</th>
                                 </tr>
                             </thead>
-                            <tbody></tbody>
+                            <tbody class="loading"></tbody>
                         </table>
                     </section>
             
@@ -149,13 +156,12 @@
                                 <img src="/Assets/Age ratings/0.svg" alt="">
                                 <my-tooltip></my-tooltip>
                             </li>
-                            </li>
                             <li id="main--localization--age-ratings--ACB">
                                 <small>Australia</small>
                                 <img src="/Assets/Age ratings/0.svg" alt="">
                                 <my-tooltip></my-tooltip>
                             </li>
-                            <li id="main--localization--age-ratings--CERO">
+                            <li id="main--localization--age-ratings--CERO" >
                                 <small>Japan</small>
                                 <img src="/Assets/Age ratings/0.svg" alt="">
                                 <my-tooltip></my-tooltip>
@@ -178,7 +184,7 @@
                             <th>Platforms</th>
                             <th>Regions</th>
                         </thead>
-                        <tbody></tbody>
+                        <tbody class="loading"></tbody>
                     </table>
                 </section>
 
@@ -187,39 +193,39 @@
                     <ul>
                         <li id="main--reception--users">
                             <div>
-                                <b>Users average score</b>
-                                <small>Based on x reviews</small>
+                                <b class="loading">Users average score</b>
+                                <small class="loading">Based on x reviews</small>
                             </div>
-                            <div class="rating">
+                            <div class="rating loading">
                                 <span>95</span>
                                 <small>/100</small>
                             </div>
                         </li>
                         <li id="main--reception--critics">
                             <div>
-                                <b>Critics average score</b>
-                                <small>Based on x reviews</small>
+                                <b class="loading">Critics average score</b>
+                                <small class="loading">Based on x reviews</small>
                             </div>
-                            <div class="rating">
+                            <div class="rating loading">
                                 <span>95</span>
                                 <small>/100</small>
                             </div>
                         </li>
-                        <template>
+                        <template data-loading-placeholders="6">
                             <a href="" target="_blank" class="main--reception--review">
                                 <div class="main--reception--review--top">
-                                    <img src="https://img.opencritic.com/outlet/501/o/X1wZuvWe.jpg" alt="">
+                                    <img src="" alt="loading">
                                     <div class="main--reception--review--top--title">
-                                        <b>Fextralife</b>
-                                        <small>Castielle</small>
+                                        <b class="loading">Fextralife</b>
+                                        <small class="loading">Castielle</small>
                                     </div>
-                                    <div class="rating">
+                                    <div class="rating loading">
                                         <span>95</span>
                                         <small>/100</small>
                                     </div>
                                 </div>
                                 <div class="main--reception--review--text">
-                                    <p></p>
+                                    <p class="loading">Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolorum, dolore! Sint obcaecati et, sunt impedit fugit ea! Ex sapiente voluptates nesciunt dolor repudiandae voluptatum vel et hic incidunt laudantium, explicabo veritatis, amet totam? Eum doloribus a minus id ab quos, unde illo officia cupiditate distinctio reiciendis quis optio, voluptatibus recusandae.</p>
                                 </div>
                                 <div class="main--reception--review--hover">Read full review</div>
                             </a>
@@ -232,11 +238,11 @@
                     <section id="main--additional-content--editions">
                         <h3>Editions</h3>
                         <div>
-                            <template>
+                            <template data-loading-placeholders="4">
                                 <a href="" class="card vertical">
-                                    <div class="cover thumb"></div>
+                                    <div class="cover thumb loading"></div>
                                     <div class="content">
-                                        <b>-</b>
+                                        <b class="loading">-</b>
                                     </div>
                                 </a>
                             </template>
@@ -246,11 +252,11 @@
                     <section id="main--additional-content--expansions">
                         <h3>Expansions</h3>
                         <div>
-                            <template>
+                            <template data-loading-placeholders="4">
                                 <a href="" class="card vertical">
-                                    <div class="cover thumb"></div>
+                                    <div class="cover thumb loading"></div>
                                     <div class="content">
-                                        <b>-</b>
+                                        <b class="loading">-</b>
                                     </div>
                                 </a>
                             </template>
@@ -260,11 +266,11 @@
                     <section id="main--additional-content--dlcs">
                         <h3>DLCs</h3>
                         <div>
-                            <template>
+                            <template data-loading-placeholders="4">
                                 <a href="" class="card vertical">
-                                    <div class="cover thumb"></div>
+                                    <div class="cover thumb loading"></div>
                                     <div class="content">
-                                        <b>-</b>
+                                        <b class="loading">-</b>
                                     </div>
                                 </a>
                             </template>
@@ -277,19 +283,19 @@
                     <ul>
                         <li>
                             <span>Minimum</span>
-                            <b id="main--time-to-beat--minimum">50h</b>
+                            <b id="main--time-to-beat--minimum"  class="loading">50h</b>
                         </li>
                         <li>
                             <span>Normal</span>
-                            <b id="main--time-to-beat--normal">122h</b>
+                            <b id="main--time-to-beat--normal"  class="loading">122h</b>
                         </li>
                         <li>
                             <span>Completionist</span>
-                            <b id="main--time-to-beat--completionist">379h</b>
+                            <b id="main--time-to-beat--completionist"  class="loading">379h</b>
                         </li>
                         <li>
                             <span>Speedrun World Record</span>
-                            <b id="main--time-to-beat--speedrun">03m 19s 410ms</b>
+                            <b id="main--time-to-beat--speedrun"  class="loading">03m 19s 410ms</b>
                         </li>
                     </ul>
                 </section>
@@ -306,7 +312,7 @@
                                 <th>Current price</th>
                             </tr>
                         </thead>
-                        <tbody></tbody>
+                        <tbody class="loading"></tbody>
                     </table>
                 </section>
             
@@ -314,17 +320,23 @@
                     <h2>Media</h2>
                     <section id="main--media--artworks">
                         <h3>Artwork</h3>
-                        <ul></ul>
+                        <ul>
+                            <li class="loading remove-after-loading" ><div></div></li>
+                            <li class="loading remove-after-loading"><div></div></li>
+                        </ul>
                     </section>
                     <section id="main--media--screenshots">
                         <h3>Screenshots</h3>
-                        <ul></ul>
+                        <ul>
+                            <li class="loading remove-after-loading"><div></div></li>
+                            <li class="loading remove-after-loading"><div></div></li>
+                        </ul>
                     </section>
                     <section id="main--media--videos">
                         <h3>Videos</h3>
                         <ul>
-                            <template>
-                                <li class="zoom">
+                            <template data-loading-placeholders="2">
+                                <li class="zoom loading">
                                     <div>
                                         <img src="/Assets/youtube.svg" alt="">
                                     </div>

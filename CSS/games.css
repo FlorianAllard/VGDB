@@ -450,13 +450,6 @@ section > .content {
   min-height: 1lh;
   max-width: 100%;
 }
-.card.hidden {
-  pointer-events: none;
-  opacity: 0%;
-}
-.card.hidden .cover {
-  opacity: 0%;
-}
 .card .cover {
   background-size: cover;
   background-position: center;
@@ -511,6 +504,7 @@ ul.subtexts {
   flex-direction: row;
   gap: 0.5rem;
   list-style-type: none;
+  min-height: 1rem;
 }
 ul.subtexts li {
   display: flex;
@@ -702,16 +696,6 @@ footer #legal a {
   color: var(--text-color);
 }
 
-i.loading {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  translate: -50% -50%;
-  color: var(--secondary-color);
-  font-size: 2rem;
-  animation: loading 1s steps(8) infinite;
-}
-
 @keyframes loading {
   from {
     rotate: 0;
@@ -807,6 +791,37 @@ dialog[show] {
   opacity: 100%;
 }
 
+*:has(> .loading) {
+  pointer-events: none;
+}
+
+.loading, img[alt=loading] {
+  position: relative;
+}
+.loading:after, img[alt=loading]:after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: var(--detail-color);
+  background: linear-gradient(90deg, var(--detail-color) 0%, color-mix(in srgb, var(--detail-color), var(--background-color) 25%) 10%, var(--detail-color) 20%);
+  background-size: 200% 100%;
+  z-index: 2;
+  pointer-events: none;
+  animation: 1.5s loading-animation linear infinite;
+}
+
+tbody.loading {
+  height: 8rem;
+}
+
+@keyframes loading-animation {
+  to {
+    background-position-x: -200%;
+  }
+}
 #banner {
   position: relative;
   grid-column: 1/-1;
@@ -937,9 +952,8 @@ table {
   color: #00c851;
 }
 
-.table-list tr:not(:last-child) td,
-.table-list tr:not(:last-child) th {
-  padding-bottom: 1rem;
+.table-list {
+  border-spacing: 0 1rem;
 }
 .table-list th {
   text-align: left;
@@ -947,12 +961,12 @@ table {
   white-space: nowrap;
   padding-right: 4rem;
 }
-.table-list .table-separator th,
-.table-list .table-separator td {
-  border-bottom: 2px solid var(--detail-color);
+.table-list td {
+  width: 100%;
 }
-.table-list .table-separator + tr th, .table-list .table-separator + tr td {
-  padding-top: 1rem;
+.table-list .separator {
+  background-color: var(--detail-color);
+  height: 2px;
 }
 
 #main--localization--age-ratings ul {

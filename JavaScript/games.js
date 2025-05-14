@@ -15,6 +15,7 @@ let timeToBeat;
 let prices;
 
 // Main entry point
+Utilities.startLoading();
 requestPageData();
 
 /**
@@ -95,6 +96,8 @@ function fillPage() {
 
   createTableOfContents();
   createExternalLinks();
+
+  Utilities.stopLoading();
 }
 
 /**

@@ -122,3 +122,23 @@ export function getCurrencyGlyph(currency) {
 export function clamp(val, min, max) {
   return Math.min(max, Math.max(min, val));
 }
+
+export function startLoading() {
+  const templates = document.querySelectorAll('template[data-loading-placeholders]');
+  templates.forEach(template => {
+    const amount = template.getAttribute("data-loading-placeholders");
+    for (let i = 0; i < amount; i++) {
+      const clone = template.content.firstElementChild.cloneNode(true);
+      clone.classList.add("remove-after-loading");
+      template.parentElement.appendChild(clone);
+    }
+  });
+}
+
+export function stopLoading() {
+  const loading = document.querySelectorAll(".loading");
+  loading.forEach((ld) => ld.classList.remove("loading"));
+
+  const removeAfterLoading = document.querySelectorAll(".remove-after-loading");
+  removeAfterLoading.forEach((el) => el.remove());
+}

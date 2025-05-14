@@ -34,7 +34,6 @@ function createTrendingCards(amount) {
     let card = clone.querySelector(".card");
     trendingTemplate.parentElement.appendChild(clone);
 
-    card.classList.add("hidden");
     if (i == 0) {
       card.querySelector(".cover").classList.add("landscape");
     } else {
@@ -51,8 +50,6 @@ function createAnticipatedCards(amount) {
     let clone = anticipatedTemplate.content.cloneNode(true);
     let card = clone.querySelector(".card");
     anticipatedTemplate.parentElement.appendChild(clone);
-
-    card.classList.add("hidden");
     cards.push(card);
   }
   return cards;
@@ -64,8 +61,6 @@ function createUpcomingCards(amount) {
     let clone = upcomingTemplate.content.cloneNode(true);
     let card = clone.querySelector(".card");
     upcomingTemplate.parentElement.appendChild(clone);
-
-    card.classList.add("hidden");
     cards.push(card);
   }
   return cards;
@@ -125,6 +120,7 @@ async function requestPageData() {
   displayTrendingCards();
   displayAnticipatedCard();
   displayUpcomingCards();
+  Utilities.stopLoading();
 }
 
 function displayTrendingCards() {
@@ -160,11 +156,7 @@ function displayTrendingCards() {
     }
 
     card.setAttribute("href", `/HTML/game/?id=${game.id}`);
-
-    card.classList.remove("hidden");
   }
-  const loading = trending.querySelector(".loading");
-  loading.remove();
 }
 
 function displayAnticipatedCard() {
@@ -181,8 +173,6 @@ function displayAnticipatedCard() {
     date.textContent = Utilities.dateFromUnix(game.first_release_date);
 
     card.setAttribute("href", `/HTML/game/?id=${game.id}`);
-
-    card.classList.remove("hidden");
   }
 
   updateAnticipatedCountdowns();
@@ -191,9 +181,6 @@ function displayAnticipatedCard() {
     updateAnticipatedCountdowns();
     setInterval(updateAnticipatedCountdowns, 60 * 1000);
   }, delay);
-
-  const loading = anticipated.querySelector(".loading");
-  loading.remove();
 }
 
 function updateAnticipatedCountdowns() {
@@ -227,10 +214,5 @@ function displayUpcomingCards() {
     date.textContent = Utilities.dateFromUnix(game.first_release_date);
 
     card.setAttribute("href", `/HTML/game/?id=${game.id}`);
-    
-    card.classList.remove("hidden");
   }
-
-  const loading = upcoming.querySelector(".loading");
-  loading.remove();
 }

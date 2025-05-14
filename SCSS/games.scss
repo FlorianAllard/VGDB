@@ -138,10 +138,7 @@ table {
 }
 
 .table-list {
-    tr:not(:last-child) td,
-    tr:not(:last-child) th {
-        padding-bottom: 1rem;
-    }
+    border-spacing: 0 1rem;
 
     th {
         text-align: left;
@@ -150,16 +147,13 @@ table {
         padding-right: 4rem;
     }
 
-    .table-separator {
-        th,
-        td {
-            border-bottom: $outline-width solid var(--detail-color);
-        }
+    td {
+        width: 100%;
+    }
 
-        & + tr th,
-        & + tr td {
-            padding-top: 1rem;
-        }
+    .separator {
+        background-color: var(--detail-color);
+        height: $outline-width;
     }
 }
 
