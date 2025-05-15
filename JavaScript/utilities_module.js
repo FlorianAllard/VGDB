@@ -123,8 +123,8 @@ export function clamp(val, min, max) {
   return Math.min(max, Math.max(min, val));
 }
 
-export function startLoading() {
-  const templates = document.querySelectorAll('template[data-loading-placeholders]');
+export function startLoading(parent = document) {
+  const templates = parent.querySelectorAll("template[data-loading-placeholders]");
   templates.forEach(template => {
     const amount = template.getAttribute("data-loading-placeholders");
     for (let i = 0; i < amount; i++) {
@@ -135,10 +135,10 @@ export function startLoading() {
   });
 }
 
-export function stopLoading() {
-  const loading = document.querySelectorAll(".loading");
+export function stopLoading(parent = document) {
+  const loading = parent.querySelectorAll(".loading");
   loading.forEach((ld) => ld.classList.remove("loading"));
 
-  const removeAfterLoading = document.querySelectorAll(".remove-after-loading");
+  const removeAfterLoading = parent.querySelectorAll(".remove-after-loading");
   removeAfterLoading.forEach((el) => el.remove());
 }

@@ -47,7 +47,7 @@ export default function authentification() {
 /**
  * Generic function to make POST requests to IGDB API endpoints.
  */
-async function makeRequest(endpoint, fields, sort, limit, where, additionalBody = "") {
+export async function makeRequest(endpoint, fields, sort, limit, where, additionalBody = "") {
   authentification();
 
   const body =
@@ -253,6 +253,7 @@ export function getWebsiteFromUrl(url) {
     { keyword: "bsky", site: "Epic Games Store", color: "#1081F6", icon: "/Assets/Sites/bluesky.svg" },
     { keyword: "wiki", site: "Game wiki", color: "#F20057", icon: "/Assets/Sites/wiki.svg" },
     { keyword: "microsoft", site: "Microsoft Store", color: "#F20057", icon: "/Assets/Sites/microsoft-store.svg" },
+    { keyword: "playstation", site: "Playstation", color: "#0070D1", icon: "/Assets/Sites/playstation.svg" },
   ];
 
   const site = sites.find((s) => url.toLowerCase().includes(s.keyword));

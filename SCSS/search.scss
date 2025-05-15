@@ -29,7 +29,7 @@
         border: $outline-width solid var(--detail-color);
         box-shadow: 0 $outline-width 0 var(--detail-color);
 
-        &:has(form.open) {
+        &:has(div.open) {
             button i {
                 rotate: 180deg;
             }
@@ -46,17 +46,30 @@
             }
         }
 
-        form {
+        div {
             @include transition(all, $transition-duration-smooth);
-            @include flex(column, 0.25rem);
-            overflow: hidden;
+            @include flex(column, 1rem);
             max-height: 0;
-            padding: 0 1rem 0 1rem;
+            margin-right: 1rem;
+            margin-left: 1rem;
+            overflow: hidden;
+
+            input[type=search]{
+                min-height: 2.5rem;
+            }
 
             &.open {
                 flex: 1;
                 max-height: none;
-                padding: 0 1rem 1rem 1rem;
+                margin-bottom: 1rem;
+            }
+
+            ul {
+                @include flex(column, 0.25rem);
+                padding-right: 1rem;
+                overflow-y: auto;
+                height: fit-content;
+                max-height: 24rem;
             }
         }
 
@@ -87,6 +100,18 @@
                     text-decoration: underline;
                 }
             }
+        }
+    }
+
+    li:has(input[type=checkbox]) {
+        @include flex(row, 0.5rem);
+        max-height: 1lh;
+
+        label {
+            width: 100%;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
         }
     }
 }
@@ -138,7 +163,7 @@
         }
     }
     
-    &.loading {
+    &.loading-opacity {
         @include transition(opacity, $transition-duration-instant/2);
         opacity: 50%;
         * {

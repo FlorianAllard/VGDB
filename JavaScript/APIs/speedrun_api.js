@@ -5,7 +5,7 @@ export async function getWorldRecord(name) {
   if (speedrunData.data?.length > 0) {
     const recordLink = speedrunData.data[0].links.find((link) => link.rel === "records");
     const recordData = await Utilities.getObjectFromUrl(recordLink?.uri);
-    if (recordData.data?.length > 0) {
+    if (recordData.data?.length > 0 && recordData.data.run?.length > 0) {
       return recordData.data[0].runs[0].run.times.primary_t;
     }
   }

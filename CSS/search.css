@@ -102,10 +102,10 @@ input[type=search]:focus-visible, input[type=text]:focus-visible, select:focus-v
   outline: none;
 }
 
-form:has(select) {
+div:has(select) {
   position: relative;
 }
-form:has(select) select {
+div:has(select) select {
   appearance: none;
   background-image: url("/images/icons/caret-down-light.svg");
   background-size: 24px;
@@ -113,7 +113,7 @@ form:has(select) select {
   background-position: calc(100% - 8px) center;
   padding-right: 2.5rem;
 }
-form:has(select) i {
+div:has(select) i {
   position: absolute;
   font-size: 0.75rem;
   top: 50%;
@@ -208,19 +208,19 @@ search {
   flex-grow: 2;
   height: 2.5rem;
 }
-search form {
+search form, search div {
   display: flex;
   flex-direction: row;
   gap: 1rem;
   height: 100%;
   position: relative;
 }
-search form input {
+search form input, search div input {
   width: 100%;
   height: 100%;
   padding-right: 3.5rem;
 }
-search form button {
+search form button.tertiary, search div button.tertiary {
   position: absolute;
   right: 0;
   height: 100%;
@@ -838,7 +838,7 @@ tbody.loading {
   border: 2px solid var(--detail-color);
   box-shadow: 0 2px 0 var(--detail-color);
 }
-#filters > section:has(form.open) button i {
+#filters > section:has(div.open) button i {
   rotate: 180deg;
 }
 #filters > section button {
@@ -852,19 +852,32 @@ tbody.loading {
 #filters > section button i {
   transition: all 100ms ease;
 }
-#filters > section form {
+#filters > section div {
   transition: all 200ms ease;
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
-  overflow: hidden;
+  gap: 1rem;
   max-height: 0;
-  padding: 0 1rem 0 1rem;
+  margin-right: 1rem;
+  margin-left: 1rem;
+  overflow: hidden;
 }
-#filters > section form.open {
+#filters > section div input[type=search] {
+  min-height: 2.5rem;
+}
+#filters > section div.open {
   flex: 1;
   max-height: none;
-  padding: 0 1rem 1rem 1rem;
+  margin-bottom: 1rem;
+}
+#filters > section div ul {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding-right: 1rem;
+  overflow-y: auto;
+  height: fit-content;
+  max-height: 24rem;
 }
 #filters > section .filter--preview {
   transition: all 200ms ease;
@@ -892,6 +905,18 @@ tbody.loading {
 #filters > section .filter--preview li:hover {
   cursor: pointer;
   text-decoration: underline;
+}
+#filters li:has(input[type=checkbox]) {
+  display: flex;
+  flex-direction: row;
+  gap: 0.5rem;
+  max-height: 1lh;
+}
+#filters li:has(input[type=checkbox]) label {
+  width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 #main-content {
@@ -939,11 +964,11 @@ tbody.loading {
   height: 100%;
   z-index: 2;
 }
-#main-content--grid.loading {
+#main-content--grid.loading-opacity {
   transition: opacity 50ms ease;
   opacity: 50%;
 }
-#main-content--grid.loading * {
+#main-content--grid.loading-opacity * {
   pointer-events: none;
 }
 

@@ -547,12 +547,14 @@ function fillPrices() {
       tr.append(td);
 
       td = document.createElement("td");
-      const storeLowPercentage = (1 - (deal.storeLow.amountInt / deal.regular.amountInt)) * 100;
-      const storeLowString = storeLowPercentage > 0 ? ` (-${Math.round(storeLowPercentage)}%)` : "";
-      td.textContent = `${deal.storeLow.amount.toFixed(2)}${Utilities.getCurrencyGlyph(deal.storeLow.currency)}` + storeLowString;
-      if (deal.storeLow.amount == deal.price.amount && deal.storeLow.amount < deal.regular.amount) {
-        td.style.fontWeight = "600";
-        td.style.color = "#00c851";
+      if(deal.storeLow){
+        const storeLowPercentage = (1 - (deal.storeLow.amountInt / deal.regular.amountInt)) * 100;
+        const storeLowString = storeLowPercentage > 0 ? ` (-${Math.round(storeLowPercentage)}%)` : "";
+        td.textContent = `${deal.storeLow.amount.toFixed(2)}${Utilities.getCurrencyGlyph(deal.storeLow.currency)}` + storeLowString;
+        if (deal.storeLow.amount == deal.price.amount && deal.storeLow.amount < deal.regular.amount) {
+          td.style.fontWeight = "600";
+          td.style.color = "#00c851";
+        }
       }
       tr.append(td);
 

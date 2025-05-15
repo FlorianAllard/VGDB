@@ -160,7 +160,7 @@ input[type=search], input[type=text], select {
     }
 }
 
-form:has(select) {
+div:has(select) {
     position: relative;
 
     select {
@@ -261,7 +261,7 @@ search {
     flex-grow: 2;
     height: 2.5rem;
 
-    form {
+    form, div {
         @include flex();
         height: 100%;
         position: relative;
@@ -272,7 +272,7 @@ search {
             padding-right: 3.5rem;
         }
 
-        button {
+        button.tertiary {
             position: absolute;
             right: 0;
             height: 100%;

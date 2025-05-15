@@ -101,7 +101,7 @@
   {
     "name": "Platforms",
     "body": "platforms",
-    "type": "checkboxes",
+    "type": "filterable_checkboxes",
     "values": [
       {
         "id": 306,
@@ -1161,7 +1161,7 @@
       },
       {
         "id": 4,
-        "name": "Standalone Expansion"
+        "name": "Standalone expansion"
       },
       {
         "id": 5,
@@ -1189,7 +1189,7 @@
       },
       {
         "id": 10,
-        "name": "Expanded Game"
+        "name": "Expanded ame"
       },
       {
         "id": 13,
@@ -1205,8 +1205,68 @@
       },
       {
         "id": 0,
-        "name": "Main Game"
+        "name": "Game (Any edition)"
+      },
+      {
+        "id": 0,
+        "name": "Game (Original edition)",
+        "additional": "version_parent=null"
       }
     ]
+  },
+  {
+    "name": "Main developers",
+    "body": "id",
+    "type": "search",
+    "endpoint": "involved_companies",
+    "searchFields": "*, company.*",
+    "searchWhere": "company.name",
+    "searchResultsFilter": {
+      "key": "developer",
+      "value": true
+    },
+    "duplicateKey": "company",
+    "valueKey": "game"
+  },
+  {
+    "name": "Publishers",
+    "body": "id",
+    "type": "search",
+    "endpoint": "involved_companies",
+    "searchFields": "*, company.*",
+    "searchWhere": "company.name",
+    "searchResultsFilter": {
+      "key": "publisher",
+      "value": true
+    },
+    "duplicateKey": "company",
+    "valueKey": "game"
+  },
+  {
+    "name": "Series",
+    "body": "collections",
+    "type": "search",
+    "endpoint": "collections",
+    "searchFields": "*",
+    "searchWhere": "name",
+    "valueKey": "id"
+  },
+  {
+    "name": "Franchises",
+    "body": "franchises",
+    "type": "search",
+    "endpoint": "franchises",
+    "searchFields": "*",
+    "searchWhere": "name",
+    "valueKey": "id"
+  },
+  {
+    "name": "Engines",
+    "body": "game_engines",
+    "type": "search",
+    "endpoint": "game_engines",
+    "searchFields": "*",
+    "searchWhere": "name",
+    "valueKey": "id"
   }
 ]

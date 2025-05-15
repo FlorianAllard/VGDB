@@ -17,6 +17,7 @@ let totalGames;
 const sortBy = document.querySelector("#main-content--top--sort select");
 sortBy.addEventListener("change", () => applyFilters());
 
+Utilities.startLoading();
 // Initialize filters on page load
 loadFilters();
 
@@ -46,6 +47,7 @@ async function loadFilters() {
     }
 
     filtersData = await response.json();
+    filtersData = filtersData.sort((a, b) => a.name.localeCompare(b.name));
     createAllFilters(); // Generate filters UI
   } catch (error) {
     console.error("Error loading filters:", error);
@@ -61,6 +63,12 @@ function createAllFilters() {
       case "checkboxes":
         createCheckboxesFilter(filter);
         break;
+      case "filterable_checkboxes":
+        createFilterableCheckboxesFilter(filter);
+        break;
+      case "search":
+        createSearchFilter(filter);
+        break;
       default:
         console.error("Filter type not recognized.");
         break;
@@ -70,7 +78,7 @@ function createAllFilters() {
   // Add toggle functionality to filter sections
   document.querySelectorAll("#filters > section").forEach((section) => {
     const button = section.querySelector("button");
-    const form = section.querySelector("form");
+    const form = section.querySelector("div");
     const preview = section.querySelector("[class*='preview']");
 
     button.addEventListener("click", () => {
@@ -79,7 +87,7 @@ function createAllFilters() {
   });
 
   // Attach event listeners to all filter inputs
-  document.querySelectorAll("#filters input").forEach((input) => {
+  document.querySelectorAll("#filters input:not([type=search])").forEach((input) => {
     input.addEventListener("change", (event) => {
       updateFilters(event.target);
     });
@@ -96,11 +104,11 @@ function toggleFilterSection(form, preview) {
     // Close the form
     form.style.maxHeight = "0";
     form.classList.remove("open");
-    preview.style.maxHeight = `calc(${preview.scrollHeight}px + 1rem)`;
+    preview.style.maxHeight = `calc(${preview.scrollHeight}px + 1rem + 24rem)`;
     preview.classList.add("open");
   } else {
     // Open the form
-    form.style.maxHeight = `calc(${form.scrollHeight}px + 1rem)`;
+    form.style.maxHeight = `calc(${form.scrollHeight}px + 1rem + 24rem)`;
     form.classList.add("open");
     preview.style.maxHeight = "0";
     preview.classList.remove("open");
@@ -121,7 +129,68 @@ function createCheckboxesFilter(filter) {
 
   const checkboxTemplate = section.querySelector("#filters--checkboxes--checkbox-template");
   values.forEach((value) => {
-    const checkbox = checkboxTemplate.content.cloneNode(true).querySelector("div");
+    const checkbox = checkboxTemplate.content.cloneNode(true).querySelector("li");
+
+    // Configure checkbox input
+    const input = checkbox.querySelector("input");
+    input.setAttribute("name", value.name);
+    input.setAttribute("id", `${filter.body}-${value.id}` + (value.additional ? `-${value.additional}` : ""));
+    input.setAttribute("data-filter", filter.body);
+    input.setAttribute("data-value", value.id);
+    if (value.additional) {
+      input.setAttribute("data-additional", value.additional);
+    }
+
+    // Configure preview item
+    const preview = document.createElement("li");
+    preview.style.display = "none";
+    preview.textContent = value.name;
+    previewParent.append(preview);
+
+    // Add event listeners
+    input.addEventListener("change", (event) => {
+      preview.style.display = event.target.checked ? "" : "none";
+    });
+    preview.addEventListener("click", () => {
+      input.checked = false;
+      preview.style.display = "none";
+      updateFilters(input);
+    });
+
+    // Configure label
+    const label = checkbox.querySelector("label");
+    label.setAttribute("for", `${filter.body}-${value.id}` + (value.additional ? `-${value.additional}` : ""));
+    label.textContent = value.name;
+
+    checkboxTemplate.parentElement.append(checkbox);
+  });
+
+  template.parentElement.append(section);
+}
+
+/**
+ * Creates a filter with searchable checkboxes.
+ * @param {Object} filter - The filter data.
+ */
+function createFilterableCheckboxesFilter(filter) {
+  const search = (value) => {
+    const checkboxes = checkboxTemplate.parentElement.querySelectorAll("label");
+    console.log(checkboxes);
+    checkboxes.forEach((element) => element.parentElement.style.display = (element.textContent.toLowerCase().includes(value.toLowerCase()) ? "" : "none"));
+  };
+
+  const values = filter.values.sort((a, b) => a.name.localeCompare(b.name));
+  const template = filtersParent.querySelector("#filters--filterable-checkboxes-template");
+  const section = template.content.cloneNode(true).querySelector("section");
+  const previewParent = section.querySelector(".filter--preview");
+  const searchbar = section.querySelector("input[type=search]");
+  searchbar.addEventListener("input", (event) => search(event.target.value));
+
+  section.querySelector("button h4").textContent = filter.name;
+
+  const checkboxTemplate = section.querySelector("#filters--checkboxes--checkbox-template");
+  values.forEach((value) => {
+    const checkbox = checkboxTemplate.content.cloneNode(true).querySelector("li");
 
     // Configure checkbox input
     const input = checkbox.querySelector("input");
@@ -157,37 +226,168 @@ function createCheckboxesFilter(filter) {
   template.parentElement.append(section);
 }
 
+function createSearchFilter(filter) {
+  
+  let searchTimeout = null;
+  const delayBeforeRequest = (value) => {
+    clear();
+    if (value.length > 3) Utilities.startLoading(section);
+    clearTimeout(searchTimeout);
+    searchTimeout = window.setTimeout(() => {
+      request(value);
+    }, 250);
+  }
+  
+  const request = async (value) => {
+    let results = [];
+    if(value.length > 3) {
+      results = await IGDB.makeRequest(filter.endpoint, filter.searchFields, "", 500, `${filter.searchWhere}~*"${value}"*`);
+      if (filter.searchResultsFilter) {
+        results = results.filter((entry) => {
+          return entry[filter.searchResultsFilter.key] === filter.searchResultsFilter.value;
+        });
+      }
+      clear();
+    } 
+
+    let parents = [];
+    if (filter.duplicateKey) {
+      for (let i = 0; i < results.length; i++) {
+        const result = results[i];
+        const existingEntry = parents.find((entry) => entry.parent.id === result[filter.duplicateKey].id);
+        if (existingEntry) {
+          // If entry exists, add the new child id
+          existingEntry.childIds.push(result[filter.valueKey]);
+        } else {
+          // Otherwise, create a new entry
+          parents.push({ parent: result[filter.duplicateKey], childIds: [result[filter.valueKey]] });
+        }
+      }
+    } else {
+      for (let i = 0; i < results.length; i++) {
+        const result = results[i];
+        parents.push({ parent: result, childIds: result.id });
+      }
+    }
+    
+    parents.forEach(p => {
+      const checkbox = checkboxTemplate.content.cloneNode(true).querySelector("li");
+
+      // Configure checkbox input
+      const input = checkbox.querySelector("input");
+      input.setAttribute("name", p.parent.name);
+      input.setAttribute("id", `${filter.body}-${p.childIds}`);
+      input.setAttribute("data-filter", filter.body);
+      input.setAttribute("data-value", p.childIds);
+
+      // Add event listeners
+      input.addEventListener("change", (event) => {
+        if (event.target.checked) {
+          createPreview();
+        } else {
+          removePreview();
+        }
+      });
+
+      let preview;
+      const createPreview = () => {
+        preview = document.createElement("li");
+        preview.textContent = p.parent.name;
+        preview.addEventListener("click", () => {
+          removePreview();
+        });
+        previewParent.append(preview);
+        updateFiltersData(filter.body, p.childIds, "checkbox", true);
+      };
+      const removePreview = () => {
+        updateFiltersData(filter.body, p.childIds, "checkbox", false);
+        preview.remove();
+        preview = null;
+      };
+
+      // Configure label
+      const label = checkbox.querySelector("label");
+      label.setAttribute("for", `${filter.body}-${p.childIds}`);
+      label.textContent = p.parent.name;
+
+      checkboxTemplate.parentElement.append(checkbox);
+    });
+
+    Utilities.stopLoading(section);
+  };
+  const clear = () => {
+    const checkboxes = Array.from(checkboxTemplate.parentElement.children).filter(el => el.tagName === "LI");
+    checkboxes.forEach(c => c.remove());
+  }
+
+  const template = filtersParent.querySelector("#filters--search-template");
+  const section = template.content.cloneNode(true).querySelector("section");
+  const checkboxTemplate = section.querySelector("#filters--checkboxes--checkbox-template");
+  const previewParent = section.querySelector(".filter--preview");
+  section.querySelector("button h4").textContent = filter.name;
+  const searchbar = section.querySelector("input[type=search]");
+  searchbar.addEventListener("input", (event) => delayBeforeRequest(event.target.value));
+  
+  template.parentElement.append(section);
+}
+
 /**
  * Updates the current filters based on user input.
  * @param {HTMLInputElement} input - The input element that triggered the update.
  */
 function updateFilters(input) {
-  toggleLoading(true);
-
   const filterKey = input.getAttribute("data-filter");
   const value = input.getAttribute("data-value") || input.value;
+  const inputType = input.getAttribute("type");
+  const additional = input.getAttribute("data-additional");
+  let inputValue = false;
+  switch (inputType) {
+    case "checkbox":
+      inputValue = input.checked;
+      break;
+  
+    default:
+      break;
+  }
+  updateFiltersData(filterKey, value, inputType, inputValue, additional);
+}
+
+function updateFiltersData(filterKey, value, inputType, inputValue, additional = "") {
+  toggleLoading(true);
+
+  const additionalKey = additional ? additional.split("=")[0] : "";
+  const additionalValue = additional ? additional.split("=")[1] : "";
 
   // Initialize the filter key in the object if it doesn't exist
   if (!currentFilters[filterKey]) {
     currentFilters[filterKey] = [];
+    if(additionalKey && additionalValue) {
+      currentFilters[additionalKey] = [];
+    }
   }
 
-  if (input.type === "checkbox") {
-    if (input.checked) {
+  if (inputType === "checkbox") {
+    function updateCheckboxFilter(key, val, checked) {
+      if (checked) {
       // Add the value for checkboxes
-      if (!currentFilters[filterKey].includes(value)) {
-        currentFilters[filterKey].push(value);
+      if (!currentFilters[key].includes(val)) {
+        currentFilters[key].push(val);
       }
-    } else {
+      } else {
       // Remove the value if unchecked
-      currentFilters[filterKey] = currentFilters[filterKey].filter((v) => v !== value);
+      currentFilters[key] = currentFilters[key].filter((v) => v !== val);
 
       // Remove the filter key if no values are active
-      if (currentFilters[filterKey].length === 0) {
-        delete currentFilters[filterKey];
+      if (currentFilters[key].length === 0) {
+        delete currentFilters[key];
+      }
       }
     }
-  } else if (input.type === "search") {
+    updateCheckboxFilter(filterKey, value, inputValue);
+    if(additionalKey && additionalValue) {
+      updateCheckboxFilter(additionalKey, additionalValue, inputValue);
+    }
+  } else if (inputType === "search") {
     currentFilters[filterKey] = value;
   }
 
@@ -229,9 +429,14 @@ async function applyFilters() {
   
   const whereFilters = Object.entries(currentFilters).filter(([key]) => key !== "search");
   for (const [key, values] of whereFilters) {
-    where += `${key}=(${values}) & `;
+    if (values!="null" && values.length > 0) {
+      where += `${key}=(${values}) & `;
+    } else {
+      where += `${key}=${values} & `;
+    }
   }
   where = where.replace(/ \& $/, ";");
+  console.log(where);
 
   try {
     const [total, results] = await Promise.all([
@@ -304,9 +509,10 @@ function updateCards(games) {
 
 function toggleLoading(b) {
   if(b) {
-    grid.classList.add("loading");
+    grid.classList.add("loading-opacity");
   } else {
-    grid.classList.remove("loading");
+    grid.classList.remove("loading-opacity");
+    Utilities.stopLoading();
   }
 }
 
@@ -383,7 +589,7 @@ function updatePages() {
 
       case 8:
         control.addEventListener("click", () => goToPage(currentPage + 1));
-        control.classList.toggle("disabled", currentPage+1 == maxPages);
+        control.classList.toggle("disabled", currentPage == maxPages);
         break;
     }
   }

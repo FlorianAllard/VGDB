@@ -115,10 +115,10 @@ input[type=search]:focus-visible, input[type=text]:focus-visible, select:focus-v
   outline: none;
 }
 
-form:has(select) {
+div:has(select) {
   position: relative;
 }
-form:has(select) select {
+div:has(select) select {
   appearance: none;
   background-image: url("/images/icons/caret-down-light.svg");
   background-size: 24px;
@@ -126,7 +126,7 @@ form:has(select) select {
   background-position: calc(100% - 8px) center;
   padding-right: 2.5rem;
 }
-form:has(select) i {
+div:has(select) i {
   position: absolute;
   font-size: 0.75rem;
   top: 50%;
@@ -221,19 +221,19 @@ search {
   flex-grow: 2;
   height: 2.5rem;
 }
-search form {
+search form, search div {
   display: flex;
   flex-direction: row;
   gap: 1rem;
   height: 100%;
   position: relative;
 }
-search form input {
+search form input, search div input {
   width: 100%;
   height: 100%;
   padding-right: 3.5rem;
 }
-search form button {
+search form button.tertiary, search div button.tertiary {
   position: absolute;
   right: 0;
   height: 100%;
@@ -1123,7 +1123,9 @@ table {
   background-color: white;
 }
 #media-overlay iframe {
-  width: 100%;
+  max-width: 100%;
+  max-height: 100%;
+  height: 100%;
   aspect-ratio: 16/9;
 }
 
