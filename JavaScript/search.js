@@ -16,6 +16,7 @@ let currentPage = 0;
 let totalGames;
 const sortBy = document.querySelector("#main-content--top--sort select");
 sortBy.addEventListener("change", () => applyFilters());
+let flagForPreload = false;
 
 Utilities.startLoading();
 // Initialize filters on page load
@@ -37,7 +38,7 @@ async function loadFilters() {
   const url = new URL(window.location);
   url.searchParams.delete("q");
   window.history.replaceState({}, "", url);
-  updateFilters(searchFilter);
+  updateFilters(searchFilter, false);
 
   try {
     // Fetch filters data from JSON file
@@ -48,32 +49,36 @@ async function loadFilters() {
 
     filtersData = await response.json();
     filtersData = filtersData.sort((a, b) => a.name.localeCompare(b.name));
-    createAllFilters(); // Generate filters UI
+    await createAllFilters(); // Generate filters UI
   } catch (error) {
     console.error("Error loading filters:", error);
   }
+
+  applyFilters();
 }
 
 /**
  * Creates all filters based on the loaded filters data.
  */
-function createAllFilters() {
-  filtersData.forEach((filter) => {
-    switch (filter.type) {
-      case "checkboxes":
-        createCheckboxesFilter(filter);
-        break;
-      case "filterable_checkboxes":
-        createFilterableCheckboxesFilter(filter);
-        break;
-      case "search":
-        createSearchFilter(filter);
-        break;
-      default:
-        console.error("Filter type not recognized.");
-        break;
-    }
-  });
+async function createAllFilters() {
+  await Promise.all(
+    filtersData.map(async (filter) => {
+      switch (filter.type) {
+        case "checkboxes":
+          createCheckboxesFilter(filter);
+          break;
+        case "filterable_checkboxes":
+          createFilterableCheckboxesFilter(filter);
+          break;
+        case "search":
+          await createSearchFilter(filter);
+          break;
+        default:
+          console.error("Filter type not recognized.");
+          break;
+      }
+    })
+  );
 
   // Add toggle functionality to filter sections
   document.querySelectorAll("#filters > section").forEach((section) => {
@@ -84,6 +89,7 @@ function createAllFilters() {
     button.addEventListener("click", () => {
       toggleFilterSection(form, preview);
     });
+    toggleFilterSection(form,preview,true);
   });
 
   // Attach event listeners to all filter inputs
@@ -99,8 +105,8 @@ function createAllFilters() {
  * @param {HTMLElement} form - The form element to toggle.
  * @param {HTMLElement} preview - The preview element to toggle.
  */
-function toggleFilterSection(form, preview) {
-  if (form.classList.contains("open")) {
+function toggleFilterSection(form, preview, forceClose = false) {
+  if (form.classList.contains("open") || forceClose) {
     // Close the form
     form.style.maxHeight = "0";
     form.classList.remove("open");
@@ -125,6 +131,13 @@ function createCheckboxesFilter(filter) {
   const section = template.content.cloneNode(true).querySelector("section");
   const previewParent = section.querySelector(".filter--preview");
 
+  // Check if filter.preload is present in the URL query params
+  let preloadValue;
+  if (filter.preload) {
+    const params = new URLSearchParams(window.location.search);
+    preloadValue = params.get(filter.preload);
+  }
+
   section.querySelector("button h4").textContent = filter.name;
 
   const checkboxTemplate = section.querySelector("#filters--checkboxes--checkbox-template");
@@ -143,9 +156,16 @@ function createCheckboxesFilter(filter) {
 
     // Configure preview item
     const preview = document.createElement("li");
-    preview.style.display = "none";
     preview.textContent = value.name;
     previewParent.append(preview);
+
+    if (preloadValue && preloadValue == value.id) {
+      flagForPreload = true;
+      input.checked = true;
+      updateFilters(input);
+    } else {
+      preview.style.display = "none";
+    }
 
     // Add event listeners
     input.addEventListener("change", (event) => {
@@ -176,13 +196,21 @@ function createFilterableCheckboxesFilter(filter) {
   const search = (value) => {
     const checkboxes = checkboxTemplate.parentElement.querySelectorAll("label");
     console.log(checkboxes);
-    checkboxes.forEach((element) => element.parentElement.style.display = (element.textContent.toLowerCase().includes(value.toLowerCase()) ? "" : "none"));
+    checkboxes.forEach((element) => (element.parentElement.style.display = element.textContent.toLowerCase().includes(value.toLowerCase()) ? "" : "none"));
   };
 
   const values = filter.values.sort((a, b) => a.name.localeCompare(b.name));
   const template = filtersParent.querySelector("#filters--filterable-checkboxes-template");
   const section = template.content.cloneNode(true).querySelector("section");
   const previewParent = section.querySelector(".filter--preview");
+
+  // Check if filter.preload is present in the URL query params
+  let preloadValue;
+  if (filter.preload) {
+    const params = new URLSearchParams(window.location.search);
+    preloadValue = params.get(filter.preload);
+  }
+
   const searchbar = section.querySelector("input[type=search]");
   searchbar.addEventListener("input", (event) => search(event.target.value));
 
@@ -201,9 +229,16 @@ function createFilterableCheckboxesFilter(filter) {
 
     // Configure preview item
     const preview = document.createElement("li");
-    preview.style.display = "none";
     preview.textContent = value.name;
     previewParent.append(preview);
+
+    if (preloadValue && preloadValue == value.id) {
+      flagForPreload = true;
+      input.checked = true;
+      updateFilters(input);
+    } else {
+      preview.style.display = "none";
+    }
 
     // Add event listeners
     input.addEventListener("change", (event) => {
@@ -226,31 +261,38 @@ function createFilterableCheckboxesFilter(filter) {
   template.parentElement.append(section);
 }
 
-function createSearchFilter(filter) {
-  
+async function createSearchFilter(filter) {
+  // Check if filter.preload is present in the URL query params
+  let preloadValue;
+  if (filter.preload) {
+    const params = new URLSearchParams(window.location.search);
+    preloadValue = params.get(filter.preload);
+  }
+
   let searchTimeout = null;
-  const delayBeforeRequest = (value) => {
+  const delayBeforeRequest = (value, searchWhere) => {
     clear();
     if (value.length > 3) Utilities.startLoading(section);
     clearTimeout(searchTimeout);
     searchTimeout = window.setTimeout(() => {
-      request(value);
+      request(value, searchWhere);
     }, 250);
-  }
-  
-  const request = async (value) => {
+  };
+
+  const request = async (value, searchWhere, skipUI = false) => {
     let results = [];
-    if(value.length > 3) {
-      results = await IGDB.makeRequest(filter.endpoint, filter.searchFields, "", 500, `${filter.searchWhere}~*"${value}"*`);
+    if (value.length > 3 || skipUI) {
+      const where = skipUI ? `${searchWhere}=${value}` : `${searchWhere}~*"${value}"*`;
+      results = await IGDB.makeRequest(filter.endpoint, filter.searchFields, "", 500, where);
       if (filter.searchResultsFilter) {
         results = results.filter((entry) => {
           return entry[filter.searchResultsFilter.key] === filter.searchResultsFilter.value;
         });
       }
       clear();
-    } 
-
-    let parents = [];
+    }
+    let
+     parents = [];
     if (filter.duplicateKey) {
       for (let i = 0; i < results.length; i++) {
         const result = results[i];
@@ -270,24 +312,7 @@ function createSearchFilter(filter) {
       }
     }
     
-    parents.forEach(p => {
-      const checkbox = checkboxTemplate.content.cloneNode(true).querySelector("li");
-
-      // Configure checkbox input
-      const input = checkbox.querySelector("input");
-      input.setAttribute("name", p.parent.name);
-      input.setAttribute("id", `${filter.body}-${p.childIds}`);
-      input.setAttribute("data-filter", filter.body);
-      input.setAttribute("data-value", p.childIds);
-
-      // Add event listeners
-      input.addEventListener("change", (event) => {
-        if (event.target.checked) {
-          createPreview();
-        } else {
-          removePreview();
-        }
-      });
+    parents.forEach((p) => {
 
       let preview;
       const createPreview = () => {
@@ -297,7 +322,7 @@ function createSearchFilter(filter) {
           removePreview();
         });
         previewParent.append(preview);
-        updateFiltersData(filter.body, p.childIds, "checkbox", true);
+        updateFiltersData(filter.body, p.childIds, "checkbox", true, "", !skipUI);
       };
       const removePreview = () => {
         updateFiltersData(filter.body, p.childIds, "checkbox", false);
@@ -305,20 +330,42 @@ function createSearchFilter(filter) {
         preview = null;
       };
 
-      // Configure label
-      const label = checkbox.querySelector("label");
-      label.setAttribute("for", `${filter.body}-${p.childIds}`);
-      label.textContent = p.parent.name;
+      if(!skipUI) {
+        const checkbox = checkboxTemplate.content.cloneNode(true).querySelector("li");
+  
+        // Configure checkbox input
+        const input = checkbox.querySelector("input");
+        input.setAttribute("name", p.parent.name);
+        input.setAttribute("id", `${filter.body}-${p.childIds}`);
+        input.setAttribute("data-filter", filter.body);
+        input.setAttribute("data-value", p.childIds);
+  
+        // Add event listeners
+        input.addEventListener("change", (event) => {
+          if (event.target.checked) {
+            createPreview();
+          } else {
+            removePreview();
+          }
+        });
 
-      checkboxTemplate.parentElement.append(checkbox);
+        // Configure label
+        const label = checkbox.querySelector("label");
+        label.setAttribute("for", `${filter.body}-${p.childIds}`);
+        label.textContent = p.parent.name;
+        checkboxTemplate.parentElement.append(checkbox);
+      } else {
+        createPreview();
+      }
     });
 
     Utilities.stopLoading(section);
   };
+
   const clear = () => {
-    const checkboxes = Array.from(checkboxTemplate.parentElement.children).filter(el => el.tagName === "LI");
-    checkboxes.forEach(c => c.remove());
-  }
+    const checkboxes = Array.from(checkboxTemplate.parentElement.children).filter((el) => el.tagName === "LI");
+    checkboxes.forEach((c) => c.remove());
+  };
 
   const template = filtersParent.querySelector("#filters--search-template");
   const section = template.content.cloneNode(true).querySelector("section");
@@ -326,8 +373,13 @@ function createSearchFilter(filter) {
   const previewParent = section.querySelector(".filter--preview");
   section.querySelector("button h4").textContent = filter.name;
   const searchbar = section.querySelector("input[type=search]");
-  searchbar.addEventListener("input", (event) => delayBeforeRequest(event.target.value));
-  
+  searchbar.addEventListener("input", (event) => delayBeforeRequest(event.target.value, filter.searchWhere));
+
+  if (preloadValue) {
+    await request(preloadValue, filter.preloadKey, true);
+    flagForPreload = true;
+  }
+
   template.parentElement.append(section);
 }
 
@@ -335,7 +387,7 @@ function createSearchFilter(filter) {
  * Updates the current filters based on user input.
  * @param {HTMLInputElement} input - The input element that triggered the update.
  */
-function updateFilters(input) {
+function updateFilters(input, apply = true) {
   const filterKey = input.getAttribute("data-filter");
   const value = input.getAttribute("data-value") || input.value;
   const inputType = input.getAttribute("type");
@@ -349,10 +401,10 @@ function updateFilters(input) {
     default:
       break;
   }
-  updateFiltersData(filterKey, value, inputType, inputValue, additional);
+  updateFiltersData(filterKey, value, inputType, inputValue, additional, apply);
 }
 
-function updateFiltersData(filterKey, value, inputType, inputValue, additional = "") {
+function updateFiltersData(filterKey, value, inputType, inputValue, additional = "", apply = true) {
   toggleLoading(true);
 
   const additionalKey = additional ? additional.split("=")[0] : "";
@@ -370,8 +422,8 @@ function updateFiltersData(filterKey, value, inputType, inputValue, additional =
     function updateCheckboxFilter(key, val, checked) {
       if (checked) {
       // Add the value for checkboxes
-      if (!currentFilters[key].includes(val)) {
-        currentFilters[key].push(val);
+      if (!currentFilters[key]?.includes(val)) {
+        currentFilters[key]?.push(val);
       }
       } else {
       // Remove the value if unchecked
@@ -391,7 +443,8 @@ function updateFiltersData(filterKey, value, inputType, inputValue, additional =
     currentFilters[filterKey] = value;
   }
 
-  delayBeforeApplyingFilters();
+  console.log(currentFilters);
+  if (apply) delayBeforeApplyingFilters();
 }
 
 /**
@@ -412,7 +465,7 @@ async function applyFilters() {
   toggleLoading(true);
   
   let fields = `*, cover.*, genres.*, websites.*`;
-  let sort = `${sortBy.value} desc`;
+  let sort = `${sortBy.value}`;
   let where = "";
   let search = "";
   let page = `offset ${currentPage * amountPerPage};`;
@@ -544,7 +597,7 @@ function updatePages() {
         control.textContent = index == 1 ? index + 1 : "...";
         control.classList.toggle("current", currentPage == index);
         control.addEventListener("click", () => goToPage(index));
-        control.style.display = maxPages >= 2 ? "" : "none";
+        control.style.display = maxPages >= 1 ? "" : "none";
         break;
 
       case 3:

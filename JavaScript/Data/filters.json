@@ -3,6 +3,7 @@
     "name": "Genres",
     "body": "genres",
     "type": "checkboxes",
+    "preload": "genres",
     "values": [
       {
         "id": 2,
@@ -102,6 +103,7 @@
     "name": "Platforms",
     "body": "platforms",
     "type": "filterable_checkboxes",
+    "preload": "platforms",
     "values": [
       {
         "id": 306,
@@ -985,6 +987,7 @@
     "name": "Game modes",
     "body": "game_modes",
     "type": "checkboxes",
+    "preload": "game-modes",
     "values": [
       {
         "id": 1,
@@ -1015,6 +1018,7 @@
   {
     "name": "Player perspectives",
     "body": "player_perspectives",
+    "preload": "player-perspectives",
     "type": "checkboxes",
     "values": [
       {
@@ -1051,6 +1055,7 @@
     "name": "Themes",
     "body": "themes",
     "type": "checkboxes",
+    "preload": "themes",
     "values": [
       {
         "id": 31,
@@ -1146,6 +1151,7 @@
     "name": "Game types",
     "body": "game_type",
     "type": "checkboxes",
+    "preload": "game-type",
     "values": [
       {
         "id": 3,
@@ -1189,7 +1195,7 @@
       },
       {
         "id": 10,
-        "name": "Expanded ame"
+        "name": "Expanded edition"
       },
       {
         "id": 13,
@@ -1218,6 +1224,8 @@
     "name": "Main developers",
     "body": "id",
     "type": "search",
+    "preload": "main-developers",
+    "preloadKey": "company.name",
     "endpoint": "involved_companies",
     "searchFields": "*, company.*",
     "searchWhere": "company.name",
@@ -1229,9 +1237,27 @@
     "valueKey": "game"
   },
   {
+    "name": "Supporting developers",
+    "body": "id",
+    "type": "search",
+    "preload": "supporting-developers",
+    "preloadKey": "company.name",
+    "endpoint": "involved_companies",
+    "searchFields": "*, company.*",
+    "searchWhere": "company.name",
+    "searchResultsFilter": {
+      "key": "supporting",
+      "value": true
+    },
+    "duplicateKey": "company",
+    "valueKey": "game"
+  },
+  {
     "name": "Publishers",
     "body": "id",
     "type": "search",
+    "preload": "publishers",
+    "preloadKey": "company.name",
     "endpoint": "involved_companies",
     "searchFields": "*, company.*",
     "searchWhere": "company.name",
@@ -1246,6 +1272,8 @@
     "name": "Series",
     "body": "collections",
     "type": "search",
+    "preload": "collections",
+    "preloadKey": "id",
     "endpoint": "collections",
     "searchFields": "*",
     "searchWhere": "name",
@@ -1255,6 +1283,8 @@
     "name": "Franchises",
     "body": "franchises",
     "type": "search",
+    "preload": "franchises",
+    "preloadKey": "id",
     "endpoint": "franchises",
     "searchFields": "*",
     "searchWhere": "name",
@@ -1264,6 +1294,8 @@
     "name": "Engines",
     "body": "game_engines",
     "type": "search",
+    "preload": "engines",
+    "preloadKey": "id",
     "endpoint": "game_engines",
     "searchFields": "*",
     "searchWhere": "name",

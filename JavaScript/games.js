@@ -153,27 +153,30 @@ function fillAbout() {
   createAboutList(
     "#main--about--main-developers",
     game.involved_companies?.length > 0 ? game.involved_companies.filter((e) => e.developer).map((e) => e.company) : [],
+    "name",
     "name"
   );
   createAboutList(
     "#main--about--supporting-developers",
     game.involved_companies?.length > 0 ? game.involved_companies.filter((e) => e.supporting).map((e) => e.company) : [],
+    "name",
     "name"
   );
   createAboutList(
     "#main--about--publishers",
     game.involved_companies?.length > 0 ? game.involved_companies.filter((e) => e.publisher).map((e) => e.company) : [],
+    "name",
     "name"
   );
   createAboutList("#main--about--game-engines", game.game_engines, "name");
-  createAboutList("#main--about--series", game.collections, "name");
+  createAboutList("#main--about--collections", game.collections, "name");
   createAboutList("#main--about--franchises", game.franchises, "name");
 }
 
 /**
  * Creates a list of items for the "About" section.
  */
-function createAboutList(parent, array, key) {
+function createAboutList(parent, array, key, preloadKey = "id") {
   const container = document.querySelector(`${parent} td`);
 
   if (array?.length > 0) {
@@ -181,6 +184,7 @@ function createAboutList(parent, array, key) {
       const value = array[i];
       const a = document.createElement("a");
       a.textContent = value[key];
+      a.setAttribute("href", `/HTML/search/?${parent.replace("#main--about--", "")}=${value[preloadKey]}`);
       container.append(a);
 
       if (i < array.length - 1) {

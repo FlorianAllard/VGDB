@@ -840,7 +840,7 @@ dialog {
     }
 }
 
-*:has(>.loading){
+a:has(.loading){
     pointer-events: none;
 }
 

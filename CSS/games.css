@@ -791,7 +791,7 @@ dialog[show] {
   opacity: 100%;
 }
 
-*:has(> .loading) {
+a:has(.loading) {
   pointer-events: none;
 }
 
