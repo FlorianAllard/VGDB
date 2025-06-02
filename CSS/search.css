@@ -170,6 +170,9 @@ button.tertiary {
 button.tertiary:hover {
   background-color: var(--detail-color);
 }
+button.destructive {
+  color: #ff4444;
+}
 
 header {
   display: flex;
@@ -318,18 +321,22 @@ div:has(> .user-profile) {
   display: flex;
   flex-direction: row;
   gap: calc(0.5rem + 4px);
-  padding: 0 0.5rem 0 4px;
   border: none;
   background-color: transparent;
   align-items: center;
   color: var(--text-color);
-  border-radius: 1.25rem 0.5rem 0.5rem 1.25rem;
+  padding: 0;
+  border-radius: 99rem;
   transition: all 100ms ease;
   box-shadow: none;
+  width: 2.5rem;
+  height: 2.5rem;
 }
 .user-profile:hover {
   cursor: pointer;
   background-color: var(--background-color);
+  box-shadow: none;
+  border-radius: 99rem;
 }
 .user-profile:hover img {
   outline-color: var(--secondary-color);
@@ -359,13 +366,6 @@ h2 {
 p {
   white-space: pre-wrap;
   font-weight: normal;
-}
-
-.section-title {
-  display: flex;
-  flex-direction: row;
-  gap: 1rem;
-  justify-content: space-between;
 }
 
 a {
@@ -809,6 +809,45 @@ tbody.loading {
     background-position-x: -200%;
   }
 }
+#profile-menu {
+  position: absolute;
+  top: calc(100% - 0.5rem);
+  padding: 0.5rem 0;
+  background-color: var(--surface-color);
+  border-radius: 0.5rem;
+  box-shadow: 0 0.125rem 0.125rem 0 rgba(0, 0, 0, 0.1);
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+#profile-menu hr {
+  height: 2px;
+  margin: 0.25rem 1rem;
+}
+#profile-menu a {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  align-items: center;
+  height: fit-content;
+  color: var(--text-color);
+  width: 100%;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  text-transform: none;
+  font-weight: 600;
+  border-radius: 0;
+  justify-content: start;
+}
+#profile-menu a:hover {
+  text-decoration: none;
+  background-color: var(--detail-color);
+}
+#profile-menu a.destructive {
+  color: #ff4444;
+}
+
 #body {
   width: 100%;
   display: grid;

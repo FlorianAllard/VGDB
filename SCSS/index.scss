@@ -28,3 +28,8 @@ section:not(#body):has(>section) {
             flex-direction: column;
         }
 }
+
+.section-title {
+    @include flex();
+    justify-content: space-between;
+}

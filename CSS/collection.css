@@ -34,7 +34,7 @@
     --text-color: #4B4B4B;
   }
 }
-#coming-soon .content, header > div {
+header > div {
   flex: 1 1 0px;
 }
 
@@ -855,31 +855,23 @@ tbody.loading {
   padding: 2rem max((100dvw - 1280px) / 2, 2rem);
 }
 
-#most-anticipated {
-  flex: 3 1 0px;
-  max-width: calc((100% - 4rem) * 0.6);
-}
-#most-anticipated .card {
-  max-width: 100%;
-}
-
-#coming-soon {
-  flex: 2 1 0px;
-}
-section:not(#body):has(> section) {
-  display: flex;
-  flex-direction: row;
-  gap: 4rem;
-}
-section:not(#body):has(> section) > section > .content {
-  flex-direction: column;
+#favorites div:has(> i) {
+  background-color: #ffcc00;
 }
 
 .section-title {
   display: flex;
   flex-direction: row;
-  gap: 1rem;
-  justify-content: space-between;
+  gap: 0.5rem;
+}
+.section-title div {
+  border-radius: 0.5rem;
+  aspect-ratio: 1/1;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: var(--background-color);
 }
 
-/*# sourceMappingURL=index.css.map */
+/*# sourceMappingURL=collection.css.map */

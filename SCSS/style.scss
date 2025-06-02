@@ -40,6 +40,7 @@ $dark-mode: (
     text: #f0f6fb,
 );
 
+
 @mixin theme($theme) {
     @each $key, $value in $theme {
         --#{$key}-color: #{$value};
@@ -232,6 +233,9 @@ button {
             background-color: var(--detail-color);
         }
     }
+    &.destructive {
+        color: $error-color;
+    }
 }
 
 header {
@@ -372,18 +376,22 @@ div:has(>.user-profile) {
 
 .user-profile {
     @include flex(row, calc(.5rem + $outline-width * 2));
-    padding: 0 .5rem 0 calc($outline-width * 2);
     border: none;
     background-color: transparent;
     align-items: center;
     color: var(--text-color);
-    border-radius: 1.25rem $border-radius $border-radius 1.25rem;
+    padding: 0;
+    border-radius: 99rem;
     transition: all $transition-duration-instant ease;
     box-shadow: none;
+    width: 2.5rem;
+    height: 2.5rem;
 
     &:hover {
         cursor: pointer;
         background-color: var(--background-color);
+        box-shadow: none;
+        border-radius: 99rem;
 
         img {
             outline-color: var(--secondary-color);
@@ -416,11 +424,6 @@ h2 {
 p {
     white-space: pre-wrap;
     font-weight: normal;
-}
-
-.section-title {
-    @include flex();
-    justify-content: space-between;
 }
 
 a {
@@ -869,5 +872,44 @@ tbody.loading {
 @keyframes loading-animation {
     to {
         background-position-x: -200%;
+    }
+}
+
+#profile-menu {
+    position: absolute; 
+    top: calc(100% - 0.5rem);
+    padding: 0.5rem 0;
+    background-color: var(--surface-color);
+    border-radius: $border-radius;
+    box-shadow: $shadow;
+    list-style: none;
+    @include flex(column, 0);
+    
+    hr {
+        height: $outline-width;
+        margin: 0.25rem 1rem;
+    }
+
+    a {
+        @include flex();
+        align-items: center;
+        height: fit-content;
+        color: var(--text-color);
+        width: 100%;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem;
+        text-transform: none;
+        font-weight: 600;
+        border-radius: 0;
+        justify-content: start;
+
+        &:hover {
+            text-decoration: none;
+            background-color: var(--detail-color);
+        }
+
+        &.destructive {
+            color: $error-color;  
+        }
     }
 }

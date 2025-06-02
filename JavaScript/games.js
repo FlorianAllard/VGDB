@@ -6,6 +6,7 @@ import * as IGDB from "./APIs/igdb_api.js";
 import * as OpenCritic from "./APIs/opencritic_api.js";
 import * as Speedrun from "./APIs/speedrun_api.js";
 import * as IsThereAnyDeal from "./APIs/isthereanydeal_api.js";
+import * as BackEnd from "./APIs/backend.js";
 
 // Global variables
 let game;
@@ -94,6 +95,7 @@ function fillPage() {
     plot.remove();
   }
 
+  setCollections();
   createTableOfContents();
   createExternalLinks();
 
@@ -301,6 +303,14 @@ function fillReleases() {
     tr.append(tdRegions);
 
     parent.append(tr);
+  });
+}
+
+async function setCollections(){
+  const collections = await BackEnd.getCollectionsIncludingGame(game.id);
+  collections.forEach(coll => {
+    const toggle = document.querySelector(`#nav--collection-shortcuts--${coll}`);
+    toggle.checked = true;
   });
 }
 

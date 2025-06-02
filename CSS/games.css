@@ -183,6 +183,9 @@ button.tertiary {
 button.tertiary:hover {
   background-color: var(--detail-color);
 }
+button.destructive {
+  color: #ff4444;
+}
 
 header {
   display: flex;
@@ -331,18 +334,22 @@ div:has(> .user-profile) {
   display: flex;
   flex-direction: row;
   gap: calc(0.5rem + 4px);
-  padding: 0 0.5rem 0 4px;
   border: none;
   background-color: transparent;
   align-items: center;
   color: var(--text-color);
-  border-radius: 1.25rem 0.5rem 0.5rem 1.25rem;
+  padding: 0;
+  border-radius: 99rem;
   transition: all 100ms ease;
   box-shadow: none;
+  width: 2.5rem;
+  height: 2.5rem;
 }
 .user-profile:hover {
   cursor: pointer;
   background-color: var(--background-color);
+  box-shadow: none;
+  border-radius: 99rem;
 }
 .user-profile:hover img {
   outline-color: var(--secondary-color);
@@ -372,13 +379,6 @@ h2 {
 p {
   white-space: pre-wrap;
   font-weight: normal;
-}
-
-.section-title {
-  display: flex;
-  flex-direction: row;
-  gap: 1rem;
-  justify-content: space-between;
 }
 
 a {
@@ -822,6 +822,45 @@ tbody.loading {
     background-position-x: -200%;
   }
 }
+#profile-menu {
+  position: absolute;
+  top: calc(100% - 0.5rem);
+  padding: 0.5rem 0;
+  background-color: var(--surface-color);
+  border-radius: 0.5rem;
+  box-shadow: 0 0.125rem 0.125rem 0 rgba(0, 0, 0, 0.1);
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+#profile-menu hr {
+  height: 2px;
+  margin: 0.25rem 1rem;
+}
+#profile-menu a {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  align-items: center;
+  height: fit-content;
+  color: var(--text-color);
+  width: 100%;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  text-transform: none;
+  font-weight: 600;
+  border-radius: 0;
+  justify-content: start;
+}
+#profile-menu a:hover {
+  text-decoration: none;
+  background-color: var(--detail-color);
+}
+#profile-menu a.destructive {
+  color: #ff4444;
+}
+
 #banner {
   position: relative;
   grid-column: 1/-1;
@@ -1249,6 +1288,63 @@ table {
 .table-interactable img {
   width: 1rem;
   vertical-align: middle;
+}
+
+#nav--collection-shortcuts {
+  display: flex;
+  flex-direction: row;
+  gap: 0;
+  width: 100%;
+  background-color: var(--detail-color);
+  border-radius: 0.5rem;
+}
+#nav--collection-shortcuts input {
+  display: none;
+}
+#nav--collection-shortcuts input + label {
+  flex: 1 1 0;
+  aspect-ratio: 1/1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-top: 2px solid var(--detail-color);
+  border-bottom: 4px solid var(--detail-color);
+  background-color: var(--surface-color);
+}
+#nav--collection-shortcuts input + label:first-of-type {
+  border-left: 2px solid var(--detail-color);
+  border-radius: 0.5rem 0 0 0.5rem;
+  margin-right: 2px;
+}
+#nav--collection-shortcuts input + label:last-of-type {
+  border-right: 2px solid var(--detail-color);
+  border-radius: 0 0.5rem 0.5rem 0;
+}
+#nav--collection-shortcuts input:hover + label {
+  text-decoration: none;
+}
+#nav--collection-shortcuts input:checked + label {
+  color: var(--surface-color);
+}
+#nav--collection-shortcuts input:checked[id$=favorites] + label {
+  background-color: #fed330;
+  border-color: #f7b731;
+}
+#nav--collection-shortcuts input:checked[id$=completed] + label {
+  background-color: #26de81;
+  border-color: #20bf6b;
+}
+#nav--collection-shortcuts input:checked[id$=playing] + label {
+  background-color: #2bcbba;
+  border-color: #0fb9b1;
+}
+#nav--collection-shortcuts input:checked[id$=owned] + label {
+  background-color: #45aaf2;
+  border-color: #2d98da;
+}
+#nav--collection-shortcuts input:checked[id$=wanted] + label {
+  background-color: #fc5c65;
+  border-color: #eb3b5a;
 }
 
 /*# sourceMappingURL=games.css.map */

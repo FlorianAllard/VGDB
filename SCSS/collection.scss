@@ -1,0 +1,22 @@
+// npx sass --watch ./SCSS:./CSS
+@import "./style";
+
+#body {
+    @include flex(column, 4rem);
+    padding: 2rem $side-padding;
+}
+
+#favorites div:has(>i) {
+    background-color: #ffcc00;
+}
+
+.section-title {
+    @include flex(row, 0.5rem);
+    div {
+        border-radius: $border-radius;
+        aspect-ratio: 1/1;
+        height: 100%;
+        @include center();
+        color: var(--background-color);
+    }
+}

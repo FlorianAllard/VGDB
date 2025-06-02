@@ -461,3 +461,64 @@ table {
         vertical-align: middle;
     }
 }
+
+#nav--collection-shortcuts {
+    @include flex(row, 0);
+    width: 100%;
+    background-color: var(--detail-color);
+    border-radius: $border-radius;
+
+    input {
+        display: none;
+
+        &+label {
+            flex: 1 1 0;
+            aspect-ratio: 1/1;
+            @include center();
+            border-top: $outline-width solid var(--detail-color);
+            border-bottom: $outline-width*2 solid var(--detail-color);
+            background-color: var(--surface-color);
+
+            &:first-of-type{
+                border-left: $outline-width solid var(--detail-color);
+                border-radius: $border-radius 0 0 $border-radius;
+                margin-right: $outline-width;
+            }
+            &:last-of-type{
+                border-right: $outline-width solid var(--detail-color);
+                border-radius: 0 $border-radius $border-radius 0;
+            }
+        }
+
+        &:hover+label {
+            text-decoration: none;
+        }
+
+        &:checked {
+            &+label {
+                color: var(--surface-color);
+            }
+
+            &[id$='favorites']+label {
+                background-color: #fed330;
+                border-color: #f7b731;
+            }
+            &[id$='completed']+label {
+                background-color: #26de81;
+                border-color: #20bf6b;
+            }
+            &[id$='playing']+label {
+                background-color: #2bcbba;
+                border-color: #0fb9b1;
+            }
+            &[id$='owned']+label {
+                background-color: #45aaf2;
+                border-color: #2d98da;
+            }
+            &[id$='wanted']+label {
+                background-color: #fc5c65;
+                border-color: #eb3b5a;
+            }
+        }
+    }
+}
