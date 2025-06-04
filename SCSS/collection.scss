@@ -9,14 +9,52 @@
 #favorites div:has(>i) {
     background-color: #ffcc00;
 }
+#completed div:has(>i) {
+    background-color: #26de81;
+}
+#playing div:has(>i) {
+    background-color: #2bcbba;
+}
+#owned div:has(>i) {
+    background-color: #45aaf2;
+}
+#wanted div:has(>i) {
+    background-color: #fc5c65;
+}
 
 .section-title {
     @include flex(row, 0.5rem);
+    align-items: center;
     div {
         border-radius: $border-radius;
+        height: 2rem;
         aspect-ratio: 1/1;
-        height: 100%;
         @include center();
         color: var(--background-color);
     }
+}
+
+.card {
+    flex:none;
+}
+
+.wrapper {
+    width: 100%;
+    translate: calc(-1 * $side-padding) 0;
+    margin: 0 $side-padding;
+}
+
+.collection:not(#favorites) .wrapper>.content {
+    @include flex();
+    padding-bottom: calc($outline-width + 1rem);
+    overflow-x: auto;
+
+    .card {
+        width: 10rem;
+    }
+}
+
+#favorites > .content {
+    @include grid(3);
+    grid-template-rows: 1fr;
 }

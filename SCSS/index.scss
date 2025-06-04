@@ -33,3 +33,11 @@ section:not(#body):has(>section) {
     @include flex();
     justify-content: space-between;
 }
+
+.card.vertical:has(>.cover.landscape) {
+    flex: 3 1 0px;
+}
+
+.card.vertical:has(>.cover.portrait) {
+    flex: 1 1 0px;
+}

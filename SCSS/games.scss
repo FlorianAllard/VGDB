@@ -30,7 +30,7 @@
 nav > section,
  #main-content {
     @extend %surface;
-    padding: 2rem;
+    padding: 1.5rem 2rem;
 }
 
 nav,
@@ -79,6 +79,21 @@ nav {
 
 #main--top {
     gap: 0.25rem;
+
+    :has(#main--top--title) {
+        @include flex();
+
+        #main--top--title {
+            flex-grow: 1;
+            h1 {
+                line-height: 2.5rem;
+            }
+        }
+
+        #main--top--collection {
+            max-width:fit-content;
+        }
+    }
 
     &--media {
         @include flex();
@@ -462,62 +477,62 @@ table {
     }
 }
 
-#nav--collection-shortcuts {
+#main--top--collection {
     @include flex(row, 0);
     width: 100%;
-    background-color: var(--detail-color);
-    border-radius: $border-radius;
 
     input {
         display: none;
 
         &+label {
-            flex: 1 1 0;
-            aspect-ratio: 1/1;
+            width: 2.5rem;
+            height: calc(2.5rem + $outline-width/2);
+            padding-top: calc($outline-width/2);
             @include center();
-            border-top: $outline-width solid var(--detail-color);
+            font-size: 100%;
+            border: $outline-width solid var(--detail-color);
             border-bottom: $outline-width*2 solid var(--detail-color);
+            color: var(--text-color);
             background-color: var(--surface-color);
-
-            &:first-of-type{
-                border-left: $outline-width solid var(--detail-color);
-                border-radius: $border-radius 0 0 $border-radius;
-                margin-right: $outline-width;
-            }
-            &:last-of-type{
-                border-right: $outline-width solid var(--detail-color);
-                border-radius: 0 $border-radius $border-radius 0;
-            }
+            border-radius: 99rem;
         }
-
+        
         &:hover+label {
             text-decoration: none;
+            cursor: pointer;
         }
-
+        
         &:checked {
             &+label {
                 color: var(--surface-color);
+                text-shadow: 0 0 0.5rem rgba($color: black, $alpha: 0.25);
             }
 
             &[id$='favorites']+label {
-                background-color: #fed330;
-                border-color: #f7b731;
+                background-color: $warning-color;
+                border-color: $warning-alt-color;
+                color: $warning-alt-color;
             }
-            &[id$='completed']+label {
-                background-color: #26de81;
-                border-color: #20bf6b;
+            &[id$='finished']+label {
+                background-color: $success-color;
+                border-color: $success-alt-color;
+                color: $success-alt-color;
             }
-            &[id$='playing']+label {
-                background-color: #2bcbba;
-                border-color: #0fb9b1;
+            &[id$='playing-now']+label {
+                background-color: var(--secondary-color);
+                border-color: var(--secondary-alt-color);
+                color: var(--secondary-alt-color);
+                i {
+                        filter: brightness(115%);
+                    }
             }
-            &[id$='owned']+label {
-                background-color: #45aaf2;
-                border-color: #2d98da;
-            }
-            &[id$='wanted']+label {
-                background-color: #fc5c65;
-                border-color: #eb3b5a;
+            &[id$='want-to-play']+label {
+                background-color: $error-color;
+                border-color: $error-alt-color;
+                color: $error-alt-color;
+                i {
+                        filter: brightness(125%);
+                    }
             }
         }
     }

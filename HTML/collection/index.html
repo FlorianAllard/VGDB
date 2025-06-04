@@ -12,10 +12,11 @@
 <body>
     <main>
         <section id="body">
-            <section id="favorites">
+            <h1>USER's Library</h1>
+            <section id="favorites" class="collection">
                 <div class="section-title">
                     <div><i class="fa-solid fa-star"></i></div>
-                    <h2>Favorites</h2>
+                    <h2>Favorites (3/3)</h2>
                 </div>
                 <div class="content">
                     <template data-loading-placeholders="3">
@@ -29,6 +30,90 @@
                             </div>
                         </a>
                     </template>
+                </div>
+            </section>
+            <section id="completed" class="collection">
+                <div class="section-title">
+                    <div><i class="fa-solid fa-square-check"></i></div>
+                    <h2>Completed (x)</h2>
+                </div>
+                <div class="wrapper">
+                    <div class="content">
+                        <template data-loading-placeholders="8">
+                            <a href="" class="card vertical">
+                                <div class="cover portrait loading"></div>
+                                <div class="content">
+                                    <b class="loading">-</b>
+                                    <ul class="subtexts loading">
+                                        <li><small>-</small></li>
+                                    </ul>
+                                </div>
+                            </a>
+                        </template>
+                    </div>
+                </div>
+            </section>
+            <section id="playing" class="collection">
+                <div class="section-title">
+                    <div><i class="fa-solid fa-gamepad"></i></div>
+                    <h2>Playing (x)</h2>
+                </div>
+                <div class="wrapper">
+                    <div class="content">
+                        <template data-loading-placeholders="8">
+                            <a href="" class="card vertical">
+                                <div class="cover portrait loading"></div>
+                                <div class="content">
+                                    <b class="loading">-</b>
+                                    <ul class="subtexts loading">
+                                        <li><small>-</small></li>
+                                    </ul>
+                                </div>
+                            </a>
+                        </template>
+                    </div>
+                </div>
+            </section>
+            <section id="owned" class="collection">
+                <div class="section-title">
+                    <div><i class="fa-solid fa-lines-leaning"></i></div>
+                    <h2>Owned (x)</h2>
+                </div>
+                <div class="wrapper">
+                    <div class="content">
+                        <template data-loading-placeholders="8">
+                            <a href="" class="card vertical">
+                                <div class="cover portrait loading"></div>
+                                <div class="content">
+                                    <b class="loading">-</b>
+                                    <ul class="subtexts loading">
+                                        <li><small>-</small></li>
+                                    </ul>
+                                </div>
+                            </a>
+                        </template>
+                    </div>
+                </div>
+            </section>
+            <section id="wanted" class="collection">
+                <div class="section-title">
+                    <div><i class="fa-solid fa-heart"></i></div>
+                    <h2>Wanted (x)</h2>
+                </div>
+                <div class="wrapper">
+                    <div class="content">
+                        <template data-loading-placeholders="8">
+                            <a href="" class="card vertical">
+                                <div class="cover portrait loading"></div>
+                                <div class="content">
+                                    <b class="loading">-</b>
+                                    <ul class="subtexts loading">
+                                        <li><small>-</small></li>
+                                    </ul>
+                                </div>
+                            </a>
+                        </template>
+                    </div>
                 </div>
             </section>
         </section>

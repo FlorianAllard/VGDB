@@ -309,8 +309,17 @@ function fillReleases() {
 async function setCollections(){
   const collections = await BackEnd.getCollectionsIncludingGame(game.id);
   collections.forEach(coll => {
-    const toggle = document.querySelector(`#nav--collection-shortcuts--${coll}`);
-    toggle.checked = true;
+    const radio = document.querySelector(`#main--top--collection--${coll.name}`);
+    const label = document.querySelector(`[for="main--top--collection--${coll.name}"]`);
+    radio.checked = coll.includesGame;
+
+    label.addEventListener("click", function (e) {
+      debugger;
+      if (radio.checked) {
+        e.preventDefault();
+        radio.checked = false;
+      }
+    });
   });
 }
 

@@ -20,9 +20,9 @@ export async function getCollectionsIncludingGame(id) {
 
   const response = [];
   collectionData.forEach((coll) => {
-    if (coll.games.includes(id)) {
-      response.push(coll.name);
-    }
+    response.push({
+      "name": coll.name,
+      "includesGame": coll.games.includes(id)});
   });
 
   return response;

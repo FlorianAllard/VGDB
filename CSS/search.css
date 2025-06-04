@@ -12,11 +12,8 @@
     --background-color: #172021;
     --detail-color: #3a464e;
     --primary-color: #FE7E01;
-    --primary-detail-color: color-mix(in srgb, #FE7E01, black 20%);
-    --primary-hover-color: color-mix(in srgb, #FE7E01, white 33%);
     --secondary-color: #1CB0F6;
-    --secondary-detail-color: color-mix(in srgb, #1CB0F6, black 20%);
-    --secondary-hover-color: color-mix(in srgb, #1CB0F6, white 33%);
+    --secondary-alt-color: #45AAF2;
     --text-color: #f0f6fb;
   }
 }
@@ -26,15 +23,12 @@
     --background-color: #F7F7F7;
     --detail-color: #E5E5E5;
     --primary-color: #FE7E01;
-    --primary-detail-color: color-mix(in srgb, #FE7E01, black 20%);
-    --primary-hover-color: color-mix(in srgb, #FE7E01, white 33%);
-    --secondary-color: #1CB0F6;
-    --secondary-detail-color: color-mix(in srgb, #1CB0F6, black 20%);
-    --secondary-hover-color: color-mix(in srgb, #1CB0F6, white 33%);
+    --secondary-color: #2D98DA;
+    --secondary-alt-color: #45AAF2;
     --text-color: #4B4B4B;
   }
 }
-header > div {
+header #logo, header > div {
   flex: 1 1 0px;
 }
 
@@ -67,11 +61,8 @@ header > div {
   --background-color: #172021;
   --detail-color: #3a464e;
   --primary-color: #FE7E01;
-  --primary-detail-color: color-mix(in srgb, #FE7E01, black 20%);
-  --primary-hover-color: color-mix(in srgb, #FE7E01, white 33%);
   --secondary-color: #1CB0F6;
-  --secondary-detail-color: color-mix(in srgb, #1CB0F6, black 20%);
-  --secondary-hover-color: color-mix(in srgb, #1CB0F6, white 33%);
+  --secondary-alt-color: #45AAF2;
   --text-color: #f0f6fb;
 }
 
@@ -171,16 +162,23 @@ button.tertiary:hover {
   background-color: var(--detail-color);
 }
 button.destructive {
-  color: #ff4444;
+  color: #EB3B5A;
 }
 
 header {
   display: flex;
   flex-direction: row;
   gap: 1rem;
+  --surface-color: #233034;
+  --background-color: #172021;
+  --detail-color: #3a464e;
+  --primary-color: #FE7E01;
+  --secondary-color: #1CB0F6;
+  --secondary-alt-color: #45AAF2;
+  --text-color: #f0f6fb;
+  background-color: var(--surface-color);
   height: 4.5rem;
   align-items: center;
-  background-color: var(--primary-color);
   padding: 1rem max((100dvw - 1280px) / 2, 2rem);
   position: sticky;
   top: 0;
@@ -192,6 +190,15 @@ header > div {
   flex-direction: row;
   gap: 1rem;
 }
+header #logo {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  height: 100%;
+}
+header #logo * {
+  height: 100%;
+}
 header div:has(search) {
   flex-grow: 2;
 }
@@ -202,11 +209,8 @@ search {
   --background-color: #F7F7F7;
   --detail-color: #E5E5E5;
   --primary-color: #FE7E01;
-  --primary-detail-color: color-mix(in srgb, #FE7E01, black 20%);
-  --primary-hover-color: color-mix(in srgb, #FE7E01, white 33%);
-  --secondary-color: #1CB0F6;
-  --secondary-detail-color: color-mix(in srgb, #1CB0F6, black 20%);
-  --secondary-hover-color: color-mix(in srgb, #1CB0F6, white 33%);
+  --secondary-color: #2D98DA;
+  --secondary-alt-color: #45AAF2;
   --text-color: #4B4B4B;
   flex-grow: 2;
   height: 2.5rem;
@@ -478,14 +482,6 @@ section > .content {
   padding-bottom: 1rem;
 }
 
-.card.vertical:has(> .cover.landscape) {
-  flex: 3 1 0px;
-}
-
-.card.vertical:has(> .cover.portrait) {
-  flex: 1 1 0px;
-}
-
 ul.subtexts {
   display: flex;
   flex-direction: row;
@@ -517,11 +513,8 @@ small a {
   --background-color: #F7F7F7;
   --detail-color: #E5E5E5;
   --primary-color: #FE7E01;
-  --primary-detail-color: color-mix(in srgb, #FE7E01, black 20%);
-  --primary-hover-color: color-mix(in srgb, #FE7E01, white 33%);
-  --secondary-color: #1CB0F6;
-  --secondary-detail-color: color-mix(in srgb, #1CB0F6, black 20%);
-  --secondary-hover-color: color-mix(in srgb, #1CB0F6, white 33%);
+  --secondary-color: #2D98DA;
+  --secondary-alt-color: #45AAF2;
   --text-color: #4B4B4B;
   display: flex;
   flex-direction: row;
@@ -535,23 +528,23 @@ small a {
 }
 
 .rating-5 span {
-  color: #00c851;
+  color: #20BF6B;
 }
 
 .rating-4 span {
-  color: #B7DD29;
+  color: #26DE81;
 }
 
 .rating-3 span {
-  color: #FFE234;
+  color: #F7B731;
 }
 
 .rating-2 span {
-  color: #FFA534;
+  color: #FED330;
 }
 
 .rating-1 span {
-  color: #ff4444;
+  color: #EB3B5A;
 }
 
 .card.horizontal {
@@ -631,16 +624,13 @@ footer {
   --background-color: #172021;
   --detail-color: #3a464e;
   --primary-color: #FE7E01;
-  --primary-detail-color: color-mix(in srgb, #FE7E01, black 20%);
-  --primary-hover-color: color-mix(in srgb, #FE7E01, white 33%);
   --secondary-color: #1CB0F6;
-  --secondary-detail-color: color-mix(in srgb, #1CB0F6, black 20%);
-  --secondary-hover-color: color-mix(in srgb, #1CB0F6, white 33%);
+  --secondary-alt-color: #45AAF2;
   --text-color: #f0f6fb;
-  align-items: center;
-  width: 100%;
   background-color: var(--surface-color);
   color: var(--text-color);
+  align-items: center;
+  width: 100%;
   padding: 2rem max((100dvw - 1280px) / 2, 2rem);
   grid-column: 1/-1;
 }
@@ -723,11 +713,8 @@ platform-prefab img {
   --background-color: #172021;
   --detail-color: #3a464e;
   --primary-color: #FE7E01;
-  --primary-detail-color: color-mix(in srgb, #FE7E01, black 20%);
-  --primary-hover-color: color-mix(in srgb, #FE7E01, white 33%);
   --secondary-color: #1CB0F6;
-  --secondary-detail-color: color-mix(in srgb, #1CB0F6, black 20%);
-  --secondary-hover-color: color-mix(in srgb, #1CB0F6, white 33%);
+  --secondary-alt-color: #45AAF2;
   --text-color: #f0f6fb;
   position: absolute;
   visibility: hidden;
@@ -845,7 +832,7 @@ tbody.loading {
   background-color: var(--detail-color);
 }
 #profile-menu a.destructive {
-  color: #ff4444;
+  color: #EB3B5A;
 }
 
 #body {

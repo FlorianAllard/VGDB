@@ -28,6 +28,10 @@ async function requestPageData() {
     console.log(games);
 
     generateCards("favorites");
+    generateCards("completed");
+    generateCards("playing");
+    generateCards("owned");
+    generateCards("wanted");
 
     Utilities.stopLoading();
 }

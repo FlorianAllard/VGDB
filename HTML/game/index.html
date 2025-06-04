@@ -20,23 +20,6 @@
             </figure>
             
             <nav>
-                <div id="nav--collection-shortcuts">
-                    <input type="checkbox" name="collection" id="nav--collection-shortcuts--favorites" autocomplete="off">
-                    <label for="nav--collection-shortcuts--favorites"><i class="fa-solid fa-star"></i><my-tooltip>Favorite</my-tooltip></label>
-                    
-                    <input type="checkbox" name="collection" id="nav--collection-shortcuts--completed" autocomplete="off">
-                    <label for="nav--collection-shortcuts--completed"><i class="fa-solid fa-square-check"></i><my-tooltip>Completed</my-tooltip></label>
-
-                    <input type="checkbox" name="collection" id="nav--collection-shortcuts--playing" autocomplete="off">
-                    <label for="nav--collection-shortcuts--playing"><i class="fa-solid fa-gamepad"></i><my-tooltip>Playing</my-tooltip></label>
-
-                    <input type="checkbox" name="collection" id="nav--collection-shortcuts--owned" autocomplete="off">
-                    <label for="nav--collection-shortcuts--owned"><i class="fa-solid fa-lines-leaning"></i><my-tooltip>Owned</my-tooltip></label>
-
-                    <input type="checkbox" name="collection" id="nav--collection-shortcuts--wanted" autocomplete="off">
-                    <label for="nav--collection-shortcuts--wanted"><i class="fa-solid fa-heart"></i><my-tooltip>Wanted</my-tooltip></label>
-                </div>
-
                 <section id="nav--table-of-contents">
                     <h3>Table of contents</h3>
                 </section>
@@ -50,8 +33,29 @@
             
             <section id="main-content">
                 <section id="main--top">
-                    <h1 class="loading">Game name</h1>
-                    <small class="loading">Release date</small>
+                    <div>
+                        <div id="main--top--title">
+                            <h1 class="loading">Game name</h1>
+                            <small class="loading">Release date</small>
+                        </div>
+                        <div id="main--top--collection">
+                            <input type="radio" name="collection" id="main--top--collection--favorites" autocomplete="off">
+                            <label for="main--top--collection--favorites"><i
+                                    class="fa-solid fa-star"></i><my-tooltip>Favorite</my-tooltip></label>
+                        
+                            <input type="radio" name="collection" id="main--top--collection--finished" autocomplete="off">
+                            <label for="main--top--collection--finished"><i
+                                    class="fa-solid fa-square-check"></i><my-tooltip>Finished</my-tooltip></label>
+                        
+                            <input type="radio" name="collection" id="main--top--collection--playing-now" autocomplete="off">
+                            <label for="main--top--collection--playing-now"><i class="fa-solid fa-gamepad"></i><my-tooltip>Playing
+                                    now</my-tooltip></label>
+                        
+                            <input type="radio" name="collection" id="main--top--collection--want-to-play" autocomplete="off">
+                            <label for="main--top--collection--want-to-play"><i class="fa-solid fa-heart"></i><my-tooltip>Want to
+                                play</my-tooltip></label>
+                        </div>
+                    </div>
                     <div class="loading" id="main--top--media">
                         <img src="" alt="" id="game-cover">
                         <iframe src=""
