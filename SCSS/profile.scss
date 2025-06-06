@@ -1,0 +1,162 @@
+// npx sass --watch ./SCSS:./CSS
+@import "./style";
+
+// Layout
+#body {
+    @include flex(column, 4rem);
+    padding: 2rem $side-padding;
+}
+
+// Profile Card
+.profile-card {
+    @include flex(row, 2rem);
+    padding: 2rem;
+    border-radius: $border-radius;
+    box-shadow: $shadow;
+    background-color: var(--surface-color);
+    width: 100%;
+    aspect-ratio: 1280/279.68;
+    background-size: cover;
+
+    &--portrait {
+        border-radius: 100%;
+        aspect-ratio: 1/1;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    &--content {
+        @include flex(column, 1.5rem);
+        width: 100%;
+        min-width: 0;
+        height: min-content;
+
+        > div:first-of-type {
+            @include flex(row);
+            align-self: stretch;
+        }
+    }
+
+    &--title {
+        @include flex(column, 0.25rem);
+        flex-grow: 1;
+        color: var(--surface-color);
+    }
+
+    &--stats {
+        @include grid(3, 1.5rem);
+        justify-content: end;
+
+        > div {
+            @include center();
+            justify-content: end;
+            position: relative;
+            padding: 0 1rem 0 3rem;
+            text-align: right;
+            border-radius: $border-radius;
+        }
+    }
+}
+
+// Stats Icon
+.profile-card--stats--icon {
+    position: absolute;
+    z-index: 3;
+    width: 2rem;
+    height: 2rem;
+    left: -$outline-width * 2;
+    top: -$outline-width * 2;
+    background-color: var(--detail-color);
+    border-radius: $border-radius 0 $border-radius 0;
+    padding: $outline-width 0 0 $outline-width;
+    @include center();
+    text-shadow: 0 0 0.5rem rgba($color: black, $alpha: 0.25);
+}
+
+// Stats Variants
+.profile-card--stats {
+    &--favorites {
+        background-color: $warning-alt-color;
+        border: $outline-width * 2 solid $warning-color;
+        color: var(--surface-color);
+
+        .profile-card--stats--icon {
+            background-color: $warning-color;
+            color: $warning-alt-color;
+        }
+    }
+    &--finished {
+        background-color: $success-alt-color;
+        border: $outline-width * 2 solid $success-color;
+        color: var(--surface-color);
+
+        .profile-card--stats--icon {
+            background-color: $success-color;
+            color: $success-alt-color;
+        }
+    }
+    &--owned {
+        background-color: var(--secondary-alt-color);
+        border: $outline-width * 2 solid var(--secondary-color);
+        color: var(--surface-color);
+
+        .profile-card--stats--icon {
+            background-color: var(--secondary-color);
+            color: var(--secondary-alt-color);
+        }
+    }
+    &--wanted {
+        background-color: $error-alt-color;
+        border: $outline-width * 2 solid $error-color;
+        color: var(--surface-color);
+
+        .profile-card--stats--icon {
+            background-color: $error-color;
+            color: $error-alt-color;
+        }
+    }
+}
+
+// Favorites Images
+.profile-card--stats--favorites {
+    @include flex(row, $outline-width * 2);
+    position: relative;
+    border-radius: $border-radius;
+    width: 100%;
+
+    img {
+        aspect-ratio: 460/215;
+        object-fit: cover;
+        flex: 1 1 0;
+        min-width: 0;
+
+        &:first-of-type {
+            border-bottom-left-radius: $border-radius / 2;
+        }
+
+        &:last-of-type {
+            border-radius: 0 $border-radius / 2 $border-radius / 2 0;
+        }
+    }
+}
+
+// Lists (Finished, Owned, Wanted)
+#finished, #owned, #wanted {
+    > .content {
+        @include grid(6);
+        width: 100%;
+        flex-wrap: nowrap;
+    }
+}
+
+.navigation {
+    width: 100%;
+    @include flex(row, 0.5rem);
+    justify-content: end;
+}
+
+.disabled {
+    opacity: 50%;
+    pointer-events: none;
+    color: var(--detail-color);
+}

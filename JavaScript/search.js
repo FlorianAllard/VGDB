@@ -472,8 +472,8 @@ async function applyFilters() {
 
   if (currentFilters["search"]) {
     if (sortBy.value !== "SEARCH") {
-      where += `name~*"${currentFilters["search"]}"* & `;
-      fields += `, ${sortBy.value}`;
+      where += `name ~ *"${currentFilters["search"]}"* & `;
+      fields += `, ${sortBy.value.replace(/desc|asc/gi, "").trim()}`;
     } else {
       search = ` search "${currentFilters["search"]}"; `;
       sort = "";

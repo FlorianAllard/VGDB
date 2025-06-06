@@ -59,8 +59,8 @@ nav > section,
 #main--additional-content--expansions .card:hover,
 #main--additional-content--dlcs .card:hover, #main--localization--age-ratings li:hover, .card:hover, button:hover {
   background-color: var(--detail-color);
-  border-color: var(--secondary-color);
-  box-shadow: 0 2px 0 var(--secondary-color);
+  border-color: var(--secondary-alt-color);
+  box-shadow: 0 2px 0 var(--secondary-alt-color);
   cursor: pointer;
 }
 
@@ -138,15 +138,15 @@ button {
   justify-content: center;
   align-items: center;
   padding: 0 1rem;
-  height: 3rem;
-  color: var(--secondary-color);
+  height: 2.5rem;
+  color: var(--secondary-alt-color);
   text-transform: uppercase;
   font-weight: bold;
 }
 button.primary {
   color: var(--surface-color);
-  background-color: var(--secondary-color);
-  border-color: var(--secondary-detail-color);
+  background-color: var(--secondary-alt-color);
+  border-color: var(--secondary-color);
   box-shadow: 0 2px 0 var(--secondary-detail-color);
 }
 button.primary:hover {
@@ -155,10 +155,10 @@ button.primary:hover {
   box-shadow: 0 2px 0 var(--secondary-color);
 }
 button.secondary {
-  color: var(--secondary-color);
+  color: var(--secondary-alt-color);
   background-color: var(--surface-color);
-  border-color: var(--secondary-color);
-  box-shadow: 0 2px 0 var(--secondary-color);
+  border-color: var(--secondary-alt-color);
+  box-shadow: 0 2px 0 var(--secondary-alt-color);
 }
 button.secondary:hover {
   background-color: var(--detail-color);
@@ -182,14 +182,7 @@ header {
   display: flex;
   flex-direction: row;
   gap: 1rem;
-  --surface-color: #233034;
-  --background-color: #172021;
-  --detail-color: #3a464e;
-  --primary-color: #FE7E01;
-  --secondary-color: #1CB0F6;
-  --secondary-alt-color: #45AAF2;
-  --text-color: #f0f6fb;
-  background-color: var(--surface-color);
+  background-color: #233034;
   height: 4.5rem;
   align-items: center;
   padding: 1rem max((100dvw - 1280px) / 2, 2rem);
@@ -299,7 +292,7 @@ search menu > div {
 .searchbar--item:hover {
   background-color: var(--detail-color);
   text-decoration: none;
-  border-color: var(--secondary-color);
+  border-color: var(--secondary-alt-color);
   z-index: 12;
 }
 
@@ -356,7 +349,7 @@ div:has(> .user-profile) {
   border-radius: 99rem;
 }
 .user-profile:hover img {
-  outline-color: var(--secondary-color);
+  outline-color: var(--secondary-alt-color);
 }
 .user-profile:active {
   background-color: var(--detail-color);
@@ -386,7 +379,7 @@ p {
 }
 
 a {
-  color: var(--secondary-color);
+  color: var(--secondary-alt-color);
   text-decoration: none;
 }
 a:hover {
@@ -1302,14 +1295,13 @@ table {
 }
 #main--top--collection input + label {
   width: 2.5rem;
-  height: calc(2.5rem + 1px);
-  padding-top: 1px;
+  height: 2.5rem;
   display: flex;
   justify-content: center;
   align-items: center;
   font-size: 100%;
   border: 2px solid var(--detail-color);
-  border-bottom: 4px solid var(--detail-color);
+  box-shadow: 0 2px 0 var(--detail-color);
   color: var(--text-color);
   background-color: var(--surface-color);
   border-radius: 99rem;
@@ -1326,26 +1318,30 @@ table {
   background-color: #F7B731;
   border-color: #FED330;
   color: #FED330;
+  box-shadow: 0 2px 0 #FED330;
 }
 #main--top--collection input:checked[id$=finished] + label {
   background-color: #20BF6B;
   border-color: #26DE81;
   color: #26DE81;
+  box-shadow: 0 2px 0 #26DE81;
 }
-#main--top--collection input:checked[id$=playing-now] + label {
+#main--top--collection input:checked[id$=owned] + label {
   background-color: var(--secondary-color);
   border-color: var(--secondary-alt-color);
   color: var(--secondary-alt-color);
+  box-shadow: 0 2px 0 var(--secondary-alt-color);
 }
-#main--top--collection input:checked[id$=playing-now] + label i {
+#main--top--collection input:checked[id$=owned] + label i {
   filter: brightness(115%);
 }
-#main--top--collection input:checked[id$=want-to-play] + label {
+#main--top--collection input:checked[id$=wanted] + label {
   background-color: #EB3B5A;
   border-color: #FC5C65;
   color: #FC5C65;
+  box-shadow: 0 2px 0 #FC5C65;
 }
-#main--top--collection input:checked[id$=want-to-play] + label i {
+#main--top--collection input:checked[id$=wanted] + label i {
   filter: brightness(125%);
 }
 

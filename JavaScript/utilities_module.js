@@ -142,3 +142,45 @@ export function stopLoading(parent = document) {
   const removeAfterLoading = parent.querySelectorAll(".remove-after-loading");
   removeAfterLoading.forEach((el) => el.remove());
 }
+
+export async function getDominantColor(img) {
+  // Wait for the image to be fully loaded
+  if (!img.complete || img.naturalWidth === 0) {
+    await new Promise((resolve, reject) => {
+      img.onload = () => resolve();
+      img.onerror = () => reject(new Error("Image failed to load"));
+    });
+  }
+
+  // Create a canvas and draw the image
+  const canvas = document.createElement("canvas");
+  canvas.width = img.naturalWidth || img.width;
+  canvas.height = img.naturalHeight || img.height;
+  const ctx = canvas.getContext("2d");
+  ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+  // Get pixel data
+  let imageData;
+  try {
+    imageData = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+  } catch (e) {
+    console.error("Canvas is tainted or image not loaded:", e);
+    return "rgb(0,0,0)";
+  }
+
+  const colorCount = {};
+  let maxCount = 0;
+  let dominantColor = "";
+
+  // Loop through pixels
+  for (let i = 0; i < imageData.length; i += 4) {
+    const rgb = `${imageData[i]},${imageData[i + 1]},${imageData[i + 2]}`;
+    colorCount[rgb] = (colorCount[rgb] || 0) + 1;
+    if (colorCount[rgb] > maxCount) {
+      maxCount = colorCount[rgb];
+      dominantColor = rgb;
+    }
+  }
+
+  return dominantColor ? `rgb(${dominantColor})` : "rgb(0,0,0)";
+}

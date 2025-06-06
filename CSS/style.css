@@ -46,8 +46,8 @@ search menu, .card, button {
 }
 .card:hover, button:hover {
   background-color: var(--detail-color);
-  border-color: var(--secondary-color);
-  box-shadow: 0 2px 0 var(--secondary-color);
+  border-color: var(--secondary-alt-color);
+  box-shadow: 0 2px 0 var(--secondary-alt-color);
   cursor: pointer;
 }
 
@@ -125,15 +125,15 @@ button {
   justify-content: center;
   align-items: center;
   padding: 0 1rem;
-  height: 3rem;
-  color: var(--secondary-color);
+  height: 2.5rem;
+  color: var(--secondary-alt-color);
   text-transform: uppercase;
   font-weight: bold;
 }
 button.primary {
   color: var(--surface-color);
-  background-color: var(--secondary-color);
-  border-color: var(--secondary-detail-color);
+  background-color: var(--secondary-alt-color);
+  border-color: var(--secondary-color);
   box-shadow: 0 2px 0 var(--secondary-detail-color);
 }
 button.primary:hover {
@@ -142,10 +142,10 @@ button.primary:hover {
   box-shadow: 0 2px 0 var(--secondary-color);
 }
 button.secondary {
-  color: var(--secondary-color);
+  color: var(--secondary-alt-color);
   background-color: var(--surface-color);
-  border-color: var(--secondary-color);
-  box-shadow: 0 2px 0 var(--secondary-color);
+  border-color: var(--secondary-alt-color);
+  box-shadow: 0 2px 0 var(--secondary-alt-color);
 }
 button.secondary:hover {
   background-color: var(--detail-color);
@@ -169,14 +169,7 @@ header {
   display: flex;
   flex-direction: row;
   gap: 1rem;
-  --surface-color: #233034;
-  --background-color: #172021;
-  --detail-color: #3a464e;
-  --primary-color: #FE7E01;
-  --secondary-color: #1CB0F6;
-  --secondary-alt-color: #45AAF2;
-  --text-color: #f0f6fb;
-  background-color: var(--surface-color);
+  background-color: #233034;
   height: 4.5rem;
   align-items: center;
   padding: 1rem max((100dvw - 1280px) / 2, 2rem);
@@ -286,7 +279,7 @@ search menu > div {
 .searchbar--item:hover {
   background-color: var(--detail-color);
   text-decoration: none;
-  border-color: var(--secondary-color);
+  border-color: var(--secondary-alt-color);
   z-index: 12;
 }
 
@@ -343,7 +336,7 @@ div:has(> .user-profile) {
   border-radius: 99rem;
 }
 .user-profile:hover img {
-  outline-color: var(--secondary-color);
+  outline-color: var(--secondary-alt-color);
 }
 .user-profile:active {
   background-color: var(--detail-color);
@@ -373,7 +366,7 @@ p {
 }
 
 a {
-  color: var(--secondary-color);
+  color: var(--secondary-alt-color);
   text-decoration: none;
 }
 a:hover {

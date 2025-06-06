@@ -486,12 +486,11 @@ table {
 
         &+label {
             width: 2.5rem;
-            height: calc(2.5rem + $outline-width/2);
-            padding-top: calc($outline-width/2);
+            height: calc(2.5rem);
             @include center();
             font-size: 100%;
             border: $outline-width solid var(--detail-color);
-            border-bottom: $outline-width*2 solid var(--detail-color);
+            box-shadow: 0 $outline-width 0 var(--detail-color);
             color: var(--text-color);
             background-color: var(--surface-color);
             border-radius: 99rem;
@@ -512,24 +511,28 @@ table {
                 background-color: $warning-color;
                 border-color: $warning-alt-color;
                 color: $warning-alt-color;
+                box-shadow: 0 $outline-width 0 $warning-alt-color;
             }
             &[id$='finished']+label {
                 background-color: $success-color;
                 border-color: $success-alt-color;
                 color: $success-alt-color;
+                box-shadow: 0 $outline-width 0 $success-alt-color;
             }
-            &[id$='playing-now']+label {
+            &[id$='owned']+label {
                 background-color: var(--secondary-color);
                 border-color: var(--secondary-alt-color);
                 color: var(--secondary-alt-color);
+                box-shadow: 0 $outline-width 0 var(--secondary-alt-color);
                 i {
                         filter: brightness(115%);
                     }
             }
-            &[id$='want-to-play']+label {
+            &[id$='wanted']+label {
                 background-color: $error-color;
                 border-color: $error-alt-color;
                 color: $error-alt-color;
+                box-shadow: 0 $outline-width 0 $error-alt-color;
                 i {
                         filter: brightness(125%);
                     }

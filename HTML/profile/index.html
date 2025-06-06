@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>USER</title>
+    <link rel="stylesheet" href="/CSS/profile.css">
+    <link rel="stylesheet" href="/node_modules/@fortawesome/fontawesome-free/css/all.min.css">
+    <script type="module" src="/JavaScript/script.js"></script>
+    <script type="module" src="/JavaScript/profile.js"></script>
+</head>
+<body>
+    <main>
+        <section id="body">
+            <section class="profile-card">
+                <img src="" alt="loading" class="profile-card--portrait">
+                <div class="profile-card--content">
+                    <div>
+                        <div class="profile-card--title">
+                            <h1 class="loading">USERNAME</h1>
+                            <h3 class="loading">TITLE</h3>
+                        </div>
+                        <div class="profile-card--stats">
+                            <div class="profile-card--stats--finished">
+                                <div class="profile-card--stats--icon">
+                                    <i class="fa-solid fa-check"></i>
+                                </div>
+                                <h1 class="loading">999</h1>
+                                <my-tooltip>Finished</my-tooltip>
+                            </div>
+                            <div class="profile-card--stats--owned">
+                                <div class="profile-card--stats--icon">
+                                    <i class="fa-solid fa-lines-leaning"></i>
+                                </div>
+                                <h1 class="loading">999</h1>
+                                <my-tooltip>Owned</my-tooltip>
+                            </div>
+                            <div class="profile-card--stats--wanted">
+                                <div class="profile-card--stats--icon">
+                                    <i class="fa-solid fa-heart"></i>
+                                </div>
+                                <h1 class="loading">999</h1>
+                                <my-tooltip>Wanted</my-tooltip>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="profile-card--stats--favorites">
+                        <div class="profile-card--stats--icon">
+                            <i class="fa-solid fa-star"></i>
+                        </div>
+                        <img src="" alt="loading">
+                        <img src="" alt="loading">
+                        <img src="" alt="loading">
+                        <img src="" alt="loading">
+                    </div>
+                </div>
+            </section>
+
+            <section id="favorites">
+                <div class="section-title">
+                    <h2>Favorites</h2>
+                </div>
+                <div class="content">
+                    <template data-loading-placeholders="4">
+                        <a href="" class="card vertical">
+                            <div class="cover landscape loading">
+                            </div>
+                            <div class="content">
+                                <b class="loading">-</b>
+                                <ul class="subtexts loading">
+                                    <li><small>-</small></li>
+                                </ul>
+                            </div>
+                        </a>
+                    </template>
+                </div>
+            </section>
+
+            <section id="finished">
+                <div class="section-title">
+                    <h2>Finished</h2>
+                </div>
+                <div class="content">
+                    <template data-loading-placeholders="8">
+                        <a href="" class="card vertical">
+                            <div class="cover portrait loading">
+                            </div>
+                            <div class="content">
+                                <b class="loading">-</b>
+                                <ul class="subtexts loading">
+                                    <li><small>-</small></li>
+                                </ul>
+                            </div>
+                        </a>
+                    </template>
+                </div>
+                <div class="navigation">
+                    <button class="navigation--previous" class="tertiary"><i class="fa-solid fa-chevron-left"></i></button>
+                    <button class="navigation--next" class="tertiary"><i class="fa-solid fa-chevron-right"></i></button>
+                </div>
+            </section>
+
+            <section id="owned">
+                <div class="section-title">
+                    <h2>Owned</h2>
+                </div>
+                <div class="content">
+                    <template data-loading-placeholders="8">
+                        <a href="" class="card vertical">
+                            <div class="cover portrait loading">
+                            </div>
+                            <div class="content">
+                                <b class="loading">-</b>
+                                <ul class="subtexts loading">
+                                    <li><small>-</small></li>
+                                </ul>
+                            </div>
+                        </a>
+                    </template>
+                </div>
+                <div class="navigation">
+                    <button class="navigation--previous" class="tertiary"><i class="fa-solid fa-chevron-left"></i></button>
+                    <button class="navigation--next" class="tertiary"><i class="fa-solid fa-chevron-right"></i></button>
+                </div>
+            </section>
+
+            <section id="wanted">
+                <div class="section-title">
+                    <h2>Wanted</h2>
+                </div>
+                <div class="content">
+                    <template data-loading-placeholders="8">
+                        <a href="" class="card vertical">
+                            <div class="cover portrait loading">
+                            </div>
+                            <div class="content">
+                                <b class="loading">-</b>
+                                <ul class="subtexts loading">
+                                    <li><small>-</small></li>
+                                </ul>
+                            </div>
+                        </a>
+                    </template>
+                </div>
+                <div class="navigation">
+                    <button class="navigation--previous" class="tertiary"><i class="fa-solid fa-chevron-left"></i></button>
+                    <button class="navigation--next" class="tertiary"><i class="fa-solid fa-chevron-right"></i></button>
+                </div>
+            </section>
+        </section>
+    </main>
+</body>
+</html>
