@@ -13,7 +13,10 @@ const OFFSETS = {
 };
 
 // Fetch user data and favorites, then load profile card
-const user = await BackEnd.getUser();
+const user = JSON.parse(localStorage.getItem("user"));
+const fakeUser = await BackEnd.getUser();
+user.collection = fakeUser.collection;
+user.title = fakeUser.title;
 const favorites = await loadFavorites();
 await loadProfileCard(favorites);
 
@@ -45,7 +48,7 @@ async function loadProfileCard(favorites) {
 
   // Set profile portrait
   const pp = card.querySelector(".profile-card--portrait");
-  pp.src = user.portrait_url;
+  pp.src = user.profilePic;
 
   // Set background gradient based on dominant color of portrait
   const color = await Utilities.getDominantColor(pp);

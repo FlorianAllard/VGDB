@@ -142,7 +142,7 @@ button {
     }
 }
 
-input[type=search], input[type=text], select {
+input[type=search], input[type=text], input[type=password], input[type=email], select {
     font-family: inherit;
     border: $outline-width solid var(--detail-color);
     border-radius: $border-radius;
@@ -186,7 +186,7 @@ div:has(input[type=checkbox]) {
     }
 }
 
-button {
+button, input[type="submit"] {
     @include flex(row, .25rem);
     @include center();
     padding: 0 1rem;
@@ -200,9 +200,9 @@ button {
         color: var(--surface-color);
         background-color: var(--secondary-alt-color);
         border-color: var(--secondary-color);
-        box-shadow: 0 $outline-width 0 var(--secondary-detail-color);
+        box-shadow: 0 $outline-width 0 var(--secondary-color);
         &:hover {
-                background-color: var(--secondary-hover-color);
+                background-color: var(--secondary-color);
                 border-color: var(--secondary-color);
                 box-shadow: 0 $outline-width 0 var(--secondary-color);
         }
@@ -227,9 +227,17 @@ button {
         &:hover {
             background-color: var(--detail-color);
         }
+
+        &:has(i) {
+            translate: 25% 0;
+        }
     }
     &.destructive {
         color: $error-color;
+    }
+
+    i{
+        font-size: 1rem;
     }
 }
 
@@ -321,6 +329,25 @@ search {
     }
 }
 
+li.error {
+    color: $error-color;
+}
+input.error {
+    border-color: $error-color;
+}
+
+.error-container {
+    font-size: 0.875rem;
+    padding: 1rem;
+    padding-left: 2rem;
+    border: $outline-width solid $error-color;
+    background-color: color-mix(in srgb, $error-alt-color, transparent 75%);
+
+    &:not(:has(*)) {
+        display: none;
+    }
+}
+
 .searchbar--item {
     @include flex();
     align-items: center;
@@ -375,11 +402,11 @@ search {
     }
 }
 
-div:has(>.user-profile) {
+div:has(>#user_profile) {
     justify-content: flex-end;
 }
 
-.user-profile {
+#user_profile {
     @include flex(row, calc(.5rem + $outline-width * 2));
     border: none;
     background-color: transparent;
@@ -408,7 +435,7 @@ div:has(>.user-profile) {
     }
 }
 
-.profile-picture {
+.profile_picture {
     width: calc(2.5rem - $outline-width * 4);
     aspect-ratio: 1;
     border-radius: 50%;
@@ -872,7 +899,7 @@ tbody.loading {
     }
 }
 
-#profile-menu {
+#user_profile-menu {
     position: absolute; 
     top: calc(100% - 0.5rem);
     padding: 0.5rem 0;
@@ -909,4 +936,47 @@ tbody.loading {
             color: $error-color;  
         }
     }
+}
+
+#login_dialog {
+    @include center();
+    section {
+        @extend %surface;
+        padding: 2rem;
+    }
+
+    input{
+        min-width: 16rem;
+    }
+
+    div:has(>input) {
+        gap: 0rem;
+        label {
+            margin-bottom: 0.25rem;
+        }
+        a {
+            margin-top: 0.25rem;
+            font-size: 0.75rem;
+        }
+    }
+
+    form  {
+        margin-top: 0.5rem;
+    }
+
+    input[type=submit] {
+        margin-top: 1rem;
+    }
+}
+
+.flex-row {
+    @include flex(row);
+}
+
+.flex-column {
+    @include flex(column);
+}
+
+.space-between {
+    justify-content: space-between;
 }

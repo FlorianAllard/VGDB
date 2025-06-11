@@ -1,0 +1,41 @@
+services:
+  database:
+    image: mariadb
+    container_name: database
+    restart: unless-stopped
+    environment:
+      - MARIADB_ROOT_PASSWORD=${DB_PASSWORD}
+    ports:
+      - 3391:3306
+    volumes:
+      - VGDB_sql:/var/lib/mysql
+      - ./sql/:/docker-entrypoint-initdb.d
+  interface:
+    image: adminer
+    container_name: interface
+    restart: unless-stopped
+    depends_on:
+      - database
+    environment:
+      - ADMINER_DEFAULT_DB_HOST=${DB_HOST}
+      - ADMINER_DEFAULT_DB_NAME=${DB_NAME}
+    ports:
+      - 3392:8080
+  server:
+    build: .
+    depends_on:
+      - database
+      - interface
+    container_name: server
+    restart: unless-stopped
+    ports:
+      - 3393:80
+    environment:
+      - DB_HOST=${DB_HOST}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_NAME=${DB_NAME}
+    volumes:
+      - ./src/:/var/www/html
+volumes:
+  VGDB_sql:

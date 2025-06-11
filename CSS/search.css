@@ -32,19 +32,19 @@ header #logo, header > div {
   flex: 1 1 0px;
 }
 
-#filters > section, search menu, .card, button {
+#filters > section, #login_dialog section, search menu, .card, button, input[type=submit] {
   padding: 1rem;
   background-color: var(--surface-color);
   border-radius: 0.5rem;
   box-shadow: 0 0 4px 0 var(--detail-color);
 }
 
-.card, button {
+.card, button, input[type=submit] {
   border: 2px solid var(--detail-color);
   box-shadow: 0 2px 0 var(--detail-color);
   transition: all 100ms ease;
 }
-.card:hover, button:hover {
+.card:hover, button:hover, input[type=submit]:hover {
   background-color: var(--detail-color);
   border-color: var(--secondary-alt-color);
   box-shadow: 0 2px 0 var(--secondary-alt-color);
@@ -80,7 +80,7 @@ button:focus-visible {
   outline: none;
 }
 
-input[type=search], input[type=text], select {
+input[type=search], input[type=text], input[type=password], input[type=email], select {
   font-family: inherit;
   border: 2px solid var(--detail-color);
   border-radius: 0.5rem;
@@ -88,7 +88,7 @@ input[type=search], input[type=text], select {
   background-color: var(--surface-color);
   height: 2.5rem;
 }
-input[type=search]:focus-visible, input[type=text]:focus-visible, select:focus-visible {
+input[type=search]:focus-visible, input[type=text]:focus-visible, input[type=password]:focus-visible, input[type=email]:focus-visible, select:focus-visible {
   border: 2px solid var(--secondary-color);
   outline: none;
 }
@@ -117,7 +117,7 @@ div:has(input[type=checkbox]) input[type=checkbox]:hover, div:has(input[type=che
   cursor: pointer;
 }
 
-button {
+button, input[type=submit] {
   display: flex;
   flex-direction: row;
   gap: 0.25rem;
@@ -130,39 +130,45 @@ button {
   text-transform: uppercase;
   font-weight: bold;
 }
-button.primary {
+button.primary, input[type=submit].primary {
   color: var(--surface-color);
   background-color: var(--secondary-alt-color);
   border-color: var(--secondary-color);
-  box-shadow: 0 2px 0 var(--secondary-detail-color);
+  box-shadow: 0 2px 0 var(--secondary-color);
 }
-button.primary:hover {
-  background-color: var(--secondary-hover-color);
+button.primary:hover, input[type=submit].primary:hover {
+  background-color: var(--secondary-color);
   border-color: var(--secondary-color);
   box-shadow: 0 2px 0 var(--secondary-color);
 }
-button.secondary {
+button.secondary, input[type=submit].secondary {
   color: var(--secondary-alt-color);
   background-color: var(--surface-color);
   border-color: var(--secondary-alt-color);
   box-shadow: 0 2px 0 var(--secondary-alt-color);
 }
-button.secondary:hover {
+button.secondary:hover, input[type=submit].secondary:hover {
   background-color: var(--detail-color);
   border-color: var(--secondary-color);
   box-shadow: 0 2px 0 var(--secondary-color);
 }
-button.tertiary {
+button.tertiary, input[type=submit].tertiary {
   background-color: transparent;
   color: var(--text-color);
   border: none;
   box-shadow: none;
 }
-button.tertiary:hover {
+button.tertiary:hover, input[type=submit].tertiary:hover {
   background-color: var(--detail-color);
 }
-button.destructive {
+button.tertiary:has(i), input[type=submit].tertiary:has(i) {
+  translate: 25% 0;
+}
+button.destructive, input[type=submit].destructive {
   color: #EB3B5A;
+}
+button i, input[type=submit] i {
+  font-size: 1rem;
 }
 
 header {
@@ -258,6 +264,25 @@ search menu > div {
   z-index: 11;
 }
 
+li.error {
+  color: #EB3B5A;
+}
+
+input.error {
+  border-color: #EB3B5A;
+}
+
+.error-container {
+  font-size: 0.875rem;
+  padding: 1rem;
+  padding-left: 2rem;
+  border: 2px solid #EB3B5A;
+  background-color: color-mix(in srgb, #FC5C65, transparent 75%);
+}
+.error-container:not(:has(*)) {
+  display: none;
+}
+
 .searchbar--item {
   display: flex;
   flex-direction: row;
@@ -310,11 +335,11 @@ search menu > div {
   color: var(--text-color);
 }
 
-div:has(> .user-profile) {
+div:has(> #user_profile) {
   justify-content: flex-end;
 }
 
-.user-profile {
+#user_profile {
   display: flex;
   flex-direction: row;
   gap: calc(0.5rem + 4px);
@@ -329,20 +354,20 @@ div:has(> .user-profile) {
   width: 2.5rem;
   height: 2.5rem;
 }
-.user-profile:hover {
+#user_profile:hover {
   cursor: pointer;
   background-color: var(--background-color);
   box-shadow: none;
   border-radius: 99rem;
 }
-.user-profile:hover img {
+#user_profile:hover img {
   outline-color: var(--secondary-alt-color);
 }
-.user-profile:active {
+#user_profile:active {
   background-color: var(--detail-color);
 }
 
-.profile-picture {
+.profile_picture {
   width: calc(2.5rem - 8px);
   aspect-ratio: 1;
   border-radius: 50%;
@@ -789,7 +814,7 @@ tbody.loading {
     background-position-x: -200%;
   }
 }
-#profile-menu {
+#user_profile-menu {
   position: absolute;
   top: calc(100% - 0.5rem);
   padding: 0.5rem 0;
@@ -801,11 +826,11 @@ tbody.loading {
   flex-direction: column;
   gap: 0;
 }
-#profile-menu hr {
+#user_profile-menu hr {
   height: 2px;
   margin: 0.25rem 1rem;
 }
-#profile-menu a {
+#user_profile-menu a {
   display: flex;
   flex-direction: row;
   gap: 1rem;
@@ -820,12 +845,56 @@ tbody.loading {
   border-radius: 0;
   justify-content: start;
 }
-#profile-menu a:hover {
+#user_profile-menu a:hover {
   text-decoration: none;
   background-color: var(--detail-color);
 }
-#profile-menu a.destructive {
+#user_profile-menu a.destructive {
   color: #EB3B5A;
+}
+
+#login_dialog {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+#login_dialog section {
+  padding: 2rem;
+}
+#login_dialog input {
+  min-width: 16rem;
+}
+#login_dialog div:has(> input) {
+  gap: 0rem;
+}
+#login_dialog div:has(> input) label {
+  margin-bottom: 0.25rem;
+}
+#login_dialog div:has(> input) a {
+  margin-top: 0.25rem;
+  font-size: 0.75rem;
+}
+#login_dialog form {
+  margin-top: 0.5rem;
+}
+#login_dialog input[type=submit] {
+  margin-top: 1rem;
+}
+
+.flex-row {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+}
+
+.flex-column {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.space-between {
+  justify-content: space-between;
 }
 
 #body {

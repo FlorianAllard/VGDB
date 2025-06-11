@@ -33,17 +33,19 @@ nav > section,
     padding: 1.5rem 2rem;
 }
 
-nav,
-#main-content,
-section {
-    @include flex(column);
-    width: 100%;
-
-    #main-content {
-        gap: 0.5rem;
-
-        >section:not(:has(>table)) {
-            margin-bottom: 0.5rem;
+main {
+    nav,
+    #main-content,
+    section {
+        @include flex(column);
+        width: 100%;
+    
+        #main-content {
+            gap: 0.5rem;
+    
+            >section:not(:has(>table)) {
+                margin-bottom: 0.5rem;
+            }
         }
     }
 }
