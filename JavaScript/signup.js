@@ -9,6 +9,8 @@ fetch("/HTML/signup.html")
   .then((res) => res.text())
   .then((html) => (content = html));
 
+let passwordTooltip;
+
 export default function init() {
     if (!content) return;
 
@@ -18,6 +20,15 @@ export default function init() {
     parent.id = "signup_dialog";
     parent.setAttribute("open", true);
     document.querySelector("body").appendChild(parent);
+
+    passwordTooltip = parent.querySelector("#signup-password-tooltip");
+    const passwordInput = parent.querySelector("#signup-password");
+    passwordInput.addEventListener("input", (e) => {
+      updatePasswordTooltip(e);
+    });
+    passwordInput.addEventListener("click", (e) => {
+      updatePasswordTooltip(e);
+    });
 
     // Attach behavior
     parent.querySelector("#signup-close").addEventListener("click", (e) => removeSelf());
@@ -42,7 +53,8 @@ function removeSelf(event = null) {
 }
 
 async function trySigningUp(form) {
-    const formData = new FormData(form);
+      const formData = new FormData(form);
+      formData.append("profile_picture", "/Assets/Profiles/Default.webp");
     const result = await Requests.signUp(formData);
     if(result == null) return;
 
@@ -99,4 +111,13 @@ async function trySigningUp(form) {
       localStorage.setItem("user", JSON.stringify(result.data));
       location.reload();
     }
+}
+
+function updatePasswordTooltip(e) {
+  const items = passwordTooltip.querySelectorAll("li");
+  items[0].classList.toggle("error", e.target.value.length < 8);
+  items[1].classList.toggle("error", !/[a-z]/.test(e.target.value));
+  items[2].classList.toggle("error", !/[A-Z]/.test(e.target.value));
+  items[3].classList.toggle("error", !/[0-9]/.test(e.target.value));
+  items[4].classList.toggle("error", !/[!@#$%^&*(),.?":{}|<>_\-\\[\];'`~]/.test(e.target.value));
 }

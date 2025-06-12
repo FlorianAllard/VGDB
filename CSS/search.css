@@ -32,7 +32,7 @@ header #logo, header > div {
   flex: 1 1 0px;
 }
 
-#filters > section, #login_dialog section, #signup_dialog section, search menu, .card, button, input[type=submit] {
+#filters > section, #login_dialog #signup-password-tooltip, #signup_dialog #signup-password-tooltip, #login_dialog section, #signup_dialog section, search menu, .card, button, input[type=submit] {
   padding: 1rem;
   background-color: var(--surface-color);
   border-radius: 0.5rem;
@@ -271,7 +271,7 @@ input.error {
 div.error {
   font-size: 0.875rem;
   color: #EB3B5A;
-  margin-top: 0.25rem;
+  width: 100%;
 }
 div.error i {
   margin-right: 0.5rem;
@@ -864,9 +864,6 @@ tbody.loading {
 #login_dialog div:has(> input), #signup_dialog div:has(> input) {
   gap: 0rem;
 }
-#login_dialog div:has(> input) label, #signup_dialog div:has(> input) label {
-  margin-bottom: 0.25rem;
-}
 #login_dialog div:has(> input) a, #signup_dialog div:has(> input) a {
   margin-top: 0.25rem;
   font-size: 0.75rem;
@@ -874,8 +871,54 @@ tbody.loading {
 #login_dialog form, #signup_dialog form {
   margin-top: 0.5rem;
 }
+#login_dialog form > div, #signup_dialog form > div {
+  gap: 0.25rem;
+}
 #login_dialog input[type=submit], #signup_dialog input[type=submit] {
   margin-top: 1rem;
+}
+#login_dialog .flex-column, #signup_dialog .flex-column {
+  width: 100%;
+}
+#login_dialog div:has(#signup-password-icon), #signup_dialog div:has(#signup-password-icon) {
+  gap: 0.25rem;
+  align-items: center;
+}
+#login_dialog #signup-password-icon, #signup_dialog #signup-password-icon {
+  opacity: 50%;
+  font-size: 0.825rem;
+  margin-top: 2px;
+}
+#login_dialog #signup-password-icon:hover, #signup_dialog #signup-password-icon:hover {
+  cursor: pointer;
+}
+#login_dialog div:has(> #signup-password), #signup_dialog div:has(> #signup-password) {
+  position: relative;
+}
+#login_dialog #signup-password-tooltip, #signup_dialog #signup-password-tooltip {
+  position: absolute;
+  display: none;
+  padding: 1rem;
+  left: 0;
+  top: 50%;
+  translate: calc(-100% - 1rem) -50%;
+  font-size: 0.875rem;
+}
+#login_dialog #signup-password-tooltip li, #signup_dialog #signup-password-tooltip li {
+  margin-left: 1rem;
+}
+#login_dialog #signup-password-tooltip li.error, #signup_dialog #signup-password-tooltip li.error {
+  color: #EB3B5A;
+}
+#login_dialog #signup-password-tooltip li:not(.error), #signup_dialog #signup-password-tooltip li:not(.error) {
+  color: #20BF6B;
+}
+#login_dialog div:has(> #signup-password):has(#signup-password-icon:hover) #signup-password-tooltip,
+#login_dialog div:has(> #signup-password:focus) #signup-password-tooltip, #signup_dialog div:has(> #signup-password):has(#signup-password-icon:hover) #signup-password-tooltip,
+#signup_dialog div:has(> #signup-password:focus) #signup-password-tooltip {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
 .flex-row {
@@ -892,6 +935,15 @@ tbody.loading {
 
 .space-between {
   justify-content: space-between;
+}
+
+#signup_dialog form {
+  display: grid;
+  grid-template-columns: 16rem 16rem;
+  gap: 1rem;
+}
+#signup_dialog input[type=submit], #signup_dialog span {
+  grid-column: span 2;
 }
 
 #body {

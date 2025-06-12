@@ -58,6 +58,7 @@ function signup() {
     $email = $_POST['email'] ?? '';
     $password = $_POST['password'] ?? '';
     $passwordConfirm = $_POST['password_confirm'] ?? '';
+    $profilePic = $_POST['profile_picture'] ?? '';
     $error = [];
     $status = 400;
 
@@ -86,7 +87,7 @@ function signup() {
     // Password verification
     if (empty($password)) {
         $error['password'] = "Please enter your password.";
-    } else  if (!preg_match("/^(?=.*[!?@#$%^&*+-])(?=.*[0-9])(?=.*[A-Z])(?=.*[a-z]).{6,}$/", $password)) {
+    } else  if (!preg_match("/^(?=.*[!?@#$%^&*+-])(?=.*[0-9])(?=.*[A-Z])(?=.*[a-z]).{6,}$/", $password) || strlen($password) < 8) {
         $error["password"] = "Use a more complex password.";
     } else {
         $password = password_hash($password, PASSWORD_DEFAULT);
@@ -101,8 +102,13 @@ function signup() {
     // Success
     if(empty($error)) {
         $pdo = pdoConnection();
-        $sql = $pdo -> prepare("INSERT INTO users(username, email, password) VALUES(?, ?, ?)");
-        $sql -> execute([$username, $email, $password]);
+        $sql = $pdo->prepare("INSERT INTO users(username, email, password, profilePic) VALUES(:username, :email, :password, :profile_picture)");
+        $sql->execute([
+            'username' => $username,
+            'email' => $email,
+            'password' => $password,
+            'profile_picture' => $profilePic
+        ]);
 
         $user = getUser($email);
         unset($user['password']);
