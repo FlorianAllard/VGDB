@@ -938,6 +938,7 @@ tbody.loading {
 
 #login_dialog, #signup_dialog {
     @include center();
+
     section {
         @extend %surface;
         padding: 2rem;

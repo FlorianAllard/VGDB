@@ -362,7 +362,7 @@ function createExternalLinks() {
   const grid = document.createElement("div");
   grid.classList.add("grid");
 
-  game.websites.forEach((wb) => {
+  game.websites?.forEach((wb) => {
     const a = document.createElement("a");
     a.setAttribute("href", wb.url);
     a.setAttribute("target", "_blank");
@@ -668,7 +668,6 @@ const overlay = document.querySelector("#media-overlay");
 const overlayImage = overlay.querySelector("img");
 const overlayVideo = overlay.querySelector("iframe");
 function enableMediaOverlay(element) {
-  console.log("bjr");
   document.body.classList.add("stop-scrolling");
   overlay.addEventListener("click", disableMediaOverlay);
   
@@ -684,7 +683,7 @@ function enableMediaOverlay(element) {
     overlayImage.style.display = "none";
     overlayVideo.style.display = "block";
     overlayVideo.setAttribute("src", `https://www.youtube.com/embed/${element.video_id}?autoplay=1`);
-    overlay.setAttribute("show", "");
+    overlay.setAttribute("open", "");
   }
 }
 
@@ -694,7 +693,7 @@ function disableMediaOverlay(event) {
   overlayVideo.setAttribute("src", "");
   overlayImage.setAttribute("src", "");
   
-  overlay.removeAttribute("show");
+  overlay.removeAttribute("open");
   document.body.classList.remove("stop-scrolling");
   overlay.removeEventListener("click", disableMediaOverlay);
 }

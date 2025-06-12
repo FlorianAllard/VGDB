@@ -70,6 +70,19 @@ async function tryLoggingIn(form) {
               passwordError.textContent = "";
             });
             break;
+          case "both":
+            passwordField.classList.add("error");
+            emailField.classList.add("error");
+            passwordError.textContent = value;
+            emailField.addEventListener("change", (e) => {
+              emailField.classList.remove("error");
+              emailError.textContent = "";
+            });
+            passwordField.addEventListener("change", (e) => {
+              passwordField.classList.remove("error");
+              passwordError.textContent = "";
+            });
+            break;
           default:
             break;
         }

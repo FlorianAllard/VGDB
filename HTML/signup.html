@@ -4,30 +4,36 @@
         <button id="signup-close" class="tertiary"><i class="fa-solid fa-xmark"></i></button>
     </div>
     <form action="" method="post" class="flex-column">
-        <!-- Username -->
-         <div class="flex-column">
-            <label for="username">Email</label>
-            <input type="text" name="username" id="signup-username" placeholder="Enter your username">
-            <div id="signup-username-error" class="error"><i class="fa-solid fa-triangle-exclamation"></i><span></span></div>
-         </div>
-        <!-- Email -->
-         <div class="flex-column">
-            <label for="email">Email</label>
-            <input type="email" name="email" id="signup-email" placeholder="Enter your email">
-            <div id="signup-email-error" class="error"><i class="fa-solid fa-triangle-exclamation"></i><span></span></div>
-         </div>
-        <!-- Password -->
-         <div class="flex-column">
-            <label for="password">Password</label>
-            <input type="password" name="password" id="signup-password" placeholder="Enter your password">
-            <div id="signup-password-error" class="error"><i class="fa-solid fa-triangle-exclamation"></i><span></span></div>
-         </div>
-        <!-- Confirm password -->
-         <div class="flex-column">
-            <label for="password">Confirm your password</label>
-            <input type="password" name="password_confirm" id="signup-password_confirm" placeholder="Confirm your password">
-            <div id="signup-password_confirm-error" class="error"><i class="fa-solid fa-triangle-exclamation"></i><span></span></div>
-         </div>
+        <div class="flex-row">
+            <!-- Username -->
+            <div class="flex-column">
+                <label for="username">Username</label>
+                <input type="text" name="username" id="signup-username" placeholder="Enter your username">
+                <div id="signup-username-error" class="error"><i class="fa-solid fa-triangle-exclamation"></i><span></span></div>
+                <div id="signup-username-error" class="error"><i class="fa-solid fa-triangle-exclamation"></i><span></span></div>
+            </div>
+            <!-- Email -->
+            <div class="flex-column">
+                <label for="email">Email</label>
+                <input type="email" name="email" id="signup-email" placeholder="Enter your email">
+                <div id="signup-email-error" class="error"><i class="fa-solid fa-triangle-exclamation"></i><span></span></div>
+            </div>
+        </div>
+        <div class="flex-row">
+            <!-- Password -->
+            <div class="flex-column">
+                <label for="password">Password</label>
+                <input type="password" name="password" id="signup-password" placeholder="Enter your password">
+                <div id="signup-password-error" class="error"><i class="fa-solid fa-triangle-exclamation"></i><span></span></div>
+            </div>
+            <!-- Confirm password -->
+            <div class="flex-column">
+                <label for="password">Confirm your password</label>
+                <input type="password" name="password_confirm" id="signup-password_confirm" placeholder="Confirm your password">
+                <div id="signup-password_confirm-error" class="error"><i class="fa-solid fa-triangle-exclamation"></i><span></span>
+                </div>
+            </div>
+        </div>
          <input type="submit" value="Sign up" name="signup-confirm" class="primary">
         <span style="font-size: 0.875rem; width: 100%; text-align: center;">
             Already have an account ?
