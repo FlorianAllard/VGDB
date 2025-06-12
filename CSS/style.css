@@ -32,7 +32,7 @@ header #logo, header > div {
   flex: 1 1 0px;
 }
 
-#login_dialog section, search menu, .card, button, input[type=submit] {
+#login_dialog section, #signup_dialog section, search menu, .card, button, input[type=submit] {
   padding: 1rem;
   background-color: var(--surface-color);
   border-radius: 0.5rem;
@@ -775,7 +775,7 @@ dialog {
   opacity: 0%;
   transition: opacity 200ms ease;
 }
-dialog[show] {
+dialog[open] {
   pointer-events: all;
   opacity: 100%;
 }
@@ -850,31 +850,31 @@ tbody.loading {
   color: #EB3B5A;
 }
 
-#login_dialog {
+#login_dialog, #signup_dialog {
   display: flex;
   justify-content: center;
   align-items: center;
 }
-#login_dialog section {
+#login_dialog section, #signup_dialog section {
   padding: 2rem;
 }
-#login_dialog input {
+#login_dialog input, #signup_dialog input {
   min-width: 16rem;
 }
-#login_dialog div:has(> input) {
+#login_dialog div:has(> input), #signup_dialog div:has(> input) {
   gap: 0rem;
 }
-#login_dialog div:has(> input) label {
+#login_dialog div:has(> input) label, #signup_dialog div:has(> input) label {
   margin-bottom: 0.25rem;
 }
-#login_dialog div:has(> input) a {
+#login_dialog div:has(> input) a, #signup_dialog div:has(> input) a {
   margin-top: 0.25rem;
   font-size: 0.75rem;
 }
-#login_dialog form {
+#login_dialog form, #signup_dialog form {
   margin-top: 0.5rem;
 }
-#login_dialog input[type=submit] {
+#login_dialog input[type=submit], #signup_dialog input[type=submit] {
   margin-top: 1rem;
 }
 

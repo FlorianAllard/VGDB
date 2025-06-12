@@ -2,13 +2,13 @@
 
 import { Tooltip } from "./tooltip.js";
 import * as Login from "./login.js";
+import * as Signup from "./signup.js";
 
 // Instantiate headers
 const headerFetch = fetch("/HTML/header.html");
 const footerFetch = fetch("/HTML/footer.html");
-const loginFetch = fetch("/HTML/login.html");
 
-await Promise.all([headerFetch, footerFetch, loginFetch]).then((responses) => {
+await Promise.all([headerFetch, footerFetch]).then((responses) => {
   responses[0].text().then((data) => {
     // document.body.innerHTML = data + document.body.innerHTML;
     const header = document.createElement("header");
@@ -24,12 +24,13 @@ await Promise.all([headerFetch, footerFetch, loginFetch]).then((responses) => {
     const userProfile = header.querySelector("#user_profile");
     const userMenu = header.querySelector("#user_profile-menu");
     userMenu.style.display = "none";
-    if(localStorage.getItem("logged_in")) {
+    if (localStorage.getItem("logged_in")) {
       loginButton.style.display = "none";
       header.querySelector("#logout_button").addEventListener("click", () => Login.logout());
       setupProfile(header);
     } else {
       userProfile.style.display = "none";
+      loginButton.addEventListener("click", (e) => Login.default());
     }
   });
 
@@ -37,18 +38,6 @@ await Promise.all([headerFetch, footerFetch, loginFetch]).then((responses) => {
     const footer = document.createElement("footer");
     footer.innerHTML = data;
     document.querySelector("main").append(footer);
-  });
-
-  responses[2].text().then((data) => {
-    const login = document.createElement("dialog");
-    login.id = "login_dialog";
-    login.innerHTML = data;
-    login.setAttribute("open", "");
-    document.querySelector("body").append(login);
-    document.querySelector("#login_button").addEventListener("click", () => {
-      Login.toggleDisplay(true);
-    });
-    Login.default();
   });
 });
 
@@ -65,13 +54,24 @@ function setupProfile(header) {
     if (profileMenu.contains(e.target) == false && profileButton.contains(e.target) == false) {
       toggleProfileMenu(false);
     }
-  })
+  });
 
   function toggleProfileMenu(toggle) {
-    if(toggle) {
+    if (toggle) {
       profileMenu.style.removeProperty("display");
     } else {
       profileMenu.style.display = "none";
     }
   }
+}
+
+function displaySignup() {
+  if (!signupContent) return;
+
+  const dialog = document.createElement("dialog");
+  dialog.innerHTML = signupContent;
+  dialog.id = "signup_dialog";
+  dialog.setAttribute("show", true);
+  document.querySelector("body").appendChild(dialog);
+  Signup.default(displayLogin);
 }

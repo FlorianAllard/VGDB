@@ -859,7 +859,7 @@ dialog {
     opacity: 0%;
     @include transition(opacity, $transition-duration-smooth);
 
-    &[show] {
+    &[open] {
         pointer-events: all;
         opacity: 100%;
     }
@@ -936,7 +936,7 @@ tbody.loading {
     }
 }
 
-#login_dialog {
+#login_dialog, #signup_dialog {
     @include center();
     section {
         @extend %surface;
