@@ -52,26 +52,29 @@ function verifyUser(json) {
         localStorage.setItem("user", JSON.stringify(json.data));
         location.reload();
     } else {
-        const container = parent.querySelector(".error-container");
-        container.innerHTML = "";
         const emailField = parent.querySelector("#login-email");
-        emailField.classList.remove("error");
+        const emailError = parent.querySelector("#login-email-error span");
         const passwordField = parent.querySelector("#login-password");
-        passwordField.classList.remove("error");
+        const passwordError = parent.querySelector("#login-password-error span");
 
         for (const [key, value] of Object.entries(json.data)) {
-            const errorElement = document.createElement("li");
-            errorElement.classList.add("error");
-            errorElement.textContent = value;
-            container.appendChild(errorElement);
             switch (key) {
                 case "email":
                     emailField.classList.add("error");
+                    emailError.textContent = value;
+                    emailField.addEventListener("change", (e) => {
+                        emailField.classList.remove("error");
+                        emailError.textContent = "";
+                    });
                     break;
                 case "password":
                     passwordField.classList.add("error");
+                    passwordError.textContent = value;
+                    passwordField.addEventListener("change", (e) => {
+                        passwordField.classList.remove("error");
+                        passwordError.textContent = "";
+                    });
                     break;
-            
                 default:
                     break;
             }

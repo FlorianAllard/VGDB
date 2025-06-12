@@ -264,22 +264,19 @@ search menu > div {
   z-index: 11;
 }
 
-li.error {
-  color: #EB3B5A;
-}
-
 input.error {
   border-color: #EB3B5A;
 }
 
-.error-container {
+div.error {
   font-size: 0.875rem;
-  padding: 1rem;
-  padding-left: 2rem;
-  border: 2px solid #EB3B5A;
-  background-color: color-mix(in srgb, #FC5C65, transparent 75%);
+  color: #EB3B5A;
+  margin-top: 0.25rem;
 }
-.error-container:not(:has(*)) {
+div.error i {
+  margin-right: 0.5rem;
+}
+div.error:has(span:empty) {
   display: none;
 }
 

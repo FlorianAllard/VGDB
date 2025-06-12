@@ -7,16 +7,17 @@
         <!-- Email -->
          <div class="flex-column">
             <label for="email">Email</label>
-            <input type="email" name="email" id="login-email" placeholder="example@domain.com">
-
+            <input type="email" name="email" id="login-email" placeholder="Enter your email">
+            <div id="login-email-error" class="error"><i class="fa-solid fa-triangle-exclamation"></i><span></span></div>
          </div>
         <!-- Password -->
          <div class="flex-column">
-            <label for="password">Password</label>
-            <input type="password" name="password" id="login-password">
-            <a href="">Forgot your password ?</a>
-         </div>
-         <div class="error-container">
+            <div class="flex-row space-between">
+                <label for="password">Password</label>
+                <a href="">Forgot your password ?</a>
+            </div>
+            <input type="password" name="password" id="login-password" placeholder="Enter your password">
+            <div id="login-password-error" class="error"><i class="fa-solid fa-triangle-exclamation"></i><span></span></div>
          </div>
          <input type="submit" value="Log in" name="login-confirm" class="primary">
     </form>
