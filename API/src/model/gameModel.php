@@ -58,6 +58,12 @@ function createGames(PDO $pdo, array $ids): array {
             $gameData['modes'],
             $gameData['perspectives'],
             $gameData['themes'],
+            $gameData['companies'],
+            $gameData['engines'],
+            $gameData['series'],
+            $gameData['franchises'],
+            $gameData['languages'],
+            $gameData['age_ratings'],
         );
         insertInto("games", $gameData, $pdo);
 
@@ -118,6 +124,117 @@ function createGames(PDO $pdo, array $ids): array {
             ], $pdo);
         }
 
+        // Insert companies and relation
+        foreach ($game['companies'] as $rawCompany) {
+            $company = formatCompany($rawCompany);
+            // Insert company (only id and name)
+            insertInto("companies", [
+            'id' => $company['id'],
+            'name' => $company['name']
+            ], $pdo);
+
+            // Insert relations based on roles
+            if ($company['developer']) {
+            insertInto("games_to_developers", [
+                'game_id' => $game['id'],
+                'company_id' => $company['id']
+            ], $pdo);
+            }
+            if ($company['supporting']) {
+            insertInto("games_to_supporting", [
+                'game_id' => $game['id'],
+                'company_id' => $company['id']
+            ], $pdo);
+            }
+            if ($company['publisher']) {
+            insertInto("games_to_publishers", [
+                'game_id' => $game['id'],
+                'company_id' => $company['id']
+            ], $pdo);
+            }
+        }
+
+        // Insert engines and relation
+        foreach ($game['engines'] as $raw) {
+            $engine = formatTheme($raw);
+            insertInto("game_engines", $engine, $pdo);
+            insertInto("games_to_engines", [
+                'game_id' => $game['id'],
+                'engine_id' => $engine['id']
+            ], $pdo);
+        }
+
+        // Insert series and relation
+        foreach ($game['series'] as $raw) {
+            $series = formatSeries($raw);
+            insertInto("game_series", $series, $pdo);
+            insertInto("games_to_series", [
+                'game_id' => $game['id'],
+                'series_id' => $series['id']
+            ], $pdo);
+        }
+
+        // Insert series and relation
+        foreach ($game['franchises'] as $raw) {
+            $franchise = formatFranchise($raw);
+            insertInto("game_franchises", $franchise, $pdo);
+            insertInto("games_to_franchises", [
+                'game_id' => $game['id'],
+                'franchise_id' => $franchise['id']
+            ], $pdo);
+        }
+
+        // Insert languages and relation
+        foreach ($game['languages'] as $raw) {
+            $language = formatLanguage($raw);
+            // Insert language (only id and name)
+            insertInto("languages", [
+                'id' => $language['id'],
+                'name' => $language['name']
+            ], $pdo);
+
+            // Insert relations based on support
+            if ($language['audio']) {
+                insertInto("games_to_audio", [
+                    'game_id' => $game['id'],
+                    'language_id' => $language['id']
+                ], $pdo);
+            }
+            if ($language['subtitles']) {
+                insertInto("games_to_subtitles", [
+                    'game_id' => $game['id'],
+                    'language_id' => $language['id']
+                ], $pdo);
+            }
+            if ($language['interface']) {
+                insertInto("games_to_interfaces", [
+                    'game_id' => $game['id'],
+                    'language_id' => $language['id']
+                ], $pdo);
+            }
+        }
+
+        // Insert age ratings and relation
+        foreach ($game['age_ratings'] as $raw) {
+            $ageRating = formatAgeRating($raw);
+            $ageRatingData = $ageRating;
+            
+            $system = $ageRating['system'];
+            insertInto('age_rating_systems', $system, $pdo);
+
+            unset($ageRatingData['system'], $ageRatingData['contents']);
+            $ageRatingData['game_id'] = $game['id'];
+            insertInto('age_ratings', $ageRatingData, $pdo);
+
+            foreach ($ageRating['contents'] as $content) {
+                insertInto('age_rating_contents', $content, $pdo);
+                insertInto('age_ratings_to_contents', [
+                    'rating_id' => $ageRating['id'],
+                    'content_id' => $content['id']
+                ], $pdo);
+            }
+        }
+
         $createdGames[] = $gameData;
     }
 
@@ -140,6 +257,12 @@ function formatGame(array $raw): array {
         'modes' => $raw['game_modes'] ?? [],
         'perspectives' => $raw['player_perspectives'] ?? [],
         'themes' => $raw['themes'] ?? [],
+        'companies' => $raw['involved_companies'] ?? [],
+        'engines' => $raw['game_engines'] ?? [],
+        'series' => $raw['collections'] ?? [],
+        'franchises' => $raw['franchises'] ?? [],
+        'languages' => $raw['language_supports'] ?? [],
+        'age_ratings' => $raw['age_ratings'] ?? [],
         'createdAt' => time(),
         'updatedAt' => time()
     ];
@@ -206,6 +329,107 @@ function formatTheme(array $raw): array {
     return [
         'id' => $raw['id'],
         'name' => $raw['name']
+    ];
+}
+
+/**Format raw company data.
+ * @param array $raw
+ * @return array
+ */
+function formatCompany(array $raw): array {
+    return [
+        'id' => $raw['company']['id'],
+        'name' => $raw['company']['name'],
+        'developer' => $raw['developer'],
+        'supporting' => $raw['supporting'],
+        'publisher' => $raw['publisher'],
+    ];
+}
+
+/**Format raw engine data.
+ * @param array $raw
+ * @return array
+ */
+function formatEngine(array $raw): array
+{
+    return [
+        'id' => $raw['id'],
+        'name' => $raw['name']
+    ];
+}
+
+/**Format raw series data.
+ * @param array $raw
+ * @return array
+ */
+function formatSeries(array $raw): array
+{
+    return [
+        'id' => $raw['id'],
+        'name' => $raw['name']
+    ];
+}
+
+/**Format raw franchise data.
+ * @param array $raw
+ * @return array
+ */
+function formatFranchise(array $raw): array
+{
+    return [
+        'id' => $raw['id'],
+        'name' => $raw['name']
+    ];
+}
+
+/**Format raw language data.
+ * @param array $raw
+ * @return array
+ */
+function formatLanguage(array $raw): array
+{
+    return [
+        'id' => $raw['language']['id'],
+        'name' => $raw['language']['name'],
+        'audio' => $raw['language_support_type']['name'] == "Audio",
+        'subtitles' => $raw['language_support_type']['name'] == "Subtitles",
+        'interface' => $raw['language_support_type']['name'] == "Interface",
+    ];
+}
+
+/**Format raw age rating data.
+ * @param array $raw
+ * @return array
+ */
+function formatAgeRating(array $raw): array
+{
+    $contents = [];
+    foreach ($raw['rating_content_descriptions'] as $rawContent) {
+        $contents[] = [
+            'id' => $rawContent['id'],
+            'description' => $rawContent['description'],
+        ];
+    }
+
+    $countries = [
+        'ESRB' => "USA & Canada",
+        'PEGI' => "Europe",
+        'CERO' => "Japan",
+        'USK' => "Germany",
+        'GRAC' => "South Korea",
+        'CLASS_IND' => "Brazil",
+        'ACB' => "Australia",
+    ];
+
+    return [
+        'rating' => $raw['rating'],
+        'system_id' => $raw['organization']['id'],
+        'system' => [
+            'id' => $raw['organization']['id'],
+            'name' => $raw['organization']['name'],
+            'country' => $countries[$raw['organization']['name']],
+        ],
+        'contents' => $contents,
     ];
 }
 
