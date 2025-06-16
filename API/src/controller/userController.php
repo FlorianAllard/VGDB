@@ -1,7 +1,6 @@
 <?php
 
-header("Access-Control-Allow-Methods: POST, GET, PUT, DELETE");
-header("Content-Type: application/json");
+header("Access-Control-Allow-Methods: POST");
 
 require __DIR__ . "/../model/userModel.php";
 require __DIR__ . "/../services/_csrf.php";
