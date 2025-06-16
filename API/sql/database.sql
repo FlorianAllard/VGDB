@@ -7,6 +7,47 @@ SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
 
 SET NAMES utf8mb4;
 
+DROP TABLE IF EXISTS `age_ratings`;
+CREATE TABLE `age_ratings` (
+  `rating` int(11) NOT NULL,
+  `game_id` int(11) NOT NULL,
+  `system_id` int(11) NOT NULL,
+  PRIMARY KEY (`rating`),
+  KEY `game_id` (`game_id`),
+  KEY `system_id` (`system_id`),
+  CONSTRAINT `age_ratings_ibfk_1` FOREIGN KEY (`game_id`) REFERENCES `games` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `age_ratings_ibfk_2` FOREIGN KEY (`system_id`) REFERENCES `age_rating_systems` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+
+DROP TABLE IF EXISTS `age_ratings_to_contents`;
+CREATE TABLE `age_ratings_to_contents` (
+  `rating_id` int(11) NOT NULL,
+  `content_id` int(11) NOT NULL,
+  KEY `rating_id` (`rating_id`),
+  KEY `content_id` (`content_id`),
+  CONSTRAINT `age_ratings_to_contents_ibfk_1` FOREIGN KEY (`rating_id`) REFERENCES `age_ratings` (`rating`) ON DELETE CASCADE,
+  CONSTRAINT `age_ratings_to_contents_ibfk_2` FOREIGN KEY (`content_id`) REFERENCES `age_rating_contents` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+
+DROP TABLE IF EXISTS `age_rating_contents`;
+CREATE TABLE `age_rating_contents` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `description` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+
+DROP TABLE IF EXISTS `age_rating_systems`;
+CREATE TABLE `age_rating_systems` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `country` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+
 DROP TABLE IF EXISTS `companies`;
 CREATE TABLE `companies` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -298,4 +339,4 @@ CREATE TABLE `vgdb_authentification` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 
--- 2025-06-16 12:45:48 UTC
+-- 2025-06-16 14:28:19 UTC
