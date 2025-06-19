@@ -2,6 +2,7 @@
 
 import * as IGDB from "./APIs/igdb_api.js";
 import * as Utilities from "./utilities_module.js";
+import * as Requests from "./requests.js";
 
 IGDB.default();
 

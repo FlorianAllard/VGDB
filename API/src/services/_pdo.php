@@ -1,6 +1,6 @@
 <?php
 
-/** Returns an instance of PDO connection to connect to the "blog" database
+/** Returns an instance of PDO connection to connect to a database
  *
  * @return \PDO
  */

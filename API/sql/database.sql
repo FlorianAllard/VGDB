@@ -69,6 +69,22 @@ CREATE TABLE `companies` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 
+DROP TABLE IF EXISTS `engines`;
+CREATE TABLE `engines` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+
+DROP TABLE IF EXISTS `franchises`;
+CREATE TABLE `franchises` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+
 DROP TABLE IF EXISTS `games`;
 CREATE TABLE `games` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -130,7 +146,7 @@ CREATE TABLE `games_to_engines` (
   KEY `engine_id` (`engine_id`),
   KEY `game_id` (`game_id`),
   CONSTRAINT `games_to_engines_ibfk_1` FOREIGN KEY (`game_id`) REFERENCES `games` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `games_to_engines_ibfk_2` FOREIGN KEY (`engine_id`) REFERENCES `game_engines` (`id`) ON DELETE CASCADE
+  CONSTRAINT `games_to_engines_ibfk_2` FOREIGN KEY (`engine_id`) REFERENCES `engines` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 
@@ -142,7 +158,7 @@ CREATE TABLE `games_to_franchises` (
   KEY `franchise_id` (`franchise_id`),
   KEY `game_id` (`game_id`),
   CONSTRAINT `games_to_franchises_ibfk_1` FOREIGN KEY (`game_id`) REFERENCES `games` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `games_to_franchises_ibfk_2` FOREIGN KEY (`franchise_id`) REFERENCES `game_franchises` (`id`) ON DELETE CASCADE
+  CONSTRAINT `games_to_franchises_ibfk_2` FOREIGN KEY (`franchise_id`) REFERENCES `franchises` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 
@@ -154,7 +170,7 @@ CREATE TABLE `games_to_genres` (
   KEY `genre_id` (`genre_id`),
   KEY `game_id` (`game_id`),
   CONSTRAINT `games_to_genres_ibfk_1` FOREIGN KEY (`game_id`) REFERENCES `games` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `games_x_genres_fk_2` FOREIGN KEY (`genre_id`) REFERENCES `game_genres` (`id`) ON DELETE CASCADE
+  CONSTRAINT `games_x_genres_fk_2` FOREIGN KEY (`genre_id`) REFERENCES `genres` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
 
 
@@ -178,7 +194,7 @@ CREATE TABLE `games_to_modes` (
   KEY `mode_id` (`mode_id`),
   KEY `game_id` (`game_id`),
   CONSTRAINT `games_to_modes_ibfk_3` FOREIGN KEY (`game_id`) REFERENCES `games` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `games_to_modes_ibfk_4` FOREIGN KEY (`mode_id`) REFERENCES `game_modes` (`id`) ON DELETE CASCADE
+  CONSTRAINT `games_to_modes_ibfk_4` FOREIGN KEY (`mode_id`) REFERENCES `modes` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 
@@ -190,7 +206,7 @@ CREATE TABLE `games_to_perspectives` (
   KEY `perspective_id` (`perspective_id`),
   KEY `game_id` (`game_id`),
   CONSTRAINT `games_to_perspectives_ibfk_1` FOREIGN KEY (`game_id`) REFERENCES `games` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `games_to_perspectives_ibfk_2` FOREIGN KEY (`perspective_id`) REFERENCES `game_perspectives` (`id`) ON DELETE CASCADE
+  CONSTRAINT `games_to_perspectives_ibfk_2` FOREIGN KEY (`perspective_id`) REFERENCES `perspectives` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 
@@ -237,7 +253,7 @@ CREATE TABLE `games_to_series` (
   KEY `series_id` (`series_id`),
   KEY `game_id` (`game_id`),
   CONSTRAINT `games_to_series_ibfk_1` FOREIGN KEY (`game_id`) REFERENCES `games` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `games_to_series_ibfk_2` FOREIGN KEY (`series_id`) REFERENCES `game_series` (`id`) ON DELETE CASCADE
+  CONSTRAINT `games_to_series_ibfk_2` FOREIGN KEY (`series_id`) REFERENCES `series` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 
@@ -273,7 +289,7 @@ CREATE TABLE `games_to_themes` (
   KEY `theme_id` (`theme_id`),
   KEY `game_id` (`game_id`),
   CONSTRAINT `games_to_themes_ibfk_1` FOREIGN KEY (`game_id`) REFERENCES `games` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `games_to_themes_ibfk_2` FOREIGN KEY (`theme_id`) REFERENCES `game_themes` (`id`) ON DELETE CASCADE
+  CONSTRAINT `games_to_themes_ibfk_2` FOREIGN KEY (`theme_id`) REFERENCES `themes` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 
@@ -300,60 +316,12 @@ CREATE TABLE `games_to_websites` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 
-DROP TABLE IF EXISTS `game_engines`;
-CREATE TABLE `game_engines` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
-
-DROP TABLE IF EXISTS `game_franchises`;
-CREATE TABLE `game_franchises` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
-
-DROP TABLE IF EXISTS `game_genres`;
-CREATE TABLE `game_genres` (
+DROP TABLE IF EXISTS `genres`;
+CREATE TABLE `genres` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
-
-
-DROP TABLE IF EXISTS `game_modes`;
-CREATE TABLE `game_modes` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
-
-DROP TABLE IF EXISTS `game_perspectives`;
-CREATE TABLE `game_perspectives` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
-
-DROP TABLE IF EXISTS `game_series`;
-CREATE TABLE `game_series` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
-
-DROP TABLE IF EXISTS `game_themes`;
-CREATE TABLE `game_themes` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 
 DROP TABLE IF EXISTS `languages`;
@@ -365,15 +333,31 @@ CREATE TABLE `languages` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 
+DROP TABLE IF EXISTS `modes`;
+CREATE TABLE `modes` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+
+DROP TABLE IF EXISTS `perspectives`;
+CREATE TABLE `perspectives` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+
 DROP TABLE IF EXISTS `platforms`;
 CREATE TABLE `platforms` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
-  `family` int(11) DEFAULT NULL,
+  `family_id` int(11) DEFAULT NULL,
   `generation` varchar(255) NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `family` (`family`),
-  CONSTRAINT `platforms_ibfk_1` FOREIGN KEY (`family`) REFERENCES `platform_families` (`id`)
+  KEY `family` (`family_id`),
+  CONSTRAINT `platforms_ibfk_1` FOREIGN KEY (`family_id`) REFERENCES `platform_families` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
 
 
@@ -391,12 +375,12 @@ CREATE TABLE `regional_releases` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `game_id` int(11) NOT NULL,
   `date` int(11) NOT NULL,
-  `type` int(11) NOT NULL,
+  `type_id` int(11) NOT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `game_id_date_type` (`game_id`,`date`,`type`),
-  KEY `type` (`type`),
+  UNIQUE KEY `game_id_date_type` (`game_id`,`date`,`type_id`),
+  KEY `type` (`type_id`),
   CONSTRAINT `regional_releases_ibfk_1` FOREIGN KEY (`game_id`) REFERENCES `games` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `regional_releases_ibfk_3` FOREIGN KEY (`type`) REFERENCES `release_types` (`id`) ON DELETE CASCADE
+  CONSTRAINT `regional_releases_ibfk_3` FOREIGN KEY (`type_id`) REFERENCES `release_types` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 
@@ -450,6 +434,22 @@ CREATE TABLE `screenshots` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 
+DROP TABLE IF EXISTS `series`;
+CREATE TABLE `series` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+
+DROP TABLE IF EXISTS `themes`;
+CREATE TABLE `themes` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+
 DROP TABLE IF EXISTS `users`;
 CREATE TABLE `users` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -499,4 +499,4 @@ CREATE TABLE `websites` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 
--- 2025-06-18 11:04:11 UTC
+-- 2025-06-19 12:22:45 UTC

@@ -227,10 +227,6 @@ button, input[type="submit"] {
         &:hover {
             background-color: var(--detail-color);
         }
-
-        &:has(i) {
-            translate: 25% 0;
-        }
     }
     &.destructive {
         color: $error-color;
@@ -939,6 +935,10 @@ tbody.loading {
 #login_dialog, #signup_dialog {
     @include center();
 
+    .tertiary {
+        translate: 25% 0;
+    }
+
     section {
         @extend %surface;
         padding: 2rem;
@@ -992,23 +992,28 @@ tbody.loading {
     }
 
     #signup-password-tooltip {
+        @include theme($dark-mode);
+        @include transition(all, $transition-duration-instant, ease);
         position: absolute;
-        display: none;
+        opacity: 0%;
         @extend %surface;
         padding: 1rem;
         left: 0;
         top: 50%;
-        translate: calc(-100% - 1rem) -50%;
+        translate: calc(-100% - 2rem) -50%;
         font-size: 0.875rem;
+        b {
+            color: var(--text-color);
+        }
 
         li {
             margin-left: 1rem;
 
             &.error {
-                color: $error-color;
+                color: $error-alt-color;
             }
             &:not(.error) {
-                color: $success-color;
+                color: $success-alt-color;
             }
         }
     }
@@ -1017,6 +1022,8 @@ tbody.loading {
     div:has(>#signup-password:focus) {
         #signup-password-tooltip {
             @include flex(column, 0.5rem);
+            translate: calc(-100% - 1rem) -50%;
+            opacity: 100%;
         }
     }
 }

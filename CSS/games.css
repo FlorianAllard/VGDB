@@ -174,9 +174,6 @@ button.tertiary, input[type=submit].tertiary {
 button.tertiary:hover, input[type=submit].tertiary:hover {
   background-color: var(--detail-color);
 }
-button.tertiary:has(i), input[type=submit].tertiary:has(i) {
-  translate: 25% 0;
-}
 button.destructive, input[type=submit].destructive {
   color: #EB3B5A;
 }
@@ -868,6 +865,9 @@ tbody.loading {
   justify-content: center;
   align-items: center;
 }
+#login_dialog .tertiary, #signup_dialog .tertiary {
+  translate: 25% 0;
+}
 #login_dialog section, #signup_dialog section {
   padding: 2rem;
 }
@@ -909,22 +909,33 @@ tbody.loading {
   position: relative;
 }
 #login_dialog #signup-password-tooltip, #signup_dialog #signup-password-tooltip {
+  --surface-color: #233034;
+  --background-color: #172021;
+  --detail-color: #3a464e;
+  --primary-color: #FE7E01;
+  --secondary-color: #1CB0F6;
+  --secondary-alt-color: #45AAF2;
+  --text-color: #f0f6fb;
+  transition: all 100ms ease;
   position: absolute;
-  display: none;
+  opacity: 0%;
   padding: 1rem;
   left: 0;
   top: 50%;
-  translate: calc(-100% - 1rem) -50%;
+  translate: calc(-100% - 2rem) -50%;
   font-size: 0.875rem;
+}
+#login_dialog #signup-password-tooltip b, #signup_dialog #signup-password-tooltip b {
+  color: var(--text-color);
 }
 #login_dialog #signup-password-tooltip li, #signup_dialog #signup-password-tooltip li {
   margin-left: 1rem;
 }
 #login_dialog #signup-password-tooltip li.error, #signup_dialog #signup-password-tooltip li.error {
-  color: #EB3B5A;
+  color: #FC5C65;
 }
 #login_dialog #signup-password-tooltip li:not(.error), #signup_dialog #signup-password-tooltip li:not(.error) {
-  color: #20BF6B;
+  color: #26DE81;
 }
 #login_dialog div:has(> #signup-password):has(#signup-password-icon:hover) #signup-password-tooltip,
 #login_dialog div:has(> #signup-password:focus) #signup-password-tooltip, #signup_dialog div:has(> #signup-password):has(#signup-password-icon:hover) #signup-password-tooltip,
@@ -932,6 +943,8 @@ tbody.loading {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+  translate: calc(-100% - 1rem) -50%;
+  opacity: 100%;
 }
 
 .flex-row {
