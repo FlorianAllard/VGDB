@@ -14,6 +14,11 @@ switch ($_SERVER["REQUEST_METHOD"]) {
 }
 
 function games(array $array) {
+    $startTime = time();
     $games = getGames($array);
-    echo json_encode(['status' => 200, 'data' => $games]);
+    $time = round((microtime(true) - $startTime), 3);
+    echo json_encode([
+        'status' => 200,
+        'time' => $time . " s",
+        'data' => $games]);
 }
