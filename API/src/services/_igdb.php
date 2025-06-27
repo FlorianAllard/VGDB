@@ -2,7 +2,7 @@
 
 require_once __DIR__ . '/_debug.php';
 
-function requestGames($ids) {
+function fetchRawGames($ids) {
     $idsImploded = implode(',', $ids);
     return makeRequest(
         "games",
@@ -11,6 +11,29 @@ function requestGames($ids) {
         count($ids),
         "id = (" . $idsImploded . ")"
     );
+}
+
+function requestTimesToBeat($games) {
+    $ids = array_column($games, 'id');
+    $idsImploded = implode(',', $ids);
+    
+    $timesToBeat = makeRequest(
+        "game_time_to_beats",
+        "*",
+        "",
+        count($ids),
+        "game_id = (" . $idsImploded . ")"
+    );
+
+    foreach ($timesToBeat as &$ttb) {
+        $game = array_filter($games, function($g) use ($ttb) {
+            return $g['id'] == $ttb['game_id'];
+        });
+        $game = reset($game);
+        $ttb['speedrun'] = getSpeedrun($game['slug']);
+    }
+
+    return $timesToBeat;
 }
 
 function makeRequest($endpoint, $fields = "", $sort = "", $limit = "", $where = "") {
@@ -99,3 +122,28 @@ function authentification() {
 
     return $token;
 }
+
+function getSpeedrun($name) {
+    $url = "https://www.speedrun.com/api/v1/games?name=" . urlencode(str_replace('-', '_', $name));
+    $response = file_get_contents($url);
+    $speedrunData = json_decode($response, true);
+
+    if (!empty($speedrunData['data'])) {
+        $recordLink = null;
+        foreach ($speedrunData['data'][0]['links'] as $link) {
+            if ($link['rel'] === "records") {
+                $recordLink = $link['uri'];
+                break;
+            }
+        }
+        if ($recordLink) {
+            $recordResponse = file_get_contents($recordLink);
+            $recordData = json_decode($recordResponse, true);
+            if (!empty($recordData['data'][0]['runs'][0]['run']['times']['primary_t'])) {
+                return $recordData['data'][0]['runs'][0]['run']['times']['primary_t'];
+            }
+        }
+    }
+
+    return null;
+  }

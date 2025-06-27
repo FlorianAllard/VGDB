@@ -10,10 +10,23 @@ require_once __DIR__ . '/../services/_utilities.php';
  * @param array $ids
  * @return array
  */
-function importGames(array $ids)
+function formatAndImport(array $ids)
 {
     $createdGames = [];
-    $games = requestGames($ids);
+    $games = fetchRawGames($ids);
+    $timesToBeat = requestTimesToBeat($games);
+    foreach ($games as &$game) {
+        foreach ($timesToBeat as $ttb) {
+            if ($ttb['game_id'] == $game['id']) {
+                $game['timeToBeat'] = $ttb;
+                break;
+            }
+        }
+    }
+
+    unset($rawGame);
+    unset($game);
+    unset($rawGame);
     $pdo = pdoConnection();
 
     foreach ($games as $rawGame) {
@@ -39,12 +52,14 @@ function importGames(array $ids)
             $gameData['screenshots'],
             $gameData['videos'],
             $gameData['websites'],
+            $gameData['timeToBeat'],
+            $gameData['cover'],
         );
-        $covers = getBestCovers($game);
-        foreach ($covers as $key => $value) {
-            $gameData[$key] = $value;
-        }
         insertInto("games", $gameData, $pdo);
+
+        $covers = getBestCovers($game);
+        $covers['game_id'] = $game['id'];
+        insertInto("covers", $covers, $pdo);
 
         // Insert genres and relation
         foreach ($game['genres'] ?? [] as $rawGenre) {
@@ -60,11 +75,11 @@ function importGames(array $ids)
         foreach ($game['platforms'] ?? [] as $rawPlatform) {
             $platform = formatPlatform($rawPlatform);
             $platformData = $platform;
-            if ($platform['family']) {
-                insertInto("platform_families", $platform['family'], $pdo);
-                $platformData['family'] = $platform['family']['id'];
+            if ($platform['family_id']) {
+                insertInto("platform_families", $platform['family_id'], $pdo);
+                $platformData['family_id'] = $platform['family_id']['id'];
             } else {
-                $platformData['family'] = null;
+                $platformData['family_id'] = null;
             }
             insertInto("platforms", $platformData, $pdo);
             insertInto("games_to_platforms", [
@@ -223,7 +238,7 @@ function importGames(array $ids)
                 $releaseData['region'],
             );
 
-            $type = insertInto('release_types', $release['type'], $pdo)[0];
+            $type = insertInto('release_types', $release['type_id'], $pdo)[0];
             $releaseData['type_id'] = $type['id'];
             $rls = insertInto('regional_releases', $releaseData, $pdo)[0];
             insertInto('regions', $release['region'], $pdo);
@@ -278,6 +293,11 @@ function importGames(array $ids)
             ], $pdo);
         }
 
+        $timesToBeat = formatTimesToBeat($game['timeToBeat']);
+        if($timesToBeat['game_id']) {
+            insertInto('times_to_beat', $timesToBeat, $pdo);
+        }
+
         $createdGames[] = $gameData;
     }
 }
@@ -295,9 +315,6 @@ function formatGame(array $raw): array
         'summary' => $raw['summary'] ?? "",
         'premise' => $raw['storyline'] ?? "",
         'cover' => $raw['cover'] ?? "",
-        'portrait' => "",
-        'landscape' => "",
-        'hero' => "",
         'genres' => $raw['genres'] ?? [],
         'platforms' => $raw['platforms'] ?? [],
         'modes' => $raw['game_modes'] ?? [],
@@ -314,6 +331,7 @@ function formatGame(array $raw): array
         'screenshots' => $raw['screenshots'] ?? [],
         'videos' => $raw['videos'] ?? [],
         'websites' => $raw['websites'] ?? [],
+        'timeToBeat' => $raw['timeToBeat'] ?? [],
         'createdAt' => time(),
         'updatedAt' => time()
     ];
@@ -499,7 +517,7 @@ function formatRegionalRelease(array $raw): array
     return [
         'date' => $raw['date'] ?? "",
         'game_id' => $raw['game'],
-        'type' => [
+        'type_id' => [
             'name' => $raw['status']['name'] ?? "Full Release"
         ],
         'platform_id' => $raw['platform']['id'],
@@ -530,6 +548,8 @@ function formatVideo(array $raw): array
 {
     return [
         'id' => $raw['id'],
+        'name' => $raw['name'],
+        'thumbnail' => "https://img.youtube.com/vi/" . $raw['video_id'] . "/0.jpg",
         'url' => 'https://www.youtube.com/embed/' . $raw['video_id'],
     ];
 }
@@ -572,8 +592,8 @@ function getBestCovers($game): array
     // If a Steam ID is found, prefer Steam images if they exist
     if ($steamId) {
         $steamCovers = [
-            'portrait' => 'https://steamcdn-a.akamaihd.net/steam/apps/' . $steamId . '/header.jpg',
-            'landscape' => 'https://steamcdn-a.akamaihd.net/steam/apps/' . $steamId . '/library_600x900_2x.jpg',
+            'landscape' => 'https://steamcdn-a.akamaihd.net/steam/apps/' . $steamId . '/header.jpg',
+            'portrait' => 'https://steamcdn-a.akamaihd.net/steam/apps/' . $steamId . '/library_600x900_2x.jpg',
             'hero' => 'https://steamcdn-a.akamaihd.net/steam/apps/' . $steamId . '/library_hero.jpg',
             'logo' => 'https://steamcdn-a.akamaihd.net/steam/apps/' . $steamId . '/logo.png',
         ];
@@ -586,6 +606,17 @@ function getBestCovers($game): array
     }
 
     return $covers;
+}
+
+function formatTimesToBeat(array $raw): array {
+    return [
+        'game_id' => $raw['game_id'] ?? null,
+        'inputs' => $raw['count'] ?? 0,
+        'minimum' => $raw['hastily'] ?? null,
+        'normal' => $raw['normally'] ?? null,
+        'completionist' => $raw['completely'] ?? null,
+        'speedrun' => $raw['speedrun'] * 100 ?? null,
+    ];
 }
 
 /** Insert or update a record in the database.

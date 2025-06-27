@@ -300,14 +300,16 @@ table {
                 background-position: center;
                 @include center();
                 @include transition(all, $transition-duration-smooth, ease);
-
+                
                 img {
                     width: 20%;
                 }
             }
-
+            
             >img {
                 width: 100%;
+                aspect-ratio: 16/9;
+                object-fit: cover;
                 @include transition(all, $transition-duration-smooth, ease);
             }
 
@@ -335,7 +337,6 @@ table {
         max-width: 100%;
         max-height: 100%;
         object-fit: contain;
-        background-color: white;
     }
 
     iframe {
@@ -343,81 +344,6 @@ table {
         max-height: 100%;
         height: 100%;
         aspect-ratio: 16 / 9;
-    }
-}
-#main--reception ul {
-    list-style: none;
-    @include grid(2);
-
-    li {
-        @include flex();
-        justify-content: space-between;
-        align-items: center;
-        @extend %bubble;
-        height: fit-content;
-
-        div:has(b) {
-            @include flex(column, 0);
-        }
-    }
-
-    .main--reception--review {
-        @extend %interactable;
-        position: relative;
-        color: var(--text-color);
-        padding: 0;
-
-        &--top {
-            @include flex(row, .75rem);
-            padding: 1rem 1rem 0 1rem;
-            align-items: center;
-
-            &--title {
-                @include flex(column, 0);
-                flex-grow: 1;
-                height: fit-content;
-            }
-
-            img {
-                height: 2.5rem;
-                aspect-ratio: 1/1;
-                object-fit: contain;
-            }
-        }
-
-        &--text {
-            p {
-                margin: 1rem;
-                margin-top: 0.75rem;
-                padding-bottom: 0.25rem;
-                    display: -webkit-box;
-                    -webkit-line-clamp: 5;
-                    -webkit-box-orient: vertical;
-                    overflow: hidden;
-            }
-        }
-
-&--hover {
-    position: absolute;
-    bottom: 1rem;
-    left: 0;
-    opacity: 0%;
-    width: 100%;
-    font-weight: bold;
-    @include transition();
-    color: var(--secondary-color);
-    @include flex();
-    justify-content: flex-end;
-    padding: 3rem 1rem 0 1rem;
-    background: linear-gradient(transparent, transparent, var(--detail-color), var(--detail-color));
-}
-
-        &:hover {
-            text-decoration: none;
-            .main--reception--review--hover {
-                opacity: 100%;
-            }
-        }
     }
 }
 
@@ -540,5 +466,112 @@ table {
                     }
             }
         }
+    }
+}
+
+#review-editor {
+    @include center;
+
+    section {
+        @extend %surface;
+        width: 66%;
+        aspect-ratio: 16/9;
+        padding: 1.5rem 2rem;
+        gap: 1.5rem;
+    }
+    
+    &--header, &--footer {
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    &--header {
+        height: 1.5rem;
+    }
+
+    &--body {
+        height: 100%;
+    }
+
+    form {
+        gap: 1rem;
+    }
+    
+    form, &--body, textarea {
+        flex: 1 1 auto;
+    }
+
+    div:has(>select) {
+        width: 100%;
+        select {
+            width: 100%;
+        }
+    }
+
+    &--selectors {
+        width: 100%;
+        gap: 1.5rem;
+        justify-content: space-between;
+    }
+
+    .cover {
+        background-size: cover;
+        background-position: center;
+        background-color: var(--background-color);
+        width: 12rem;
+        height: calc(12rem * (539/359));
+    }
+
+    textarea{
+        overflow-y: auto;
+        resize: none;
+    }
+
+    .tertiary {
+        translate: 25% 0;
+    }
+}
+
+#main--reception {
+    .content {
+        @include grid();
+    }
+
+    .navigation {
+        gap: 0.5rem;
+        width: 100%;
+
+        button {
+            height: 2.5rem;
+            width: 2.5rem;
+        }
+    }
+}
+
+.main--reception--review {
+    &--top {
+        .flex-column { gap: 0.5rem; }
+    }
+
+    &:hover{
+        &--cover {
+            opacity: 100%;
+        }
+    }
+
+    &--hover {
+        @include flex();
+        justify-content: right;
+        padding: 2rem 1rem 1rem 1rem;
+        z-index: 2;
+        background-image: linear-gradient(to top, var(--surface-color), var(--surface-color), transparent);
+        position: absolute;
+        width: 100%;
+        bottom: 0;
+        left: 0;
+        color: var(--secondary-color);
+        font-weight: bold;
+        opacity: 0;
+        @include transition(opacity, $transition-duration-instant, ease);
     }
 }

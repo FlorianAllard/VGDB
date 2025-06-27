@@ -11,30 +11,29 @@ require_once __DIR__.'/gameExport.php';
  * @param array $ids
  * @return array
  */
-function getGames(array $ids): array {
-    $pdo = pdoConnection();
-
+function fetchGames($get): array {
     // Prepare placeholders for SQL IN clause
-    $games = exportGames($ids);
+    $games = exportWithRelations($get);
 
     // Find IDs not in DB
     $foundIds = array_column($games, 'id');
-    $notFoundIds = array_diff($ids, $foundIds);
+    $notFoundIds = array_diff(explode(",", $get['id']), $foundIds);
 
     // Get IDs of games older than 1 minute
     $updateDelay = time() - (60 * 60 * 24 * 7);
     foreach ($games as $game) {
         if (isset($game['updatedAt']) && $game['updatedAt'] < $updateDelay) {
             $notFoundIds[] = $game['id'];
+            unset($games[array_search($game, $games)]);
         }
     }
 
     // Fetch and insert missing games
     $importedGames = [];
     if (!empty($notFoundIds)) {
-        importGames($notFoundIds);
-        $importedGames = exportGames($notFoundIds);
+        formatAndImport($notFoundIds);
+        $importedGames = exportWithRelations(['id'=> implode(",", $notFoundIds)]);
     }
-
+    
     return array_merge($games, $importedGames);
 }

@@ -2,8 +2,8 @@
 
 header("Access-Control-Allow-Methods: POST");
 
-require __DIR__ . "/../model/userModel.php";
-require __DIR__ . "/../services/_csrf.php";
+require_once __DIR__ . "/../model/userModel.php";
+require_once __DIR__ . "/../services/_csrf.php";
 
 switch ($_SERVER["REQUEST_METHOD"]) {
     case "POST":

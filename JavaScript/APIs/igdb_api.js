@@ -234,34 +234,6 @@ export function formatWebsites(websites) {
   return websites.map((wb) => getWebsiteFromUrl(wb.url));
 }
 
-export function getWebsiteFromUrl(url) {
-  const sites = [
-    { keyword: "gog", site: "GOG", color: "#B001DF", icon: "/Assets/Sites/gog.svg" },
-    { keyword: "twitter", site: "Twitter", color: "#000000", icon: "/Assets/Sites/twitter.svg" },
-    { keyword: "x.com", site: "Twitter", color: "#000000", icon: "/Assets/Sites/twitter.svg" },
-    { keyword: "steam", site: "Steam", color: "#12366A", icon: "/Assets/Sites/steam.svg" },
-    { keyword: "twitch", site: "Twitch", color: "#A441F7", icon: "/Assets/Sites/twitch.svg" },
-    { keyword: "wikipedia", site: "Wikipedia", color: "#E7E7E7", icon: "/Assets/Sites/wikipedia.svg" },
-    { keyword: "reddit", site: "Reddit", color: "#F74300", icon: "/Assets/Sites/reddit.svg" },
-    { keyword: "youtube", site: "YouTube", color: "#F70000", icon: "/Assets/Sites/youtube.svg" },
-    { keyword: "facebook", site: "Facebook", color: "#2F8CF7", icon: "/Assets/Sites/facebook.svg" },
-    { keyword: "instagram", site: "Instagram", color: "#C7507C", icon: "/Assets/Sites/instagram.svg" },
-    { keyword: "discord", site: "Discord", color: "#4E63EF", icon: "/Assets/Sites/discord.svg" },
-    { keyword: "apps.apple", site: "Apple App Store", color: "#1B97F0", icon: "/Assets/Sites/apple.svg" },
-    { keyword: "play.google", site: "Google Play", color: "#167B36", icon: "/Assets/Sites/google.svg" },
-    { keyword: "epic", site: "Epic Games Store", color: "#2B292A", icon: "/Assets/Sites/epic.svg" },
-    { keyword: "bsky", site: "Epic Games Store", color: "#1081F6", icon: "/Assets/Sites/bluesky.svg" },
-    { keyword: "wiki", site: "Game wiki", color: "#F20057", icon: "/Assets/Sites/wiki.svg" },
-    { keyword: "microsoft", site: "Microsoft Store", color: "#F20057", icon: "/Assets/Sites/microsoft-store.svg" },
-    { keyword: "playstation", site: "Playstation", color: "#0070D1", icon: "/Assets/Sites/playstation.svg" },
-  ];
-
-  const site = sites.find((s) => url.toLowerCase().includes(s.keyword));
-  return site
-    ? { url, site: site.site, color: site.color, icon: site.icon }
-    : { url, site: "", color: "#E6E6E6", icon: "/Assets/Sites/link.svg" };
-}
-
 /**
  * Formats release data.
  */

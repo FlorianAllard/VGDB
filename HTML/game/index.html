@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Game (0000)</title>
+    <title>Game</title>
     <link rel="stylesheet" href="/CSS/games.css">
     <link rel="stylesheet" href="/node_modules/@fortawesome/fontawesome-free/css/all.min.css">
     <script type="module" src="/JavaScript/script.js"></script>
@@ -27,8 +27,6 @@
                 <section id="nav--external-links">
                     <h3>External links</h3>
                 </section>
-
-                <button class="secondary"><i class="fa-solid fa-pen-to-square"></i>Edit</button>
             </nav>
             
             <section id="main-content">
@@ -210,47 +208,12 @@
 
                 <section id="main--reception">
                     <h2>Reception</h2>
-                    <ul>
-                        <li id="main--reception--users">
-                            <div>
-                                <b class="loading">Users average score</b>
-                                <small class="loading">Based on x reviews</small>
-                            </div>
-                            <div class="rating loading">
-                                <span>95</span>
-                                <small>/100</small>
-                            </div>
-                        </li>
-                        <li id="main--reception--critics">
-                            <div>
-                                <b class="loading">Critics average score</b>
-                                <small class="loading">Based on x reviews</small>
-                            </div>
-                            <div class="rating loading">
-                                <span>95</span>
-                                <small>/100</small>
-                            </div>
-                        </li>
-                        <template data-loading-placeholders="6">
-                            <a href="" target="_blank" class="main--reception--review">
-                                <div class="main--reception--review--top">
-                                    <img src="" alt="loading">
-                                    <div class="main--reception--review--top--title">
-                                        <b class="loading">Fextralife</b>
-                                        <small class="loading">Castielle</small>
-                                    </div>
-                                    <div class="rating loading">
-                                        <span>95</span>
-                                        <small>/100</small>
-                                    </div>
-                                </div>
-                                <div class="main--reception--review--text">
-                                    <p class="loading">Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolorum, dolore! Sint obcaecati et, sunt impedit fugit ea! Ex sapiente voluptates nesciunt dolor repudiandae voluptatum vel et hic incidunt laudantium, explicabo veritatis, amet totam? Eum doloribus a minus id ab quos, unde illo officia cupiditate distinctio reiciendis quis optio, voluptatibus recusandae.</p>
-                                </div>
-                                <div class="main--reception--review--hover">Read full review</div>
-                            </a>
-                        </template>
-                    </ul>
+                    <section id="main--reception--review">
+                        <h3>Your review</h3>
+                        <button id="write-review" class="primary"><i class="fa-solid fa-pen-to-square"></i>Write a review</button>
+                    </section>
+                    <!-- INSTANTIATE USER REVIEWS -->
+                    <!-- INSTANTIATE CRITICS REVIEWS -->
                 </section>
             
                 <section id="main--additional-content">
@@ -375,6 +338,32 @@
         <iframe src=""
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
             referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+    </dialog>
+
+    <dialog id="review-editor">
+        <section class="flex-column">
+            <div class="flex-row" id="review-editor--header">
+                <h3></h3>
+                <button id="review-editor--close" class="tertiary"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="flex-row" id="review-editor--body">
+                <div class="cover loading"></div>
+                <form action=""  method="post" class="flex-column">
+                    <div class="flex-row" id="review-editor--selectors">
+                        <div>
+                            <i class="fa-solid fa-chevron-down"></i>
+                            <select name="platform" id="review-editor--platform" data-chosen="placeholder"
+                            onchange="this.dataset.chosen = this.value;">
+                                <option value="placeholder" selected disabled>Choose a platform</option>
+                            </select>
+                        </div>
+                        <rating-stars value=0></rating-stars>
+                    </div>
+                    <textarea name="content" id="review-editor--content" placeholder="Write a review"></textarea>
+                    <input class="primary" type="submit" value="Publish">
+                </form>
+            </div>
+        </section>
     </dialog>
 </body>
 

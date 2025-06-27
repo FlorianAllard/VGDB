@@ -11,30 +11,44 @@ require_once __DIR__ . '/../services/_utilities.php';
  * @param array $ids Array of game IDs to export.
  * @return array Exported games with related data.
  */
-function exportGames(array $ids): array
+function exportWithRelations($get): array
 {
     $pdo = pdoConnection();
 
-    if (empty($ids)) {
-        return [];
-    }
+    if(empty(explode(",", $get['id']))) return [];
 
-    $placeholders = implode(',', array_fill(0, count($ids), '?'));
+    $conditions = [];
+    $params = [];
+    foreach ($get as $key => $value) {
+        if ($key === 'limit') continue;
+        if ($key === 'offset') continue;
+
+        $valueArray = explode(",", $value);
+        $invert = str_ends_with($key, "!");
+        $key = rtrim($key, "!");
+        $condString = "games.$key " . ($invert ? "NOT " : "") . "IN (";
+        for ($i=0; $i < count($valueArray); $i++) {
+            $condString .=  ":$key$i" . ($i < count($valueArray) -1 ? "," : "");
+            $params[":$key$i"] = $valueArray[$i];
+        }
+        $condString .= ")";
+        $conditions[] = $condString;
+    }
+    $whereClause = count($conditions)
+        ? "WHERE " . implode(" AND ", $conditions)
+        : "";
 
     $subqueries = getGameSubqueries();
 
     $sql = sprintf(
-        "SELECT games.*,\n%s\n
-        FROM games 
-        WHERE games.id IN (%s)",
-        implode(",\n", $subqueries),
-        $placeholders
+        "SELECT games.*, %s FROM games $whereClause",
+        implode(",\n", $subqueries)
     );
 
+    
     $stmt = $pdo->prepare($sql);
-    $stmt->execute($ids);
+    $stmt -> execute($params);
     $games = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
     foreach ($games as $i => $game) {
         $games[$i] = decodeGameJsonFields($game);
     }
@@ -62,6 +76,8 @@ function getGameSubqueries(): array
         getRegionalReleaseSubquery(),
         getMediaSubquery(),
         getWebsiteSubquery(),
+        getTimeToBeatSubquery(),
+        getCoverSubquery(),
     ];
 }
 
@@ -74,7 +90,7 @@ function decodeGameJsonFields(array $game): array
         'genres', 'platforms', 'modes', 'perspectives', 'themes',
         'involved_companies', 'engines', 'series', 'franchises',
         'supported_languages', 'age_ratings', 'regional_releases',
-        'media', 'websites'
+        'media', 'websites', 'timeToBeat', 'cover'
     ];
 
     foreach ($jsonFields as $field) {
@@ -232,7 +248,8 @@ function getCompaniesSubquery(): string
                 )
             )
         )
-        FROM games_to_developers
+        FROM companies
+        LEFT JOIN games_to_developers ON games_to_developers.game_id = games.id
         LEFT JOIN companies developers ON games_to_developers.company_id = developers.id AND games_to_developers.game_id = games.id
         LEFT JOIN games_to_supporting ON games_to_supporting.game_id = games.id
         LEFT JOIN companies supporting ON games_to_supporting.company_id = supporting.id
@@ -329,7 +346,8 @@ function getLanguageSubquery(): string
                 )
             )
         )
-        FROM games_to_audio
+        FROM languages
+        LEFT JOIN games_to_audio ON games_to_audio.game_id = games.id
         LEFT JOIN languages audio ON games_to_audio.language_id = audio.id AND games_to_audio.game_id = games.id
         LEFT JOIN games_to_subtitles ON games_to_subtitles.game_id = games.id
         LEFT JOIN languages subtitles ON games_to_subtitles.language_id = subtitles.id
@@ -444,6 +462,7 @@ function getRegionalReleaseSubquery(): string
         FROM regional_releases
         LEFT JOIN release_types ON release_types.id = regional_releases.type_id
         WHERE regional_releases.game_id = games.id
+        ORDER BY regional_releases.date DESC
     ) AS regional_releases
     SQL;
 }
@@ -476,20 +495,20 @@ function getMediaSubquery(): string
                 JSON_ARRAYAGG(
                     DISTINCT JSON_OBJECT(
                         'id', videos.id,
+                        'name', videos.name,
+                        'thumbnail', videos.thumbnail,
                         'url', videos.url
                     )
                 )
             )
         )
         FROM games_to_artworks
-        LEFT JOIN artworks ON games_to_artworks.artwork_id = artworks.id AND games_to_artworks.game_id = games.id
-        LEFT JOIN games_to_screenshots ON games_to_screenshots.game_id = games.id
-        LEFT JOIN screenshots ON games_to_screenshots.screenshot_id = screenshots.id
-        LEFT JOIN games_to_videos ON games_to_videos.game_id = games.id
-        LEFT JOIN videos ON games_to_videos.video_id = videos.id
+        JOIN artworks ON games_to_artworks.artwork_id = artworks.id
+        JOIN games_to_screenshots ON games_to_screenshots.game_id = games.id
+        JOIN screenshots ON games_to_screenshots.screenshot_id = screenshots.id
+        JOIN games_to_videos ON games_to_videos.game_id = games.id
+        JOIN videos ON games_to_videos.video_id = videos.id
         WHERE games_to_artworks.game_id = games.id
-           OR games_to_screenshots.game_id = games.id
-           OR games_to_videos.game_id = games.id
     ) AS media
     SQL;
 }
@@ -508,5 +527,38 @@ function getWebsiteSubquery(): string
         JOIN websites ON games_to_websites.website_id = websites.id
         WHERE games_to_websites.game_id = games.id
     ) AS websites
+    SQL;
+}
+
+function getTimeToBeatSubquery(): string
+{
+    return <<<SQL
+    (
+        SELECT JSON_OBJECT(
+            'inputs', times_to_beat.inputs,
+            'minimum', times_to_beat.minimum,
+            'normal', times_to_beat.normal,
+            'completionist', times_to_beat.completionist,
+            'speedrun', times_to_beat.speedrun
+        )
+        FROM times_to_beat
+        WHERE times_to_beat.game_id = games.id
+    ) AS timeToBeat
+    SQL;
+}
+
+function getCoverSubquery(): string
+{
+    return <<<SQL
+    (
+        SELECT JSON_OBJECT(
+            'hero', covers.hero,
+            'landscape', covers.landscape,
+            'portrait', covers.portrait,
+            'logo', covers.logo
+        )
+        FROM covers
+        WHERE covers.game_id = games.id
+    ) AS cover
     SQL;
 }
