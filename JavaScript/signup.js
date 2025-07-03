@@ -53,8 +53,7 @@ function removeSelf(event = null) {
 }
 
 async function trySigningUp(form) {
-      const formData = new FormData(form);
-      formData.append("profile_picture", "/Assets/Profiles/Default.webp");
+    const formData = new FormData(form);
     const result = await Requests.signUp(formData);
     if(result == null) return;
 

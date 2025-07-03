@@ -48,7 +48,7 @@ async function loadProfileCard(favorites) {
 
   // Set profile portrait
   const pp = card.querySelector(".profile-card--portrait");
-  pp.src = user.profilePic;
+  pp.src = user.profilePicturePath;
 
   // Set background gradient based on dominant color of portrait
   const color = await Utilities.getDominantColor(pp);

@@ -2,12 +2,34 @@
 
 require  __DIR__ . '/api.php';
 require  __DIR__ . '/router.php';
+require_once "./Autoloader.php";
+Autoloader::register();
 
-//POST
-post('/users/$action', './controller/userController.php');
-post('/reviews/$action', './controller/reviewController.php');
-//GET
-get('/games', './controller/gameController.php');
-get('/reviews', './controller/reviewController.php');
+use Controllers\UserController;
 
-any('/404', './controller/404.php');
+try {
+    post('/users/$action', function ($action) {
+        $class = new UserController();
+        switch ($action) {
+            case "signup":
+                $class->create();
+                break;
+        }
+    });
+
+    get('/users/$id', function ($id) {
+        $class = new UserController();
+        $class->read($id);
+    });
+
+    post('/reviews/$action', './Controllers/reviewController.php');
+
+    //GET
+    get('/games', './Controllers/gameController.php');
+    get('/reviews', './Controllers/reviewController.php');
+
+    // ANY
+    any('/404', './Controllers/404.php');
+} catch (\Throwable $th) {
+    echo(json_encode("BACKEND ERROR: " . $th->getMessage() . " on line " . $th->getLine() . " in " . $th->getFile()));
+}

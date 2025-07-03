@@ -43,7 +43,7 @@ await Promise.all([headerFetch, footerFetch]).then((responses) => {
 
 function setupProfile(header) {
   const userData = JSON.parse(localStorage.getItem("user"));
-  header.querySelector(".profile_picture").src = userData.profilePic;
+  header.querySelector(".profile_picture").src = userData.profilePicturePath;
   const profileMenu = header.querySelector("#user_profile-menu");
   toggleProfileMenu(false);
   const profileButton = header.querySelector("#user_profile");
