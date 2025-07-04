@@ -31,6 +31,31 @@ abstract class AbstractModel {
         return $sql;
     }
 
+    protected function formatGetStatements($get): array {
+        $conditions = [];
+        $parameters = [];
+        foreach ($_GET as $key => $value) {
+            if ($key === 'limit') continue;
+            if ($key === 'offset') continue;
+
+            $valueArray = explode(",", $value);
+            $invert = str_ends_with($key, "!");
+            $key = rtrim($key, "!");
+            $condString = "$key " . ($invert ? "NOT " : "") . "IN (";
+            for ($i = 0; $i < count($valueArray); $i++) {
+                $condString .=  ":$key$i" . ($i < count($valueArray) - 1 ? "," : "");
+                $parameters[":$key$i"] = $valueArray[$i];
+            }
+            $condString .= ")";
+            $conditions[] = $condString;
+        }
+        $where = count($conditions)
+            ? "WHERE " . implode(" AND ", $conditions)
+            : "";
+
+        return ['where' => $where, 'parameters' => $parameters];
+    }
+
     // Private
 
     private function setFetchMode(PDOStatement &$sql): PDOStatement {

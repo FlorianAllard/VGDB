@@ -17,7 +17,7 @@ class UserEntity extends AbstractEntity {
 
     private const PASSWORD_REGEX = "/^(?=.*[!?@#$%^&*+-])(?=.*[0-9])(?=.*[A-Z])(?=.*[a-z]).{6,}$/";
 
-    public function __construct() {
+    private function __construct() {
         $this->createdAt = time();
     }
 
@@ -25,7 +25,7 @@ class UserEntity extends AbstractEntity {
         return [];
     }
 
-    public function stringify(): array {
+    public function encode(): array {
         return [
             "id" => $this->id,
             "email" => $this->email,

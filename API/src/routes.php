@@ -17,9 +17,9 @@ try {
         }
     });
 
-    get('/users/$id', function ($id) {
+    get('/users', function () {
         $class = new UserController();
-        $class->read($id);
+        $class->read($_GET);
     });
 
     post('/reviews/$action', './Controllers/reviewController.php');

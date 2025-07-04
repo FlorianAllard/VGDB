@@ -4,7 +4,7 @@ namespace Interfaces;
 
 interface CRUDInterface {
     function create();
-    function read($param);
+    function read(array $params);
     function update();
     function delete();
 }

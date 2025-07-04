@@ -25,23 +25,23 @@ class UserController extends AbstractController implements CRUDInterface {
 
         $errors = $user->validate();
 
-        $userWithSameEmail = $this->database->getUserByEmail($user->getEmail());
+        $userWithSameEmail = $this->database->getUsers(['email' => $user->getEmail()]);
         if ($userWithSameEmail) {
             $errors['email'] = "This email address is already in use";
         }
 
         if (empty($errors)) {
             $this->database->addUser($user);
-            $user = $this->database->getUserByEmail($user->getEmail());
-            echo json_encode(['status' => 200, 'data' => $user->stringify()]);
+            $data = $this->database->getUsers(['email' => $user->getEmail()]);
+            echo json_encode(['status' => 200, 'data' => $data]);
         } else {
             echo json_encode(['status' => 405, 'data' => $errors]);
         }
     }
 
-    public function read($id) {
-        $user = $this->database->getUserByID($id);
-        echo json_encode(['status' => 200, 'data' => $user->stringify()]);
+    public function read($get) {
+        $data = $this->database->getUsers($get);
+        echo json_encode(['status' => 200, 'data' => $data]);
     }
 
     public function update() {

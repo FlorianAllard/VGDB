@@ -9,27 +9,27 @@ class UserModel extends AbstractModel
 {
     protected string $linkedClass = UserEntity::class;
 
-    function getUserByEmail(string $email): UserEntity|false
+    function getUsers($get): array|false
     {
         $subqueries = [$this->getTitleSubquery()];
-        $select = $this->getSelect();
-        $sql = $this->prepareQuery(sprintf(
-            "SELECT $select, %s FROM users WHERE email = :email",
-            implode(",\n", $subqueries)
-        ));
-        $sql->execute([":email" => $email]);
-        return $sql->fetch();
-    }
 
-    function getUserByID(string $id): UserEntity|false
-    {
-        $subqueries = [$this->getTitleSubquery()];
+        $formatedGet = $this->formatGetStatements($get);
+        $where = $formatedGet['where'];
+        $parameters = $formatedGet['parameters'];
+
         $sql = $this->prepareQuery(sprintf(
-            "SELECT *, %s FROM users WHERE id = :id",
+            "SELECT *, %s FROM users $where",
             implode(",\n", $subqueries)
         ));
-        $sql->execute([":id" => $id]);
-        return $sql->fetch();
+        $sql->execute($parameters);
+
+        $data = [];
+        $entities = $sql->fetchAll();
+        foreach ($entities as $entity) {
+            $data[] = $entity->encode();
+        }
+
+        return $data;
     }
 
     function addUser(UserEntity $user): void
@@ -48,7 +48,7 @@ class UserModel extends AbstractModel
         $sql->execute(array_values($data));
     }
 
-    function getSelect() {
+    function getSelectClause() {
         $array = [
             "id",
             "email",
