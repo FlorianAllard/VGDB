@@ -1,6 +1,8 @@
 <?php
 
 namespace Abstract;
+
+use Exception;
 use \PDO;
 use \PDOStatement;
 
@@ -54,6 +56,27 @@ abstract class AbstractModel {
             : "";
 
         return ['where' => $where, 'parameters' => $parameters];
+    }
+
+    protected function insertInto(string $table, array $data, $fetchAssoc = false): array {
+        if(empty($data)) return [];
+
+        $columns = array_keys($data);
+        $placeholders = implode(',', array_fill(0, count($columns), '?'));
+        $columnsToUpdate = array_filter($columns, function($column) {
+            return $column != 'createdAt';
+        });
+        $updateClause = implode(', ', array_map(function($column) {
+            return "`$column`=VALUES(`$column`)";
+        }, $columnsToUpdate));
+
+        $sql = $this->prepareQuery(
+            "INSERT INTO $table (`" . implode('`,`', $columns) . "`) VALUES ($placeholders)
+            ON DUPLICATE KEY UPDATE $updateClause
+            RETURNING *");
+
+        $sql->execute(array_values($data));
+        return $fetchAssoc ? $sql->fetch(PDO::FETCH_ASSOC) : $sql->fetchAll();
     }
 
     // Private

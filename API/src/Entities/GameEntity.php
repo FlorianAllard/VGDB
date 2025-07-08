@@ -11,29 +11,27 @@ class GameEntity extends AbstractEntity {
     private string $summary = "";
     private string $premise = "";
 
-    private string $covers = "";
-    private string $genres = "";
-    private string $platforms = "";
-    private string $modes = "";
-    private string $perspectives = "";
-    private string $themes = "";
-    private string $involvedCompanies = "";
-    private string $engines = "";
-    private string $series = "";
-    private string $franchises = "";
-    private string $supportedLanguages = "";
-    private string $ageRatings = "";
-    private string $regionalReleases = "";
-    private string $media = "";
-    private string $websites = "";
-    private string $timesToBeat = "";
+    private ?string $covers = NULL;
+    private ?string $genres = NULL;
+    private ?string $platforms = NULL;
+    private ?string $modes = NULL;
+    private ?string $perspectives = NULL;
+    private ?string $themes = NULL;
+    private ?string $involvedCompanies = NULL;
+    private ?string $engines = NULL;
+    private ?string $series = NULL;
+    private ?string $franchises = NULL;
+    private ?string $supportedLanguages = NULL;
+    private ?string $ageRatings = NULL;
+    private ?string $regionalReleases = NULL;
+    private ?string $media = NULL;
+    private ?string $websites = NULL;
+    private ?string $timesToBeat = NULL;
 
     private int $createdAt = 0;
     private int $updatedAt = 0;
 
-    public function __construct() {
-        $this->createdAt = time();
-    }
+    public function __construct() { }
 
     public function format(): array {
         return [];
@@ -47,22 +45,22 @@ class GameEntity extends AbstractEntity {
             "summary" => $this->summary,
             "premise" => $this->premise,
 
-            "covers" => json_decode($this->covers),
-            "genres" => json_decode($this->genres),
-            "platforms" => json_decode($this->platforms),
-            "modes" => json_decode($this->modes),
-            "perspectives" => json_decode($this->perspectives),
-            "themes" => json_decode($this->themes),
-            "involvedCompanies" => json_decode($this->involvedCompanies),
-            "engines" => json_decode($this->engines),
-            "series" => json_decode($this->series),
-            "franchises" => json_decode($this->franchises),
-            "supportedLanguages" => json_decode($this->supportedLanguages),
-            "ageRatings" => json_decode($this->ageRatings),
-            "regionalReleases" => json_decode($this->regionalReleases),
-            "media" => json_decode($this->media),
-            "websites" => json_decode($this->websites),
-            "timesToBeat" => json_decode($this->timesToBeat),
+            "covers" => $this->covers ? json_decode($this->covers) : null,
+            "genres" => $this->genres ? json_decode($this->genres) : null,
+            "platforms" => $this->platforms ? json_decode($this->platforms) : null,
+            "modes" => $this->modes ? json_decode($this->modes) : null,
+            "perspectives" => $this->perspectives ? json_decode($this->perspectives) : null,
+            "themes" => $this->themes ? json_decode($this->themes) : null,
+            "involvedCompanies" => $this->involvedCompanies ? json_decode($this->involvedCompanies) : null,
+            "engines" => $this->engines ? json_decode($this->engines) : null,
+            "series" => $this->series ? json_decode($this->series) : null,
+            "franchises" => $this->franchises ? json_decode($this->franchises) : null,
+            "supportedLanguages" => $this->supportedLanguages ? json_decode($this->supportedLanguages) : null,
+            "ageRatings" => $this->ageRatings ? json_decode($this->ageRatings) : null,
+            "regionalReleases" => $this->regionalReleases ? json_decode($this->regionalReleases) : null,
+            "media" => $this->media ? json_decode($this->media) : null,
+            "websites" => $this->websites ? json_decode($this->websites) : null,
+            "timesToBeat" => $this->timesToBeat ? json_decode($this->timesToBeat) : null,
 
             "createdAt" => $this->createdAt,
             "updatedAt" => $this->updatedAt,
@@ -92,6 +90,18 @@ class GameEntity extends AbstractEntity {
     // Get/Set premise
     public function getPremise(): string { return $this->premise; }
     public function setPremise(string $newPremise) { $this->premise = $newPremise; }
+    
+    // Get/Set covers
+    public function getCovers(): string { return $this->covers; }
+    public function setCovers(string $newCovers) { $this->covers = $newCovers; }
+    
+    // Get/Set genres
+    public function getGenres(): string { return $this->genres; }
+    public function setGenres(string $newGenres) { $this->genres = $newGenres; }
+    
+    // Get/Set platforms
+    public function getPlatforms(): string { return $this->platforms; }
+    public function setPlatforms(string $newPlatforms) { $this->platforms = $newPlatforms; }
     
     // Get/Set createdAt
     public function getCreatedAt(): int { return $this->createdAt; }

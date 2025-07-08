@@ -14,7 +14,16 @@ try {
         $class = new UserController();
         switch ($action) {
             case "signup":
-                $class->create();
+                $class->create($_POST);
+                break;
+        }
+    });
+
+    post('/reviews/$action', function ($action) {
+        $class = new ReviewController();
+        switch ($action) {
+            case "publish":
+                $class->create($_POST);
                 break;
         }
     });

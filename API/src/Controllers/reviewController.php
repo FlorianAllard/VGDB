@@ -16,15 +16,15 @@ class ReviewController extends AbstractController implements CRUDInterface
         $this->database = new ReviewModel();
     }
 
-    public function create() {
+    public function create($post) {
         $errors = [];
         $user = new ReviewEntity();
 
-        $user->setGame($_POST['game'] ?? '');
-        $user->setUser($_POST['user'] ?? '');
-        $user->setPlatform($_POST['platform'] ?? '');
-        $user->setRating($_POST['rating'] ?? '');
-        $user->setContent($_POST['content'] ?? '');
+        $user->setGame($post['game'] ?? '');
+        $user->setUser($post['user'] ?? '');
+        $user->setPlatform($post['platform'] ?? '');
+        $user->setRating($post['rating'] ?? '');
+        $user->setContent($post['content'] ?? '');
 
         $errors = $user->validate();
 

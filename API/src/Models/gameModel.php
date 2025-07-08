@@ -4,6 +4,7 @@ namespace Models;
 
 use Abstract\AbstractModel;
 use Entities\GameEntity;
+use Exception;
 
 class GameModel extends AbstractModel {
     protected string $linkedClass = GameEntity::class;
@@ -11,6 +12,7 @@ class GameModel extends AbstractModel {
     function getGames($get): array|false
     {
         $subqueries = [
+            $this->getCoversSubquery(),
             $this->getGenresSubquery(),
             $this->getPlatformsSubquery(),
             $this->getModesSubquery(),
@@ -40,11 +42,29 @@ class GameModel extends AbstractModel {
 
         $data = [];
         $entities = $sql->fetchAll();
+        
         foreach ($entities as $entity) {
             $data[] = $entity->encode();
         }
 
         return $data;
+    }
+
+    #region SUBQUERIES
+
+    function getCoversSubquery()
+    {
+        return <<<SQL
+            (SELECT JSON_OBJECT(
+                'id', covers.id,
+                'hero', covers.hero,
+                'landscape', covers.landscape,
+                'portrait', covers.portrait,
+                'logo', covers.logo)
+            FROM covers
+            WHERE covers.game = games.id)
+            AS covers
+            SQL;
     }
 
     function getGenresSubquery()
@@ -54,8 +74,8 @@ class GameModel extends AbstractModel {
                 'id', genres.id,
                 'name', genres.name))
             FROM genres
-            JOIN games_to_genres ON games_to_genres.game_id = games.id
-            WHERE genres.id = games_to_genres.genre_id)
+            JOIN games_to_genres ON games_to_genres.game = games.id
+            WHERE genres.id = games_to_genres.genre)
             AS genres
             SQL;
     }
@@ -77,8 +97,8 @@ class GameModel extends AbstractModel {
                 'family', $family,
                 'generation', platforms.generation))
             FROM platforms
-            JOIN games_to_platforms ON games_to_platforms.game_id = games.id
-            WHERE platforms.id = games_to_platforms.platform_id)
+            JOIN games_to_platforms ON games_to_platforms.game = games.id
+            WHERE platforms.id = games_to_platforms.platform)
             AS platforms
             SQL;
     }
@@ -387,4 +407,156 @@ class GameModel extends AbstractModel {
             AS timesToBeat
             SQL;
     }
+
+    #endregion
+
+    function addGame(GameEntity $game): void
+    {
+        $data = [
+            "id" => $game->getID(),
+            "name" => $game->getName(),
+            "officialReleaseDate" => $game->getOfficialReleaseDate(),
+            "summary" => $game->getSummary(),
+            "premise" => $game->getPremise(),
+            "createdAt" => time(),
+            "updatedAt" => 0,
+        ];
+        $this->insertInto('games', $data);
+    }
+
+    function formatGameFromIGDB($raw): GameEntity
+    {
+        $game = new GameEntity;
+
+        $game->setID($raw['id']);
+        $game->setName($raw['name']);
+        $game->setOfficialReleaseDate($raw['first_release_date']);
+        $game->setSummary($raw['summary']);
+        $game->setPremise($raw['storyline']);
+
+        $this->addGame($game);
+
+        $game->setCovers($this->formatAndInsertCovers($game->getID(), $raw));
+        $game->setGenres($this->formatAndInsertGenres($game->getID(), $raw['genres']));
+        $game->setPlatforms($this->formatAndInsertPlatforms($game->getID(), $raw['platforms']));
+
+        return $game;
+    }
+
+    #region FORMATTING
+
+    function formatAndInsertCovers($gameID, $raw): string
+    {
+        // Default to IGDB cover images if available
+        $covers = [
+            'portrait' =>isset($raw['cover']['image_id']) ? 'https://images.igdb.com/igdb/image/upload/t_cover_big/' . $raw['cover']['image_id'] . '.webp' : null,
+            'landscape' => isset($raw['cover']['image_id']) ? 'https://images.igdb.com/igdb/image/upload/t_1080p/' . $raw['cover']['image_id'] . '.webp' : null,
+            'hero' => null,
+            'logo' => null,
+        ];
+
+        // Try to find a Steam ID from the game's websites
+        $steamId = null;
+        foreach ($raw['websites'] ?? [] as $website) {
+            if (isset($website['url']) && str_contains($website['url'], 'steam')) {
+                $steamId = basename(parse_url($website['url'], PHP_URL_PATH));
+                break;
+            }
+        }
+
+        // If a Steam ID is found, prefer Steam images if they exist
+        if ($steamId) {
+            $steamCovers = [
+                'landscape' => 'https://steamcdn-a.akamaihd.net/steam/apps/' . $steamId . '/header.jpg',
+                'portrait' => 'https://steamcdn-a.akamaihd.net/steam/apps/' . $steamId . '/library_600x900_2x.jpg',
+                'hero' => 'https://steamcdn-a.akamaihd.net/steam/apps/' . $steamId . '/library_hero.jpg',
+                'logo' => 'https://steamcdn-a.akamaihd.net/steam/apps/' . $steamId . '/logo.png',
+            ];
+            // Only use Steam images if they exist (checkImage returns true)
+            foreach ($steamCovers as $key => $url) {
+                if (checkImage($url)) {
+                    $covers[$key] = $url;
+                }
+            }
+        }
+
+        $covers['game'] = $gameID;
+        $covers = $this->insertInto('covers', $covers, true);
+        unset($covers['game']);
+        return json_encode($covers);
+    }
+
+    function formatAndInsertGenres($gameID, $rawGenres): string
+    {
+        $genres = [];
+        $relations = [];
+
+        foreach ($rawGenres as $rawGenre) {
+            $genres[] = [
+                'id' => $rawGenre['id'],
+                'name' => $rawGenre['name'],
+            ];
+            $relations[] = [
+                'game' => $gameID,
+                'genre' => $rawGenre['id']
+            ];
+        }
+
+        foreach ($genres as &$genre) {
+            $genre = $this->insertInto('genres', $genre, true);
+        }
+        foreach ($relations as &$relation) {
+            $relation = $this->insertInto('games_to_genres', $relation, true);
+        }
+
+        return json_encode($genres);
+    }
+
+    function formatAndInsertPlatforms($gameID, $rawPlatforms): string
+    {
+        $platforms = [];
+        $families = [];
+        $relations = [];
+
+        foreach ($rawPlatforms as $rawPlatform)
+        {
+            if(isset($rawPlatform['platform_family'])) {
+                $families[] = [
+                    'id' => $rawPlatform['platform_family']['id'],
+                    'name' => $rawPlatform['platform_family']['name'],
+                ];
+            }
+
+            $platforms[] = [
+                'id' => $rawPlatform['id'],
+                'name' => $rawPlatform['name'],
+                'family' => isset($rawPlatform['platform_family']) ? $rawPlatform['platform_family']['id'] : null,
+                'generation' => $rawPlatform['generation'] ?? 0,
+            ];
+
+            $relations[] = [
+                'game' => $gameID,
+                'platform' => $rawPlatform['id'],
+            ];
+        }
+
+        foreach ($families as &$family) {
+            $family = $this->insertInto('platform_families', $family, true);
+        }
+        foreach ($platforms as &$platform) {
+            $platform = $this->insertInto('platforms', $platform, true);
+            if(isset($platform['family'])) {
+                $platform['family'] = array_find($families, function ($value) use ($platform) {
+                    return $value['id'] == $platform['family'];
+                });
+            }
+        }
+        foreach ($relations as &$relation) {
+            $relation = $this->insertInto('games_to_platforms', $relation, true);
+        }
+
+        return json_encode($platforms);
+    }
+
+    #endregion
 }

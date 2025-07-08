@@ -14,14 +14,14 @@ class UserController extends AbstractController implements CRUDInterface {
         $this-> database = new UserModel();
     }
 
-    public function create() {
+    public function create($post) {
         $errors = [];
         $user = new UserEntity();
 
-        $user->setEmail($_POST['email'] ?? '');
-        $user->setUsername($_POST['username'] ?? '');
-        $user->setPassword($_POST['password'] ?? '');
-        $user->setPasswordConfirm($_POST['passwordConfirm'] ?? '');
+        $user->setEmail($post['email'] ?? '');
+        $user->setUsername($post['username'] ?? '');
+        $user->setPassword($post['password'] ?? '');
+        $user->setPasswordConfirm($post['passwordConfirm'] ?? '');
 
         $errors = $user->validate();
 
