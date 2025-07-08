@@ -1,28 +1,30 @@
 <?php
 
-header("Access-Control-Allow-Methods: GET");
+namespace Controllers;
 
-require_once __DIR__ . '/../services/_debug.php';
-require_once __DIR__ . "/../services/_csrf.php";
-require_once __DIR__ . "/../model/gameModel.php";
+use Abstract\AbstractController;
+use Interfaces\CRUDInterface;
+use Entities\GameEntity;
+use Models\GameModel;
 
-switch ($_SERVER["REQUEST_METHOD"]) {
-    case "GET":
-        getGames();
-        break;
-        // ...other cases...
-}
+class GameController extends AbstractController implements CRUDInterface
+{
+    private GameModel $database;
 
-function getGames() {
-    $startTime = time();
-    $error = [];
-    $status = 400;
+    public function __construct()
+    {
+        $this->database = new GameModel();
+    }
 
-    $games = fetchGames($_GET);
+    public function create() { }
 
-    $time = round((microtime(true) - $startTime), 3);
-    echo json_encode([
-        'status' => 200,
-        'time' => $time . " s",
-        'data' => $games]);
+    public function read($get)
+    {
+        $data = $this->database->getGames($get);
+        echo json_encode(['status' => 200, 'data' => $data]);
+    }
+
+    public function update() {}
+
+    public function delete() {}
 }

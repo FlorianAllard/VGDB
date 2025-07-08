@@ -2,7 +2,6 @@
 
 namespace Entities;
 use Abstract\AbstractEntity;
-use UserTitle;
 
 class UserEntity extends AbstractEntity {
     private int $id = 0;

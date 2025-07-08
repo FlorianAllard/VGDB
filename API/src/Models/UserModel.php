@@ -48,18 +48,6 @@ class UserModel extends AbstractModel
         $sql->execute(array_values($data));
     }
 
-    function getSelectClause() {
-        $array = [
-            "id",
-            "email",
-            "username",
-            "password",
-            "createdAt",
-            "profilePicturePath",
-        ];
-        return implode(", ", $array);
-    }
-
     function getTitleSubquery()
     {
         return <<<SQL

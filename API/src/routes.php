@@ -5,7 +5,9 @@ require  __DIR__ . '/router.php';
 require_once "./Autoloader.php";
 Autoloader::register();
 
+use Controllers\GameController;
 use Controllers\UserController;
+use Controllers\ReviewController;
 
 try {
     post('/users/$action', function ($action) {
@@ -22,11 +24,15 @@ try {
         $class->read($_GET);
     });
 
-    post('/reviews/$action', './Controllers/reviewController.php');
+    get('/reviews', function () {
+        $class = new ReviewController();
+        $class->read($_GET);
+    });
 
-    //GET
-    get('/games', './Controllers/gameController.php');
-    get('/reviews', './Controllers/reviewController.php');
+    get('/games', function () {
+        $class = new GameController();
+        $class->read($_GET);
+    });
 
     // ANY
     any('/404', './Controllers/404.php');
