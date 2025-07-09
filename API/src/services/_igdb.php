@@ -9,7 +9,7 @@ class IGDB {
         $clientID = $_ENV['IGDB_CLIENTID'];
         $clientSecret = $_ENV['IGDB_CLIENTSECRET'];
         $pdo = pdoConnection();
-        $sql = $pdo->query("SELECT * FROM vgdb_authentification");
+        $sql = $pdo->query("SELECT * FROM _IgdbAuthentification");
         $tokenData = $sql->fetch();
     
         $now = time();
@@ -28,9 +28,7 @@ class IGDB {
             $response = curl_exec($curl);
             curl_close($curl);
     
-    
             $data = json_decode($response, true);
-            debug_to_console($data['access_token']);
             if (isset($data['access_token'])) {
                 $token = $data['access_token'];
                 $tokenCreation = $now;
@@ -38,16 +36,13 @@ class IGDB {
     
                 // Save in DB
                 if ($tokenData) {
-                    $sql = $pdo->query("UPDATE vgdb_authentification SET token=$token, createdAt=$tokenCreation, expiresIn=$tokenDuration");
-                } else {
-                    $sql = $pdo->query("INSERT INTO vgdb_authentification (token, createdAt, expiresIn) VALUES ('$token', '$tokenCreation', '$tokenDuration')");
-                }
+                    $sql = $pdo->query("TRUNCATE TABLE vgdb_authentification");
+                } 
+                $sql = $pdo->query("INSERT INTO vgdb_authentification (token, createdAt, expiresIn) VALUES ('$token', '$tokenCreation', '$tokenDuration')");
             } else {
                 error_log("Failed to get IGDB token: " . $response);
                 return null;
             }
-        } else {
-            // debug_to_console("Token still valid.");
         }
     
         return $token;

@@ -18,7 +18,7 @@ class ReviewModel extends AbstractModel {
         $parameters = $formatedGet['parameters'];
         
         $sql = $this->prepareQuery(sprintf(
-            "SELECT *, %s FROM reviews $where",
+            "SELECT *, %s FROM Reviews $where",
             implode(",\n", $subqueries)
         ));
         $sql->execute($parameters);

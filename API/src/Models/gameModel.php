@@ -35,7 +35,7 @@ class GameModel extends AbstractModel {
         $parameters = $formatedGet['parameters'];
 
         $sql = $this->prepareQuery(sprintf(
-            "SELECT *, %s FROM games $where",
+            "SELECT *, %s FROM Games $where",
             implode(",\n", $subqueries)
         ));
         $sql->execute($parameters);
@@ -56,13 +56,13 @@ class GameModel extends AbstractModel {
     {
         return <<<SQL
             (SELECT JSON_OBJECT(
-                'id', covers.id,
-                'hero', covers.hero,
-                'landscape', covers.landscape,
-                'portrait', covers.portrait,
-                'logo', covers.logo)
-            FROM covers
-            WHERE covers.game = games.id)
+                'id', Covers.id,
+                'hero', Covers.hero,
+                'landscape', Covers.landscape,
+                'portrait', Covers.portrait,
+                'logo', Covers.logo)
+            FROM Covers
+            WHERE Covers.game_id = Games.id)
             AS covers
             SQL;
     }
@@ -71,11 +71,11 @@ class GameModel extends AbstractModel {
     {
         return <<<SQL
             (SELECT JSON_ARRAYAGG(JSON_OBJECT(
-                'id', genres.id,
-                'name', genres.name))
-            FROM genres
-            JOIN games_to_genres ON games_to_genres.game = games.id
-            WHERE genres.id = games_to_genres.genre)
+                'id', Genres.id,
+                'name', Genres.name))
+            FROM Genres
+            JOIN Games_Genres ON Games_Genres.game_id = Games.id
+            WHERE Genres.id = Games_Genres.genre_id)
             AS genres
             SQL;
     }
@@ -84,21 +84,21 @@ class GameModel extends AbstractModel {
     {
         $family = <<<SQL
             (SELECT JSON_OBJECT(
-                'id', platform_families.id,
-                'name', platform_families.name)
-            FROM platform_families
-            WHERE platform_families.id = platforms.family)
+                'id', PlatformFamilies.id,
+                'name', PlatformFamilies.name)
+            FROM PlatformFamilies
+            WHERE PlatformFamilies.id = Platforms.family_id)
             SQL;
 
         return <<<SQL
             (SELECT  JSON_ARRAYAGG(JSON_OBJECT(
-                'id', platforms.id,
-                'name', platforms.name,
+                'id', Platforms.id,
+                'name', Platforms.name,
                 'family', $family,
-                'generation', platforms.generation))
-            FROM platforms
-            JOIN games_to_platforms ON games_to_platforms.game = games.id
-            WHERE platforms.id = games_to_platforms.platform)
+                'generation', Platforms.generation))
+            FROM Platforms
+            JOIN Games_Platforms ON Games_Platforms.game_id = Games.id
+            WHERE Platforms.id = Games_Platforms.platform_id)
             AS platforms
             SQL;
     }
@@ -107,12 +107,12 @@ class GameModel extends AbstractModel {
     {
         return <<<SQL
             (SELECT JSON_ARRAYAGG(JSON_OBJECT(
-                'id', modes.id,
-                'name', modes.name))
-            FROM modes
-            JOIN games_to_modes ON games_to_modes.game_id = games.id
-            WHERE modes.id = games_to_modes.mode_id)
-            AS modes
+                'id', GameModes.id,
+                'name', GameModes.name))
+            FROM GameModes
+            JOIN Games_GameModes ON Games_GameModes.game_id = Games.id
+            WHERE GameModes.id = Games_GameModes.mode_id)
+            AS gameModes
             SQL;
     }
 
@@ -120,12 +120,12 @@ class GameModel extends AbstractModel {
     {
         return <<<SQL
             (SELECT JSON_ARRAYAGG(JSON_OBJECT(
-                'id', perspectives.id,
-                'name', perspectives.name))
-            FROM perspectives
-            JOIN games_to_perspectives ON games_to_perspectives.game_id = games.id
-            WHERE perspectives.id = games_to_perspectives.perspective_id)
-            AS perspectives
+                'id', PlayerPerspectives.id,
+                'name', PlayerPerspectives.name))
+            FROM PlayerPerspectives
+            JOIN Games_PlayerPerspectives ON Games_PlayerPerspectives.game_id = Games.id
+            WHERE PlayerPerspectives.id = Games_PlayerPerspectives.perspective_id)
+            AS playerPerspectives
             SQL;
     }
 
@@ -133,11 +133,11 @@ class GameModel extends AbstractModel {
     {
         return <<<SQL
             (SELECT JSON_ARRAYAGG(JSON_OBJECT(
-                'id', themes.id,
-                'name', themes.name))
-            FROM themes
-            JOIN games_to_themes ON games_to_themes.game_id = games.id
-            WHERE themes.id = games_to_themes.theme_id)
+                'id', Themes.id,
+                'name', Themes.name))
+            FROM Themes
+            JOIN Games_Themes ON Games_Themes.game_id = Games.id
+            WHERE Themes.id = Games_Themes.theme_id)
             AS themes
             SQL;
     }
@@ -146,35 +146,25 @@ class GameModel extends AbstractModel {
     {
         $developers = <<<SQL
             (SELECT JSON_ARRAYAGG(JSON_OBJECT(
-                'id', companies.id,
-                'name', companies.name))
-            FROM companies
-            JOIN games_to_developers ON games_to_developers.game_id = games.id
-            WHERE companies.id = games_to_developers.company_id)
-            SQL;
-
-        $supporting = <<<SQL
-            (SELECT JSON_ARRAYAGG(JSON_OBJECT(
-                'id', companies.id,
-                'name', companies.name))
-            FROM companies
-            JOIN games_to_supporting ON games_to_supporting.game_id = games.id
-            WHERE companies.id = games_to_supporting.company_id)
+                'id', Companies.id,
+                'name', Companies.name))
+            FROM Companies
+            JOIN Games_Developers ON Games_Developers.game_id = Games.id
+            WHERE Companies.id = Games_Developers.company_id)
             SQL;
 
         $publishers = <<<SQL
             (SELECT JSON_ARRAYAGG(JSON_OBJECT(
-                'id', companies.id,
-                'name', companies.name))
-            FROM companies
-            JOIN games_to_publishers ON games_to_publishers.game_id = games.id
-            WHERE companies.id = games_to_publishers.company_id)
+                'id', Companies.id,
+                'name', Companies.name))
+            FROM Companies
+            JOIN Games_Publishers ON Games_Publishers.game_id = Games.id
+            WHERE Companies.id = Games_Publishers.company_id)
             SQL;
 
         return <<<SQL
             (SELECT JSON_OBJECT(
                 'mainDevelopers', $developers,
-                'supportingDevelopers', $supporting,
                 'publishers', $publishers))
             AS involvedCompanies
             SQL;
@@ -184,11 +174,11 @@ class GameModel extends AbstractModel {
     {
         return <<<SQL
             (SELECT JSON_ARRAYAGG(JSON_OBJECT(
-                'id', engines.id,
-                'name', engines.name))
-            FROM engines
-            JOIN games_to_engines ON games_to_engines.game_id = games.id
-            WHERE engines.id = games_to_engines.engine_id)
+                'id', Engines.id,
+                'name', Engines.name))
+            FROM Engines
+            JOIN Games_Engines ON Games_Engines.game_id = Games.id
+            WHERE Engines.id = Games_Engines.engine_id)
             AS engines
             SQL;
     }
@@ -197,12 +187,12 @@ class GameModel extends AbstractModel {
     {
         return <<<SQL
             (SELECT JSON_ARRAYAGG(JSON_OBJECT(
-                'id', series.id,
-                'name', series.name))
-            FROM series
-            JOIN games_to_series ON games_to_series.game_id = games.id
-            WHERE series.id = games_to_series.series_id)
-            AS series
+                'id', GameSeries.id,
+                'name', GameSeries.name))
+            FROM GameSeries
+            JOIN Games_GameSeries ON Games_GameSeries.game_id = Games.id
+            WHERE GameSeries.id = Games_GameSeries.series_id)
+            AS gameSeries
             SQL;
     }
 
@@ -210,49 +200,49 @@ class GameModel extends AbstractModel {
     {
         return <<<SQL
             (SELECT JSON_ARRAYAGG(JSON_OBJECT(
-                'id', franchises.id,
-                'name', franchises.name))
-            FROM franchises
-            JOIN games_to_franchises ON games_to_franchises.game_id = games.id
-            WHERE franchises.id = games_to_franchises.franchise_id)
+                'id', Franchises.id,
+                'name', Franchises.name))
+            FROM Franchises
+            JOIN Games_Franchises ON Games_Franchises.game_id = Games.id
+            WHERE Franchises.id = Games_Franchises.franchise_id)
             AS franchises
             SQL;
     }
 
     function getLanguagesSubquery()
     {
-        $audio = <<<SQL
+        $dubbings = <<<SQL
             (SELECT JSON_ARRAYAGG(JSON_OBJECT(
-                'id', languages.id,
-                'name', languages.name))
-            FROM languages
-            JOIN games_to_audio ON games_to_audio.game_id = games.id
-            WHERE languages.id = games_to_audio.language_id)
+                'id', Languages.id,
+                'name', Languages.name))
+            FROM Languages
+            JOIN Games_Dubbings ON Games_Dubbings.game_id = Games.id
+            WHERE Languages.id = Games_Dubbings.language_id)
             SQL;
 
         $subtitles = <<<SQL
             (SELECT JSON_ARRAYAGG(JSON_OBJECT(
-                'id', languages.id,
-                'name', languages.name))
-            FROM languages
-            JOIN games_to_subtitles ON games_to_subtitles.game_id = games.id
-            WHERE languages.id = games_to_subtitles.language_id)
+                'id', Languages.id,
+                'name', Languages.name))
+            FROM Languages
+            JOIN Games_Subtitles ON Games_Subtitles.game_id = Games.id
+            WHERE Languages.id = Games_Subtitles.language_id)
             SQL;
 
-        $interface = <<<SQL
+        $translations = <<<SQL
             (SELECT JSON_ARRAYAGG(JSON_OBJECT(
-                'id', languages.id,
-                'name', languages.name))
-            FROM languages
-            JOIN games_to_interfaces ON games_to_interfaces.game_id = games.id
-            WHERE languages.id = games_to_interfaces.language_id)
+                'id', Languages.id,
+                'name', Languages.name))
+            FROM Languages
+            JOIN Games_Translations ON Games_Translations.game_id = Games.id
+            WHERE Languages.id = Games_Translations.language_id)
             SQL;
 
         return <<<SQL
             (SELECT JSON_OBJECT(
-                'audio', $audio,
+                'dubbings', $dubbings,
                 'subtitles', $subtitles,
-                'interface', $interface))
+                'translations', $translations))
             AS supportedLanguages
             SQL;
     }
@@ -261,30 +251,30 @@ class GameModel extends AbstractModel {
     {
         $system = <<<SQL
             (SELECT JSON_OBJECT(
-                'id', age_rating_systems.id,
-                'name', age_rating_systems.name,
-                'country', age_rating_systems.country)
-            FROM age_rating_systems
-            WHERE age_rating_systems.id = age_ratings.system)
+                'id', AgeRatingSystems.id,
+                'name', AgeRatingSystems.name,
+                'country', AgeRatingSystems.country)
+            FROM AgeRatingSystems
+            WHERE AgeRatingSystems.id = AgeRatings.system_id)
             SQL;
 
         $contents = <<<SQL
             (SELECT JSON_ARRAYAGG(JSON_OBJECT(
-                'id', age_rating_contents.id,
-                'description', age_rating_contents.description))
-            FROM age_rating_contents
-            JOIN age_ratings_to_contents ON age_ratings_to_contents.content = age_rating_contents.id
-            WHERE age_ratings_to_contents.rating = age_ratings.id)
+                'id', AgeRatingContents.id,
+                'description', AgeRatingContents.description))
+            FROM AgeRatingContents
+            JOIN AgeRatings_AgeRatingContents ON AgeRatings_AgeRatingContents.content_id = AgeRatingContents.id
+            WHERE AgeRatings_AgeRatingContents.rating_id = AgeRatings.id)
             SQL;
 
         return <<<SQL
             (SELECT  JSON_ARRAYAGG(JSON_OBJECT(
-                'id', age_ratings.id,
-                'rating', age_ratings.rating,
+                'id', AgeRatings.id,
+                'rating', AgeRatings.rating,
                 'system', $system,
                 'contents', $contents))
-            FROM age_ratings
-            WHERE age_ratings.game = games.id)
+            FROM AgeRatings
+            WHERE AgeRatings.game_id = Games.id)
             AS ageRatings
             SQL;
     }
@@ -293,49 +283,49 @@ class GameModel extends AbstractModel {
     {
         $families = <<<SQL
             (SELECT JSON_OBJECT(
-                'id', platform_families.id,
-                'name', platform_families.name)
-            FROM platform_families
-            WHERE platform_families.id = platforms.family)
+                'id', PlatformFamilies.id,
+                'name', PlatformFamilies.name)
+            FROM PlatformFamilies
+            WHERE PlatformFamilies.id = Platforms.family_id)
             SQL;
 
         $platforms = <<<SQL
             (SELECT JSON_ARRAYAGG(JSON_OBJECT(
-                'id', platforms.id,
-                'name', platforms.name,
+                'id', Platforms.id,
+                'name', Platforms.name,
                 'family', $families,
-                'generation', platforms.generation))
-            FROM platforms
-            JOIN regional_releases_to_platforms ON regional_releases_to_platforms.platform = platforms.id
-            WHERE regional_releases_to_platforms.release = regional_releases.id)
+                'generation', Platforms.generation))
+            FROM Platforms
+            JOIN RegionalReleases_Platforms ON RegionalReleases_Platforms.platform_id = Platforms.id
+            WHERE RegionalReleases_Platforms.release_id = RegionalReleases.id)
             SQL;
 
         $regions = <<<SQL
             (SELECT JSON_ARRAYAGG(JSON_OBJECT(
-                'id', regions.id,
-                'name', regions.name))
-            FROM regions
-            JOIN regional_releases_to_regions ON regional_releases_to_regions.region = regions.id
-            WHERE regional_releases_to_regions.release = regional_releases.id)
+                'id', Regions.id,
+                'name', Regions.name))
+            FROM Regions
+            JOIN RegionalReleases_Regions ON RegionalReleases_Regions.region_id = Regions.id
+            WHERE RegionalReleases_Regions.release_id = RegionalReleases.id)
             SQL;
 
         $type = <<<SQL
             (SELECT JSON_ARRAYAGG(JSON_OBJECT(
-                'id', release_types.id,
-                'name', release_types.name))
-            FROM release_types
-            WHERE release_types.id = regional_releases.type)
+                'id', ReleaseTypes.id,
+                'name', ReleaseTypes.name))
+            FROM ReleaseTypes
+            WHERE ReleaseTypes.id = RegionalReleases.type_id)
             SQL;
 
         return <<<SQL
             (SELECT  JSON_ARRAYAGG(JSON_OBJECT(
-                'id', regional_releases.id,
-                'date', regional_releases.date,
+                'id', RegionalReleases.id,
+                'date', RegionalReleases.date,
                 'platforms', $platforms,
                 'regions', $regions,
                 'type', $type))
-            FROM regional_releases
-            WHERE regional_releases.game = games.id)
+            FROM RegionalReleases
+            WHERE RegionalReleases.game_id = Games.id)
             AS regionalReleases
             SQL;
     }
@@ -344,31 +334,31 @@ class GameModel extends AbstractModel {
     {
         $artworks = <<<SQL
             (SELECT JSON_ARRAYAGG(JSON_OBJECT(
-                'id', artworks.id,
-                'url', artworks.url))
-            FROM artworks
-            JOIN games_to_artworks ON games_to_artworks.artwork = artworks.id
-            WHERE games_to_artworks.game = games.id)
+                'id', Artworks.id,
+                'url', Artworks.url))
+            FROM Artworks
+            JOIN Games_Artworks ON Games_Artworks.artwork_id = Artworks.id
+            WHERE Games_Artworks.game_id = Games.id)
             SQL;
 
         $screenshots = <<<SQL
             (SELECT JSON_ARRAYAGG(JSON_OBJECT(
-                'id', screenshots.id,
-                'url', screenshots.url))
-            FROM screenshots
-            JOIN games_to_screenshots ON games_to_screenshots.screenshot = screenshots.id
-            WHERE games_to_screenshots.game = games.id)
+                'id', Screenshots.id,
+                'url', Screenshots.url))
+            FROM Screenshots
+            JOIN Games_Screenshots ON Games_Screenshots.screenshot_id = Screenshots.id
+            WHERE Games_Screenshots.game_id = Games.id)
             SQL;
 
         $videos = <<<SQL
             (SELECT JSON_ARRAYAGG(JSON_OBJECT(
-                'id', videos.id,
-                'name', videos.name,
-                'thumbnail', videos.thumbnail,
-                'url', videos.url))
-            FROM videos
-            JOIN games_to_videos ON games_to_videos.video = videos.id
-            WHERE games_to_videos.game = games.id)
+                'id', Videos.id,
+                'name', Videos.name,
+                'thumbnail', Videos.thumbnail,
+                'url', Videos.url))
+            FROM Videos
+            JOIN Games_Videos ON Games_Videos.video_id = Videos.id
+            WHERE Games_Videos.game_id = Games.id)
             SQL;
 
         return <<<SQL
@@ -384,11 +374,11 @@ class GameModel extends AbstractModel {
     {
         return <<<SQL
             (SELECT JSON_ARRAYAGG(JSON_OBJECT(
-                'id', websites.id,
-                'url', websites.url))
-            FROM websites
-            JOIN games_to_websites ON games_to_websites.website = websites.id
-            WHERE games_to_websites.game = games.id)
+                'id', Websites.id,
+                'url', Websites.url))
+            FROM Websites
+            JOIN Games_Websites ON Games_Websites.website_id = Websites.id
+            WHERE Games_Websites.game_id = Games.id)
             AS websites
             SQL;
     }
@@ -397,13 +387,13 @@ class GameModel extends AbstractModel {
     {
         return <<<SQL
             (SELECT JSON_OBJECT(
-                'inputs', times_to_beat.inputs,
-                'minimum', times_to_beat.minimum,
-                'normal', times_to_beat.normal,
-                'completionist', times_to_beat.completionist,
-                'speedrun', times_to_beat.speedrun)
-            FROM times_to_beat
-            WHERE times_to_beat.game = games.id)
+                'inputs', TimesToBeat.inputs,
+                'minimum', TimesToBeat.minimum,
+                'normal', TimesToBeat.normal,
+                'completionist', TimesToBeat.completionist,
+                'speedrun', TimesToBeat.speedrun)
+            FROM TimesToBeat
+            WHERE TimesToBeat.game_id = Games.id)
             AS timesToBeat
             SQL;
     }
@@ -419,9 +409,9 @@ class GameModel extends AbstractModel {
             "summary" => $game->getSummary(),
             "premise" => $game->getPremise(),
             "createdAt" => time(),
-            "updatedAt" => 0,
+            "updatedAt" => time(),
         ];
-        $this->insertInto('games', $data);
+        $this->insertInto('Games', $data);
     }
 
     function formatGameFromIGDB($raw): GameEntity
@@ -433,12 +423,16 @@ class GameModel extends AbstractModel {
         $game->setOfficialReleaseDate($raw['first_release_date']);
         $game->setSummary($raw['summary']);
         $game->setPremise($raw['storyline']);
+        $game->setCreatedAt(time());
+        $game->setUpdatedAt(time());
 
         $this->addGame($game);
 
         $game->setCovers($this->formatAndInsertCovers($game->getID(), $raw));
         $game->setGenres($this->formatAndInsertGenres($game->getID(), $raw['genres']));
         $game->setPlatforms($this->formatAndInsertPlatforms($game->getID(), $raw['platforms']));
+        $game->setModes($this->formatAndInsertModes($game->getID(), $raw['game_modes']));
+        $game->setPerspectives($this->formatAndInsertPerspectives($game->getID(), $raw['game_modes']));
 
         return $game;
     }
@@ -480,9 +474,9 @@ class GameModel extends AbstractModel {
             }
         }
 
-        $covers['game'] = $gameID;
-        $covers = $this->insertInto('covers', $covers, true);
-        unset($covers['game']);
+        $covers['game_id'] = $gameID;
+        $covers = $this->insertInto('Covers', $covers, true);
+        unset($covers['game_id']);
         return json_encode($covers);
     }
 
@@ -497,16 +491,16 @@ class GameModel extends AbstractModel {
                 'name' => $rawGenre['name'],
             ];
             $relations[] = [
-                'game' => $gameID,
-                'genre' => $rawGenre['id']
+                'game_id' => $gameID,
+                'genre_id' => $rawGenre['id']
             ];
         }
 
         foreach ($genres as &$genre) {
-            $genre = $this->insertInto('genres', $genre, true);
+            $genre = $this->insertInto('Genres', $genre, true);
         }
         foreach ($relations as &$relation) {
-            $relation = $this->insertInto('games_to_genres', $relation, true);
+            $relation = $this->insertInto('Games_Genres', $relation, true);
         }
 
         return json_encode($genres);
@@ -530,21 +524,21 @@ class GameModel extends AbstractModel {
             $platforms[] = [
                 'id' => $rawPlatform['id'],
                 'name' => $rawPlatform['name'],
-                'family' => isset($rawPlatform['platform_family']) ? $rawPlatform['platform_family']['id'] : null,
+                'family_id' => isset($rawPlatform['platform_family']) ? $rawPlatform['platform_family']['id'] : null,
                 'generation' => $rawPlatform['generation'] ?? 0,
             ];
 
             $relations[] = [
-                'game' => $gameID,
-                'platform' => $rawPlatform['id'],
+                'game_id' => $gameID,
+                'platform_id' => $rawPlatform['id'],
             ];
         }
 
         foreach ($families as &$family) {
-            $family = $this->insertInto('platform_families', $family, true);
+            $family = $this->insertInto('PlatformFamilies', $family, true);
         }
         foreach ($platforms as &$platform) {
-            $platform = $this->insertInto('platforms', $platform, true);
+            $platform = $this->insertInto('Platforms', $platform, true);
             if(isset($platform['family'])) {
                 $platform['family'] = array_find($families, function ($value) use ($platform) {
                     return $value['id'] == $platform['family'];
@@ -552,10 +546,64 @@ class GameModel extends AbstractModel {
             }
         }
         foreach ($relations as &$relation) {
-            $relation = $this->insertInto('games_to_platforms', $relation, true);
+            $relation = $this->insertInto('Games_Platforms', $relation, true);
         }
 
         return json_encode($platforms);
+    }
+
+    function formatAndInsertModes($gameID, $rawModes): string 
+    {
+        $modes = [];
+        $relations = [];
+
+        foreach ($rawModes as $rawMode) {
+            $modes[] = [
+                'id' => $rawMode['id'],
+                'name' => $rawMode['name'],
+            ];
+
+            $relations[] = [
+                'game_id' => $gameID,
+                'mode_id' => $rawMode['id'],
+            ];
+        }
+
+        foreach ($modes as &$mode) {
+            $mode = $this->insertInto('GameModes', $mode, true);
+        }
+        foreach ($relations as &$relation) {
+            $relation = $this->insertInto('Games_GameModes', $relation, true);
+        }
+
+        return json_encode($modes);
+    }
+
+    function formatAndInsertPerspectives($gameID, $raw): string 
+    {
+        $perspectives = [];
+        $relations = [];
+
+        foreach ($raw as $r) {
+            $perspectives[] = [
+                'id' => $r['id'],
+                'name' => $r['name'],
+            ];
+
+            $relations[] = [
+                'game_id' => $gameID,
+                'perspective_id' => $r['id'],
+            ];
+        }
+
+        foreach ($perspectives as &$p) {
+            $p = $this->insertInto('PlayerPerspectives', $p, true);
+        }
+        foreach ($relations as &$r) {
+            $r = $this->insertInto('Games_PlayerPerspectives', $r, true);
+        }
+
+        return json_encode($perspectives);
     }
 
     #endregion

@@ -37,14 +37,14 @@ class UserModel extends AbstractModel
         $data = [
             "email" => $user->getEmail(),
             "username" => $user->getUsername(),
-            "title" => 6,
+            "title_id" => 6,
             "password" => $user->getPassword(),
             "createdAt" => $user->getCreatedAt(),
             "profilePicturePath" => $user->getProfilePicturePath(),
         ];
         $fields = implode(', ', array_keys($data));
         $placeholders = implode(', ', array_fill(0, count($data), '?'));
-        $sql = $this->prepareQuery("INSERT INTO users($fields) VALUES ($placeholders)");
+        $sql = $this->prepareQuery("INSERT INTO Users($fields) VALUES ($placeholders)");
         $sql->execute(array_values($data));
     }
 

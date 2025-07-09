@@ -14,12 +14,12 @@ class GameEntity extends AbstractEntity {
     private ?string $covers = NULL;
     private ?string $genres = NULL;
     private ?string $platforms = NULL;
-    private ?string $modes = NULL;
-    private ?string $perspectives = NULL;
+    private ?string $gameModes = NULL;
+    private ?string $playerPerspectives = NULL;
     private ?string $themes = NULL;
     private ?string $involvedCompanies = NULL;
     private ?string $engines = NULL;
-    private ?string $series = NULL;
+    private ?string $gameSeries = NULL;
     private ?string $franchises = NULL;
     private ?string $supportedLanguages = NULL;
     private ?string $ageRatings = NULL;
@@ -48,12 +48,12 @@ class GameEntity extends AbstractEntity {
             "covers" => $this->covers ? json_decode($this->covers) : null,
             "genres" => $this->genres ? json_decode($this->genres) : null,
             "platforms" => $this->platforms ? json_decode($this->platforms) : null,
-            "modes" => $this->modes ? json_decode($this->modes) : null,
-            "perspectives" => $this->perspectives ? json_decode($this->perspectives) : null,
+            "gameModes" => $this->gameModes ? json_decode($this->gameModes) : null,
+            "playerPerspectives" => $this->playerPerspectives ? json_decode($this->playerPerspectives) : null,
             "themes" => $this->themes ? json_decode($this->themes) : null,
             "involvedCompanies" => $this->involvedCompanies ? json_decode($this->involvedCompanies) : null,
             "engines" => $this->engines ? json_decode($this->engines) : null,
-            "series" => $this->series ? json_decode($this->series) : null,
+            "gameSeries" => $this->gameSeries ? json_decode($this->gameSeries) : null,
             "franchises" => $this->franchises ? json_decode($this->franchises) : null,
             "supportedLanguages" => $this->supportedLanguages ? json_decode($this->supportedLanguages) : null,
             "ageRatings" => $this->ageRatings ? json_decode($this->ageRatings) : null,
@@ -102,6 +102,14 @@ class GameEntity extends AbstractEntity {
     // Get/Set platforms
     public function getPlatforms(): string { return $this->platforms; }
     public function setPlatforms(string $newPlatforms) { $this->platforms = $newPlatforms; }
+    
+    // Get/Set modes
+    public function getModes(): string { return $this->gameModes; }
+    public function setModes(string $newModes) { $this->gameModes = $newModes; }
+    
+    // Get/Set perspectives
+    public function getPerspectives(): string { return $this->playerPerspectives; }
+    public function setPerspectives(string $newPerspectives) { $this->playerPerspectives = $newPerspectives; }
     
     // Get/Set createdAt
     public function getCreatedAt(): int { return $this->createdAt; }
