@@ -18,7 +18,7 @@ class IGDB {
         $tokenDuration = $tokenData['expiresIn'] ?? 0;
     
         if (!$token || ($now - $tokenCreation) > $tokenDuration) {
-            debug_to_console("Token expired. Refreshing...");
+            echo("Token expired. Refreshing...\n");
             $url = "https://id.twitch.tv/oauth2/token?client_id=$clientID&client_secret=$clientSecret&grant_type=client_credentials";
     
             // Set curl
@@ -36,9 +36,10 @@ class IGDB {
     
                 // Save in DB
                 if ($tokenData) {
-                    $sql = $pdo->query("TRUNCATE TABLE vgdb_authentification");
+                    echo("Could not fulfill request. Retrying by forcing authentification...\n");
+                    $sql = $pdo->query("TRUNCATE TABLE _IgdbAuthentification");
                 } 
-                $sql = $pdo->query("INSERT INTO vgdb_authentification (token, createdAt, expiresIn) VALUES ('$token', '$tokenCreation', '$tokenDuration')");
+                $sql = $pdo->query("INSERT INTO _IgdbAuthentification (token, createdAt, expiresIn) VALUES ('$token', '$tokenCreation', '$tokenDuration')");
             } else {
                 error_log("Failed to get IGDB token: " . $response);
                 return null;
@@ -106,7 +107,7 @@ class IGDB {
         );
     }
 
-    public function requestSpeedrun($slug) {
+    public function requestSpeedrun($slug): float {
         $url = "https://www.speedrun.com/api/v1/games?name=" . urlencode(str_replace('-', '_', $slug));
         $response = file_get_contents($url);
         $speedrunData = json_decode($response, true);
@@ -128,6 +129,6 @@ class IGDB {
             }
         }
 
-        return null;
+        return 0;
     }
 }

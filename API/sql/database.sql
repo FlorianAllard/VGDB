@@ -22,9 +22,8 @@ CREATE TABLE `AgeRatings` (
   `game_id` int(11) NOT NULL,
   `system_id` int(11) NOT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `rating_game_id_system_id` (`rating`,`game_id`,`system_id`),
+  UNIQUE KEY `game_id_system_id` (`game_id`,`system_id`),
   KEY `rating` (`rating`),
-  KEY `game_id` (`game_id`),
   KEY `system_id` (`system_id`),
   CONSTRAINT `AgeRatings_ibfk_1` FOREIGN KEY (`game_id`) REFERENCES `Games` (`id`) ON DELETE CASCADE,
   CONSTRAINT `AgeRatings_ibfk_2` FOREIGN KEY (`system_id`) REFERENCES `AgeRatingSystems` (`id`) ON DELETE CASCADE
@@ -36,8 +35,7 @@ CREATE TABLE `AgeRatingSystems` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
   `country` varchar(255) NOT NULL,
-  PRIMARY KEY (`id`),
-  CONSTRAINT `AgeRatingSystems_ibfk_1` FOREIGN KEY (`id`) REFERENCES `AgeRatings` (`id`)
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 
@@ -153,15 +151,15 @@ CREATE TABLE `Games_Developers` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 
-DROP TABLE IF EXISTS `Games_Dubbing`;
-CREATE TABLE `Games_Dubbing` (
+DROP TABLE IF EXISTS `Games_Dubbings`;
+CREATE TABLE `Games_Dubbings` (
   `game_id` int(11) NOT NULL,
   `language_id` int(11) NOT NULL,
   UNIQUE KEY `game_id_language_id` (`game_id`,`language_id`),
   KEY `game_id` (`game_id`),
   KEY `language_id` (`language_id`),
-  CONSTRAINT `Games_Dubbing_ibfk_1` FOREIGN KEY (`game_id`) REFERENCES `Games` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `Games_Dubbing_ibfk_2` FOREIGN KEY (`language_id`) REFERENCES `Languages` (`id`) ON DELETE CASCADE
+  CONSTRAINT `Games_Dubbings_ibfk_1` FOREIGN KEY (`game_id`) REFERENCES `Games` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `Games_Dubbings_ibfk_2` FOREIGN KEY (`language_id`) REFERENCES `Languages` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 
@@ -347,33 +345,6 @@ CREATE TABLE `Languages` (
   UNIQUE KEY `name` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-INSERT INTO `Languages` (`id`, `name`) VALUES
-(1,	'Arabic'),
-(2,	'Chinese (Simplified)'),
-(3,	'Chinese (Traditional)'),
-(4,	'Czech'),
-(5,	'Danish'),
-(6,	'Dutch'),
-(7,	'English'),
-(8,	'English (UK)'),
-(11,	'Finnish'),
-(12,	'French'),
-(27,	'German'),
-(14,	'Hungarian'),
-(15,	'Italian'),
-(16,	'Japanese'),
-(17,	'Korean'),
-(18,	'Norwegian'),
-(19,	'Polish'),
-(21,	'Portuguese (Brazil)'),
-(20,	'Portuguese (Portugal)'),
-(22,	'Russian'),
-(10,	'Spanish (Mexico)'),
-(9,	'Spanish (Spain)'),
-(23,	'Swedish'),
-(25,	'Thai'),
-(24,	'Turkish'),
-(28,	'Ukrainian');
 
 DROP TABLE IF EXISTS `PlatformFamilies`;
 CREATE TABLE `PlatformFamilies` (
@@ -561,5 +532,7 @@ CREATE TABLE `_IgdbAuthentification` (
   `expiresIn` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+INSERT INTO `_IgdbAuthentification` (`token`, `createdAt`, `expiresIn`) VALUES
+('79dcdsnrpj94pr2jhyyqy5tl3diqv5',	1752064488,	5517148);
 
--- 2025-07-09 09:00:02 UTC
+-- 2025-07-09 12:44:33 UTC

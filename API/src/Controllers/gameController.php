@@ -27,13 +27,16 @@ class GameController extends AbstractController implements CRUDInterface
 
     public function read($get)
     {
+        $timer = time();
+        $comment = "";
+
         $foundData = $this->database->getGames($get);
         $data = [];
 
         // If specific games are requested, find those who were not found
         $ids = explode(",", $get['id']);
         if (count($ids) > 0) {
-            $foundIds = array_column($data, 'id');
+            $foundIds = array_column($foundData, 'id');
             $notFoundIds = array_diff($ids, $foundIds);
 
             // If game has not been updated for a time, add to missing list
@@ -42,23 +45,31 @@ class GameController extends AbstractController implements CRUDInterface
                 if($game['updatedAt'] < $updateDelay) {
                     $notFoundIds[] = $game['id'];
                 } else {
-                    $foundData[] = $game;
+                    $data[] = $game;
                 }
             }
-
+            
             // Request missing games from IGDB, format and add to database
             if (count($notFoundIds) > 0) {
                 $igdb = new IGDB();
                 $rawGames = $igdb->requestGames($notFoundIds);
+                $timesToBeat = $igdb->requestTimesToBeat($notFoundIds);
                 foreach ($rawGames as $raw) {
-                    $entity = $this->database->formatGameFromIGDB($raw);
+                    $ttb = array_find($timesToBeat, function($value) use ($raw) {
+                        return $value['game_id'] == $raw['id'];
+                    });
+                    $entity = $this->database->formatGameFromIGDB($raw, $ttb);
                     $this->database->addGame($entity);
-                    $data[] = $entity->encode();
                 }
+
+                $string = implode(", ", $notFoundIds);
+                $data = array_merge($data, $this->database->getGames(['id' => $string]));
+                $comment = " ($string had to be requested from IGDB)";
             }
         }
-
-        echo json_encode(['status' => 200, 'data' => $data]);
+        
+        $timeString = "Completed in " . round((microtime(true) - $timer), 3) . " seconds$comment";
+        echo json_encode(['status' => 200, 'time' => $timeString, 'data' => $data]);
     }
 
     public function update() {}

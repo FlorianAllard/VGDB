@@ -4,7 +4,7 @@ namespace Models;
 
 use Abstract\AbstractModel;
 use Entities\GameEntity;
-use Exception;
+use IGDB;
 
 class GameModel extends AbstractModel {
     protected string $linkedClass = GameEntity::class;
@@ -408,38 +408,85 @@ class GameModel extends AbstractModel {
             "officialReleaseDate" => $game->getOfficialReleaseDate(),
             "summary" => $game->getSummary(),
             "premise" => $game->getPremise(),
-            "createdAt" => time(),
-            "updatedAt" => time(),
+            "createdAt" => $game->getCreatedAt(),
+            "updatedAt" => $game->getUpdatedAt(),
         ];
         $this->insertInto('Games', $data);
     }
 
-    function formatGameFromIGDB($raw): GameEntity
+    function formatGameFromIGDB($raw, $timesToBeat): GameEntity
     {
         $game = new GameEntity;
 
         $game->setID($raw['id']);
         $game->setName($raw['name']);
-        $game->setOfficialReleaseDate($raw['first_release_date']);
-        $game->setSummary($raw['summary']);
-        $game->setPremise($raw['storyline']);
+        $game->setOfficialReleaseDate(isset($raw['first_release_date']) ? $raw['first_release_date'] : 0);
+        $game->setSummary(isset($raw['summary']) ? $raw['summary'] : "");
+        $game->setPremise(isset($raw['storyline']) ? $raw['storyline'] : "");
         $game->setCreatedAt(time());
         $game->setUpdatedAt(time());
 
         $this->addGame($game);
 
-        $game->setCovers($this->formatAndInsertCovers($game->getID(), $raw));
-        $game->setGenres($this->formatAndInsertGenres($game->getID(), $raw['genres']));
-        $game->setPlatforms($this->formatAndInsertPlatforms($game->getID(), $raw['platforms']));
-        $game->setModes($this->formatAndInsertModes($game->getID(), $raw['game_modes']));
-        $game->setPerspectives($this->formatAndInsertPerspectives($game->getID(), $raw['game_modes']));
-
+        $this->formatAndInsertCovers($game->getID(), $raw);
+        if (isset($raw['genres'])) {
+            $this->formatAndInsertGenres($game->getID(), $raw['genres']);
+        }
+        if (isset($raw['platforms'])) {
+            $this->formatAndInsertPlatforms($game->getID(), $raw['platforms']);
+        }
+        if (isset($raw['game_modes'])) {
+            $this->formatAndInsertModes($game->getID(), $raw['game_modes']);
+        }
+        if (isset($raw['player_perspectives'])) {
+            $this->formatAndInsertPerspectives($game->getID(), $raw['player_perspectives']);
+        }
+        if (isset($raw['themes'])) {
+            $this->formatAndInsertThemes($game->getID(), $raw['themes']);
+        }
+        if (isset($raw['involved_companies'])) {
+            $this->formatAndInsertCompanies($game->getID(), $raw['involved_companies']);
+        }
+        if (isset($raw['game_engines'])) {
+           $this->formatAndInsertEngines($game->getID(), $raw['game_engines']);
+        }
+        if (isset($raw['collections'])) {
+           $this->formatAndInsertSeries($game->getID(), $raw['collections']);
+        }
+        if (isset($raw['franchises'])) {
+            $this->formatAndInsertFranchises($game->getID(), $raw['franchises']);
+        }
+        if (isset($raw['language_supports'])) {
+            $this->formatAndInsertLanguages($game->getID(), $raw['language_supports']);
+        }
+        if (isset($raw['age_ratings'])) {
+            $this->formatAndInsertAgeRatings($game->getID(), $raw['age_ratings']);
+        }
+        if (isset($raw['release_dates'])) {
+            $this->formatAndInsertReleases($game->getID(), $raw['release_dates']);
+        }
+        if (isset($raw['release_dates'])) {
+            $this->formatAndInsertReleases($game->getID(), $raw['release_dates']);
+        }
+        $rawArtworks = isset($raw['artworks']) ? $raw['artworks'] : [];
+        $rawScreenshots = isset($raw['screenshots']) ? $raw['screenshots'] : [];
+        $rawVideos = isset($raw['videos']) ? $raw['videos'] : [];
+        if (!empty($rawArtworks) || !empty($rawScreenshots) || !empty($rawVideos)) {
+            $this->formatAndInsertMedia($game->getID(), $rawArtworks, $rawScreenshots, $rawVideos);
+        }
+        if (isset($raw['websites'])) {
+            $this->formatAndInsertWebsites($game->getID(), $raw['websites']);
+        }
+        if ($timesToBeat) {
+            $this->formatAndInsertTimesToBeat($game->getID(), $raw['slug'], $timesToBeat);
+        }
+        
         return $game;
     }
 
     #region FORMATTING
 
-    function formatAndInsertCovers($gameID, $raw): string
+    function formatAndInsertCovers($gameID, $raw): void
     {
         // Default to IGDB cover images if available
         $covers = [
@@ -476,11 +523,9 @@ class GameModel extends AbstractModel {
 
         $covers['game_id'] = $gameID;
         $covers = $this->insertInto('Covers', $covers, true);
-        unset($covers['game_id']);
-        return json_encode($covers);
     }
 
-    function formatAndInsertGenres($gameID, $rawGenres): string
+    function formatAndInsertGenres($gameID, $rawGenres): void
     {
         $genres = [];
         $relations = [];
@@ -502,11 +547,9 @@ class GameModel extends AbstractModel {
         foreach ($relations as &$relation) {
             $relation = $this->insertInto('Games_Genres', $relation, true);
         }
-
-        return json_encode($genres);
     }
 
-    function formatAndInsertPlatforms($gameID, $rawPlatforms): string
+    function formatAndInsertPlatforms($gameID, $rawPlatforms): void
     {
         $platforms = [];
         $families = [];
@@ -539,20 +582,13 @@ class GameModel extends AbstractModel {
         }
         foreach ($platforms as &$platform) {
             $platform = $this->insertInto('Platforms', $platform, true);
-            if(isset($platform['family'])) {
-                $platform['family'] = array_find($families, function ($value) use ($platform) {
-                    return $value['id'] == $platform['family'];
-                });
-            }
         }
         foreach ($relations as &$relation) {
             $relation = $this->insertInto('Games_Platforms', $relation, true);
         }
-
-        return json_encode($platforms);
     }
 
-    function formatAndInsertModes($gameID, $rawModes): string 
+    function formatAndInsertModes($gameID, $rawModes): void 
     {
         $modes = [];
         $relations = [];
@@ -575,11 +611,9 @@ class GameModel extends AbstractModel {
         foreach ($relations as &$relation) {
             $relation = $this->insertInto('Games_GameModes', $relation, true);
         }
-
-        return json_encode($modes);
     }
 
-    function formatAndInsertPerspectives($gameID, $raw): string 
+    function formatAndInsertPerspectives($gameID, $raw): void 
     {
         $perspectives = [];
         $relations = [];
@@ -602,8 +636,490 @@ class GameModel extends AbstractModel {
         foreach ($relations as &$r) {
             $r = $this->insertInto('Games_PlayerPerspectives', $r, true);
         }
+    }
 
-        return json_encode($perspectives);
+    function formatAndInsertThemes($gameID, $raw): void 
+    {
+        $themes = [];
+        $relations = [];
+
+        foreach ($raw as $r) {
+            $themes[] = [
+                'id' => $r['id'],
+                'name' => $r['name'],
+            ];
+
+            $relations[] = [
+                'game_id' => $gameID,
+                'theme_id' => $r['id'],
+            ];
+        }
+
+        foreach ($themes as &$p) {
+            $p = $this->insertInto('Themes', $p, true);
+        }
+        foreach ($relations as &$r) {
+            $r = $this->insertInto('Games_Themes', $r, true);
+        }
+    }
+
+    function formatAndInsertCompanies($gameID, $raw): void
+    {
+        $developers = [];
+        $developerRelations = [];
+        $publishers = [];
+        $publisherRelations = [];
+
+        foreach ($raw as $r) {
+            if($r['developer'] || $r['supporting'] ||  $r['porting'])
+            {
+                $developers[] = [
+                    'id' => $r['company']['id'],
+                    'name' => $r['company']['name'],
+                ];
+
+                $developerRelations[] = [
+                    'game_id' => $gameID,
+                    'company_id' => $r['company']['id'],
+                ];
+            } else if ($r['publisher'])
+            {
+                $publishers[] = [
+                    'id' => $r['company']['id'],
+                    'name' => $r['company']['name'],
+                ];
+
+                $publisherRelations[] = [
+                    'game_id' => $gameID,
+                    'company_id' => $r['company']['id'],
+                ];
+            }
+        }
+
+        foreach ($developers as &$d) {
+            $d = $this->insertInto('Companies', $d, true);
+        }
+        foreach ($publishers as &$p) {
+            $p = $this->insertInto('Companies', $p, true);
+        }
+        foreach ($developerRelations as &$r) {
+            $r = $this->insertInto('Games_Developers', $r, true);
+        }
+        foreach ($publisherRelations as &$r) {
+            $r = $this->insertInto('Games_Publishers', $r, true);
+        }
+    }
+
+    function formatAndInsertEngines($gameID, $raw): void
+    {
+        $engines = [];
+        $relations = [];
+
+        foreach ($raw as $r) {
+            $engines[] = [
+                'id' => $r['id'],
+                'name' => $r['name'],
+            ];
+
+            $relations[] = [
+                'game_id' => $gameID,
+                'engine_id' => $r['id'],
+            ];
+        }
+
+        foreach ($engines as &$e) {
+            $e = $this->insertInto('Engines', $e, true);
+        }
+        foreach ($relations as &$r) {
+            $r = $this->insertInto('Games_Engines', $r, true);
+        }
+    }
+
+    function formatAndInsertSeries($gameID, $raw): void
+    {
+        $series = [];
+        $relations = [];
+
+        foreach ($raw as $r) {
+            $series[] = [
+                'id' => $r['id'],
+                'name' => $r['name'],
+            ];
+
+            $relations[] = [
+                'game_id' => $gameID,
+                'series_id' => $r['id'],
+            ];
+        }
+
+        foreach ($series as &$s) {
+            $s = $this->insertInto('GameSeries', $s, true);
+        }
+        foreach ($relations as &$r) {
+            $r = $this->insertInto('Games_GameSeries', $r, true);
+        }
+    }
+
+    function formatAndInsertFranchises($gameID, $raw): void
+    {
+        $franchises = [];
+        $relations = [];
+
+        foreach ($raw as $r) {
+            $franchises[] = [
+                'id' => $r['id'],
+                'name' => $r['name'],
+            ];
+
+            $relations[] = [
+                'game_id' => $gameID,
+                'franchise_id' => $r['id'],
+            ];
+        }
+
+        foreach ($franchises as &$f) {
+            $f = $this->insertInto('Franchises', $f, true);
+        }
+        foreach ($relations as &$r) {
+            $r = $this->insertInto('Games_Franchises', $r, true);
+        }
+    }
+
+    function formatAndInsertLanguages($gameID, $raw): void
+    {
+        $dubbings = [];
+        $dubbingsRelations = [];
+
+        $subtitles = [];
+        $subtitlesRelations = [];
+
+        $translations = [];
+        $translationsRelations = [];
+
+        foreach ($raw as $r) {
+            $l = [
+                'id' => $r['language']['id'],
+                'name' => $r['language']['name'],
+            ];
+            $rl = [
+                'game_id' => $gameID,
+                'language_id' => $r['language']['id'],
+            ];
+
+            switch ($r['language_support_type']['name']) {
+                case 'Audio':
+                    $dubbings[] =$l;
+                    $dubbingsRelations[] = $rl;
+                    break;
+
+                case 'Subtitles':
+                    $subtitles[] = $l;
+                    $subtitlesRelations[] = $rl;
+                    break;
+
+                case 'Interface':
+                    $translations[] = $l;
+                    $translationsRelations[] = $rl;
+                    break;
+            }
+        }
+
+        $languages = array_map('unserialize', array_unique(array_map('serialize', array_merge($dubbings, $subtitles, $translations))));
+        foreach ($languages as &$l) {
+            $l = $this->insertInto('Languages', $l, true);
+        }
+        foreach ($dubbingsRelations as &$d) {
+            $d = $this->insertInto('Games_Dubbings', $d, true);
+        }
+        foreach ($subtitlesRelations as &$s) {
+            $s = $this->insertInto('Games_Subtitles', $s, true);
+        }
+        foreach ($translationsRelations as &$t) {
+            $t = $this->insertInto('Games_Translations', $t, true);
+        }
+    }
+
+    function formatAndInsertAgeRatings($gameID, $raw): void
+    {
+        $ageRatings = [];
+        $contents = [];
+        $systems = [];
+        $relations = [];
+
+        $countries = [
+            'ESRB' => "USA & Canada",
+            'PEGI' => "Europe",
+            'CERO' => "Japan",
+            'USK' => "Germany",
+            'GRAC' => "South Korea",
+            'CLASS_IND' => "Brazil",
+            'ACB' => "Australia",
+        ];
+
+        foreach ($raw as $r) {
+            $ageRatings[] = [
+                'id' => $r['id'],
+                'rating' => $r['rating'],
+                'game_id' => $gameID,
+                'system_id' => $r['organization']['id'],
+            ];
+
+            if(isset($r['rating_content_descriptions'])) {
+                foreach ($r['rating_content_descriptions'] as $rcd) {
+                    $c = [
+                        'id' => $rcd['id'],
+                        'description' => $rcd['description'],
+                    ];
+
+                    if (!in_array($c, $contents)) {
+                        $contents[] = $c;
+                    }
+
+                    $relations[] = [
+                        'rating_id' => $r['id'],
+                        'content_id' => $rcd['id'],
+                    ];
+                }
+            }
+
+            $systems[] = [
+                'id' => $r['organization']['id'],
+                'name' => $r['organization']['name'],
+                'country' => $countries[$r['organization']['name']],
+            ];
+        }
+        
+        foreach ($systems as &$system) {
+            $system = $this->insertInto('AgeRatingSystems', $system, true);
+        }
+        foreach ($contents as &$content) {
+            $content = $this->insertInto('AgeRatingContents', $content, true);
+        }
+        foreach ($ageRatings as &$ageRating) {
+            $ageRating = $this->insertInto('AgeRatings', $ageRating, true);
+        }
+        foreach ($relations as &$relation) {
+            $relation = $this->insertInto('AgeRatings_AgeRatingContents', $relation, true);
+        }
+    }
+
+    function formatAndInsertReleases($gameID, $raw): void
+    {
+        //Objects creation
+        $regionalReleases = [];
+        $types = [];
+
+        $regions = [];
+        $regionRelations = [];
+
+        $platforms = [];
+        $platformRelations = [];
+        $platformFamilies = [];
+
+        foreach ($raw as $rawRelease) {
+            $item = array_find($regionalReleases, function($value) use ($rawRelease) {
+                return $value['date'] == $rawRelease['date'];
+            });
+
+            if(!$item)
+            {
+                $item = [
+                    'id' => $rawRelease['id'],
+                    'game_id' => $gameID,
+                    'date' => $rawRelease['date'],
+                    'type_id' => isset($rawRelease['status']) ? $rawRelease['status']['id'] : 6,
+                ];
+                $regionalReleases[] = $item;
+
+                if(isset($rawRelease['status'])
+                && !in_array($rawRelease['status']['id'], array_column($types, 'id'))) {
+                    $types[] = [
+                        'id' => $rawRelease['status']['id'],
+                        'name' => $rawRelease['status']['name'],
+                    ];
+                }
+            }
+
+            if (!in_array($rawRelease['release_region']['id'], array_column($regions, 'id'))) {
+                $regions[] = [
+                    'id' => $rawRelease['release_region']['id'],
+                    'name' => ucwords($rawRelease['release_region']['region']),
+                ];
+            }
+            if (!in_array($item['id'], array_column($platformRelations, 'release_id'))
+            || !in_array($rawRelease['release_region']['id'], array_column($platformRelations, 'region_id'))
+            ) {
+                $regionRelations[] = [
+                    'release_id' => $item['id'],
+                    'region_id' => $rawRelease['release_region']['id'],
+                ];
+        }
+
+            if (!in_array($rawRelease['platform']['id'], array_column($platforms, 'id'))) {
+                $platforms[] = [
+                    'id' => $rawRelease['platform']['id'],
+                    'name' => $rawRelease['platform']['name'],
+                    'family_id' => isset($rawRelease['platform']['platform_family']) ? $rawRelease['platform']['platform_family']['id'] : null,
+                    'generation' => $rawRelease['platform']['generation'] ?? 0,
+                ];
+            }
+            if (isset($rawRelease['platform']['platform_family'])
+            && !in_array($rawRelease['platform']['platform_family']['id'], array_column($platformFamilies, 'id'))) {
+                $platformFamilies[] = [
+                    'id' => $rawRelease['platform']['platform_family']['id'],
+                    'name' => $rawRelease['platform']['platform_family']['name'],
+                ];
+            }
+
+            if (!in_array($item['id'], array_column($platformRelations, 'release_id'))
+            || !in_array($rawRelease['platform']['id'], array_column($platformRelations, 'platform_id'))) {
+                $platformRelations[] = [
+                    'release_id' => $item['id'],
+                    'platform_id' => $rawRelease['platform']['id'],
+                ];
+            }
+        }
+
+        //Inserts
+        foreach ($types as &$type) {
+            $type = $this->insertInto('ReleaseTypes', $type, true);
+        }
+        foreach ($regionalReleases as &$regionalRelease) {
+            $regionalRelease = $this->insertInto('RegionalReleases', $regionalRelease, true);
+        }
+
+        foreach ($regions as &$region) {
+            $region = $this->insertInto('Regions', $region, true);
+        }
+        foreach ($regionRelations as &$regionRelation) {
+            $regionRelation = $this->insertInto('RegionalReleases_Regions', $regionRelation, true);
+        }
+
+        foreach ($platformFamilies as &$platformFamily) {
+            $platformFamily = $this->insertInto('PlatformFamilies', $platformFamily, true);
+        }
+        foreach ($platforms as &$platform) {
+            $platform = $this->insertInto('Platforms', $platform, true);
+        }
+        foreach ($platformRelations as &$platformRelation) {
+            $platformRelation = $this->insertInto('RegionalReleases_Platforms', $platformRelation, true);
+        }
+    }
+
+    function formatAndInsertMedia($gameID, $rawArtworks, $rawScreenshots, $rawVideos): void
+    {
+        //Objects creation
+        $artworks = [];
+        $artworkRelations = [];
+
+        $screenshots = [];
+        $screenshotRelations = [];
+
+        $videos = [];
+        $videoRelations = [];
+
+        foreach ($rawArtworks as $rawArtwork) {
+            $artworks[] = [
+                'id' => $rawArtwork['id'],
+                'url' => 'https://images.igdb.com/igdb/image/upload/t_1080p/' . $rawArtwork['image_id'] . '.webp',
+            ];
+            $artworkRelations[] = [
+                'game_id' => $gameID,
+                'artwork_id' => $rawArtwork['id'],
+            ];
+        }
+
+        foreach ($rawScreenshots as $rawScreenshot) {
+            $screenshots[] = [
+                'id' => $rawScreenshot['id'],
+                'url' => 'https://images.igdb.com/igdb/image/upload/t_1080p/' . $rawScreenshot['image_id'] . '.webp',
+            ];
+            $screenshotRelations[] = [
+                'game_id' => $gameID,
+                'screenshot_id' => $rawScreenshot['id'],
+            ];
+        }
+
+        foreach ($rawVideos as $rawVideo) {
+            $videos[] = [
+                'id' => $rawVideo['id'],
+                'name' => $rawVideo['name'],
+                'thumbnail' => "https://img.youtube.com/vi/" . $rawVideo['video_id'] . "/0.jpg",
+                'url' => 'https://www.youtube.com/embed/' . $rawVideo['video_id'],
+            ];
+            $videoRelations[] = [
+                'game_id' => $gameID,
+                'video_id' => $rawVideo['id'],
+            ];
+        }
+
+
+        //Inserts
+        foreach ($artworks as $artwork) {
+            $this->insertInto('Artworks', $artwork, true);
+        }
+        foreach ($artworkRelations as $artworkRelation) {
+            $this->insertInto('Games_Artworks', $artworkRelation, true);
+        }
+
+        foreach ($screenshots as $screenshot) {
+            $this->insertInto('Screenshots', $screenshot, true);
+        }
+        foreach ($screenshotRelations as $screenshotRelation) {
+            $this->insertInto('Games_Screenshots', $screenshotRelation, true);
+        }
+
+        foreach ($videos as $video) {
+            $this->insertInto('Videos', $video, true);
+        }
+        foreach ($videoRelations as $videoRelation) {
+            $this->insertInto('Games_Videos', $videoRelation, true);
+        }
+    }
+
+    function formatAndInsertWebsites($gameID, $rawWebsites): void
+    {
+        //Objects creation
+        $websites = [];
+        $websiteRelations = [];
+
+        foreach ($rawWebsites as $rawWebsite) {
+            $websites[] = [
+                'id' => $rawWebsite['id'],
+                'url' => $rawWebsite['url'],
+            ];
+            $websiteRelations[] = [
+                'game_id' => $gameID,
+                'website_id' => $rawWebsite['id'],
+            ];
+        }
+
+
+        //Inserts
+        foreach ($websites as $website) {
+            $this->insertInto('Websites', $website, true);
+        }
+        foreach ($websiteRelations as $websiteRelation) {
+            $this->insertInto('Games_Websites', $websiteRelation, true);
+        }
+    }
+
+    function formatAndInsertTimesToBeat($gameID, $gameSlug, $rawTimes)
+    {
+        // Object creation
+        $igdb = new IGDB();
+        $timesToBeat = [
+            'id' => $rawTimes['id'],
+            'game_id' => $gameID,
+            'inputs' => $rawTimes['count'],
+            'minimum' => isset($rawTimes['hastily']) ? $rawTimes['hastily'] : 0,
+            'normal' => isset($rawTimes['normally']) ? $rawTimes['normally'] : 0,
+            'completionist' => isset($rawTimes['completely']) ? $rawTimes['completely'] : 0,
+            'speedrun' => $igdb->requestSpeedrun($gameSlug),
+        ];
+
+        // Inserts
+        $this->insertInto('TimesToBeat', $timesToBeat, true);
     }
 
     #endregion

@@ -36,7 +36,7 @@ abstract class AbstractModel {
     protected function formatGetStatements($get): array {
         $conditions = [];
         $parameters = [];
-        foreach ($_GET as $key => $value) {
+        foreach ($get as $key => $value) {
             if ($key === 'limit') continue;
             if ($key === 'offset') continue;
 
