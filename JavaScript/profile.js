@@ -66,6 +66,11 @@ async function loadCategory(id) {
 
     card.querySelector('b').textContent = dt.game.name;
 
+    if (dt.game.covers) {
+      const cover = card.querySelector(".cover");
+      cover.style.backgroundImage = `url(${dt.game.covers.landscape})`;
+    }
+
     card.setAttribute("href", `/HTML/game/?id=${dt.game.id}`);
   });
 }

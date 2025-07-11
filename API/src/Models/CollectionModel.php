@@ -70,11 +70,23 @@ class CollectionModel extends AbstractModel
     }
 
     function getGameSubquery()
-    {
+    {   
+        $covers = <<<SQL
+            (SELECT JSON_OBJECT(
+                'id', Covers.id,
+                'hero', Covers.hero,
+                'landscape', Covers.landscape,
+                'portrait', Covers.portrait,
+                'logo', Covers.logo)
+            FROM Covers
+            WHERE Covers.game_id = Games.id)
+            SQL;
+
         return <<<SQL
         (SELECT JSON_OBJECT(
                 'id', Games.id,
-                'name', Games.name
+                'name', Games.name,
+                'covers', $covers
             )
         FROM Games
         WHERE Games.id = Games_Users.game_id
