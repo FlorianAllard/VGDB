@@ -1130,9 +1130,9 @@ tbody.loading {
   border-radius: 0 0.25rem 0.25rem 0;
 }
 
-#finished > .content, #owned > .content, #wanted > .content {
+#favorites > .content, #completed > .content, #owned > .content, #wanted > .content {
   display: grid;
-  grid-template-columns: repeat(6, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 1rem;
   width: 100%;
   flex-wrap: nowrap;

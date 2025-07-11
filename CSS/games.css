@@ -1379,6 +1379,7 @@ table {
   display: flex;
   flex-direction: row;
   gap: 0;
+  align-items: center;
   width: 100%;
 }
 #main--top--collection input {
@@ -1405,13 +1406,13 @@ table {
   color: var(--surface-color);
   text-shadow: 0 0 0.5rem rgba(0, 0, 0, 0.25);
 }
-#main--top--collection input:checked[id$=favorites] + label {
+#main--top--collection input:checked[id$=favorite] + label {
   background-color: #F7B731;
   border-color: #FED330;
   color: #FED330;
   box-shadow: 0 2px 0 #FED330;
 }
-#main--top--collection input:checked[id$=finished] + label {
+#main--top--collection input:checked[id$=completed] + label {
   background-color: #20BF6B;
   border-color: #26DE81;
   color: #26DE81;
@@ -1434,6 +1435,10 @@ table {
 }
 #main--top--collection input:checked[id$=wanted] + label i {
   filter: brightness(125%);
+}
+#main--top--collection input:disabled + label {
+  opacity: 50%;
+  pointer-events: none;
 }
 
 #review-editor {

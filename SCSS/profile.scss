@@ -141,9 +141,9 @@
 }
 
 // Lists (Finished, Owned, Wanted)
-#finished, #owned, #wanted {
+#favorites, #completed, #owned, #wanted {
     > .content {
-        @include grid(6);
+        @include grid(4);
         width: 100%;
         flex-wrap: nowrap;
     }

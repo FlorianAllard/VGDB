@@ -4,6 +4,7 @@ namespace Models;
 
 use Abstract\AbstractModel;
 use Entities\UserEntity;
+use \PDO;
 
 class UserModel extends AbstractModel
 {
@@ -16,7 +17,14 @@ class UserModel extends AbstractModel
         $formatedGet = $this->formatGetStatements($get);
         $where = $formatedGet['where'];
         $parameters = $formatedGet['parameters'];
-        $columns = $this->getColumns();
+        $columns = implode(', ', [
+            'id',
+            'email',
+            'username',
+            'password',
+            'createdAt',
+            'profilePicturePath',
+        ]);
 
         $sql = $this->prepareQuery(sprintf(
             "SELECT $columns, %s FROM Users $where",
@@ -47,17 +55,6 @@ class UserModel extends AbstractModel
         $placeholders = implode(', ', array_fill(0, count($data), '?'));
         $sql = $this->prepareQuery("INSERT INTO Users($fields) VALUES ($placeholders)");
         $sql->execute(array_values($data));
-    }
-
-    function getColumns() {
-        return implode(', ', [
-            'id',
-            'email',
-            'username',
-            'password',
-            'createdAt',
-            'profilePicturePath',
-        ]);
     }
 
     function getTitleSubquery()

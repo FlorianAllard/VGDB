@@ -5,7 +5,6 @@ import { RatingStars } from "/Custom elements/Rating stars/rating-stars.js";
 import * as Utilities from "./utilities_module.js";
 import * as Requests from "./requests.js";
 import * as OpenCritic from "./APIs/opencritic_api.js";
-import * as Speedrun from "./APIs/speedrun_api.js";
 import * as IsThereAnyDeal from "./APIs/isthereanydeal_api.js";
 import * as BackEnd from "./APIs/backend.js";
 import * as Reviews from "./reviews_section.js";
@@ -14,9 +13,9 @@ import * as Reviews from "./reviews_section.js";
 let game;
 let rating;
 let reviews;
-let timesToBeat;
 let prices;
 let reviewEditor;
+let collectionRadios;
 
 // Main entry point
 Utilities.startLoading();
@@ -66,7 +65,7 @@ function fillPage() {
   fillLanguages();
   fillAgeRatings();
   fillReleases();
-  fillReviews();
+  // fillReviews();
   fillEditions();
   fillExpansions();
   fillDLCs();
@@ -83,7 +82,7 @@ function fillPage() {
     plot.remove();
   }
 
-  setCollections();
+  initCollection();
   createTableOfContents();
   createExternalLinks();
 
@@ -114,9 +113,9 @@ function fillTop() {
 
   const top = document.querySelector("#main--top");
   top.querySelector("h1").textContent = game.name;
-  top.querySelector("small").textContent = game.official_release_date < Date.now() / 1000 
-    ? `${Utilities.dateFromUnix(game.official_release_date)} (${Utilities.timeAgoFromUnix(game.official_release_date)})`
-    : `${Utilities.dateFromUnix(game.official_release_date)}`;
+  top.querySelector("small").textContent = game.officialReleaseDate < Date.now() / 1000 
+    ? `${Utilities.dateFromUnix(game.officialReleaseDate)} (${Utilities.timeAgoFromUnix(game.officialReleaseDate)})`
+    : `${Utilities.dateFromUnix(game.officialReleaseDate)}`;
   top.querySelector("p").textContent = game.summary;
 
   const cover = top.querySelector("img");
@@ -145,10 +144,10 @@ function fillAbout() {
   createAboutList("#main--about--game-modes", game.gameModes, "name");
   createAboutList("#main--about--player-perspectives", game.playerPerspectives, "name");
   createAboutList("#main--about--themes", game.themes, "name");
-  createAboutList("#main--about--main-developers", game.involvedCompanies.developers, "name");
+  createAboutList("#main--about--developers", game.involvedCompanies.developers, "name");
   createAboutList("#main--about--publishers", game.involvedCompanies.publishers, "name");
   createAboutList("#main--about--game-engines", game.engines, "name");
-  createAboutList("#main--about--collections", game.collections, "name");
+  createAboutList("#main--about--series", game.gameSeries, "name");
   createAboutList("#main--about--franchises", game.franchises, "name");
 }
 
@@ -192,7 +191,7 @@ function fillLanguages() {
   const section = document.querySelector("#main--localization--languages");
   if (game.supportedLanguages.dubbings || game.supportedLanguages.subtitles || game.supportedLanguages.translations) {
     let languages = [];
-    const max = Math.max(game.supportedLanguages.dubbings.length, game.supportedLanguages.subtitles.length, game.supportedLanguages.translations.length);
+    const max = Math.max(game.supportedLanguages.dubbings?.length, game.supportedLanguages.subtitles?.length, game.supportedLanguages.translations?.length);
     for (let i = 0; i < max; i++) {
       if(game.supportedLanguages.dubbings.length > i)
       {
@@ -314,20 +313,50 @@ function fillReleases() {
   });
 }
 
-async function setCollections(){
-  const collections = await BackEnd.getCollectionsIncludingGame(game.id);
-  collections.forEach(coll => {
-    const radio = document.querySelector(`#main--top--collection--${coll.name}`);
-    const label = document.querySelector(`[for="main--top--collection--${coll.name}"]`);
-    radio.checked = coll.includesGame;
+async function initCollection(){
+  const parent = document.querySelector("#main--top--collection");
+  collectionRadios = parent.querySelectorAll("input");
 
-    label.addEventListener("click", function (e) {
-      if (radio.checked) {
+  if (localStorage.getItem("logged_in")) {
+    parent.style.display = '';
+
+    const userData = JSON.parse(localStorage.getItem("user"));
+    const response = await Requests.getCollections([`user_id=${userData["id"]}`, `game_id=${game["id"]}`]);
+
+    for (let i = 0; i < collectionRadios.length; i++) {
+      const radio = collectionRadios[i];
+      radio.disabled = false;
+      radio.checked = response.data.length > 0
+        ? radio.id.endsWith(response.data[0].category.name.toLowerCase())
+        : false;
+
+      const label = parent.querySelector(`[for="${radio.id}"]`);
+      label.addEventListener("click", function (e) {
         e.preventDefault();
-        radio.checked = false;
-      }
-    });
-  });
+        setCollection(radio.checked ? -1 : i);
+      });
+    }
+  }
+}
+
+async function setCollection(category) {  
+  for (let i = 0; i < collectionRadios.length; i++) {
+    const radio = collectionRadios[i];
+    radio.disabled = true;
+  }
+
+  const userData = JSON.parse(localStorage.getItem("user"));
+  const response = await Requests.setCollections([
+    `user_id=${userData["id"]}`,
+    `game_id=${game["id"]}`,
+    `category_id=${category+1}`
+  ]);
+
+  for (let i = 0; i < collectionRadios.length; i++) {
+    const radio = collectionRadios[i];
+    radio.disabled = false;
+    radio.checked = category == i;
+  }
 }
 
 /**
@@ -392,7 +421,7 @@ function fillReviews() {
   let user = JSON.parse(localStorage.getItem("user"));
   Reviews.setupUserReviews(reception, [
     `game_id=${game.id}`,
-    `user_id!=${user.id}`]);
+    `user_id!=${user ? user.id : -1}`]);
   Reviews.setupCriticsReviews(reception);
 
   // const section = document.querySelector("#main--reception");

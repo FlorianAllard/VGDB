@@ -310,9 +310,9 @@ class GameModel extends AbstractModel {
             SQL;
 
         $type = <<<SQL
-            (SELECT JSON_ARRAYAGG(JSON_OBJECT(
+            (SELECT JSON_OBJECT(
                 'id', ReleaseTypes.id,
-                'name', ReleaseTypes.name))
+                'name', ReleaseTypes.name)
             FROM ReleaseTypes
             WHERE ReleaseTypes.id = RegionalReleases.type_id)
             SQL;
@@ -682,7 +682,8 @@ class GameModel extends AbstractModel {
                     'game_id' => $gameID,
                     'company_id' => $r['company']['id'],
                 ];
-            } else if ($r['publisher'])
+            } 
+            if ($r['publisher'])
             {
                 $publishers[] = [
                     'id' => $r['company']['id'],

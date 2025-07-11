@@ -407,6 +407,7 @@ table {
 
 #main--top--collection {
     @include flex(row, 0);
+    align-items: center;
     width: 100%;
 
     input {
@@ -435,13 +436,13 @@ table {
                 text-shadow: 0 0 0.5rem rgba($color: black, $alpha: 0.25);
             }
 
-            &[id$='favorites']+label {
+            &[id$='favorite']+label {
                 background-color: $warning-color;
                 border-color: $warning-alt-color;
                 color: $warning-alt-color;
                 box-shadow: 0 $outline-width 0 $warning-alt-color;
             }
-            &[id$='finished']+label {
+            &[id$='completed']+label {
                 background-color: $success-color;
                 border-color: $success-alt-color;
                 color: $success-alt-color;
@@ -465,6 +466,11 @@ table {
                         filter: brightness(125%);
                     }
             }
+        }
+
+        &:disabled+label {
+            opacity: 50%;
+            pointer-events: none;
         }
     }
 }
