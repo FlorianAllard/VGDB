@@ -164,7 +164,7 @@ class GameModel extends AbstractModel {
 
         return <<<SQL
             (SELECT JSON_OBJECT(
-                'mainDevelopers', $developers,
+                'developers', $developers,
                 'publishers', $publishers))
             AS involvedCompanies
             SQL;

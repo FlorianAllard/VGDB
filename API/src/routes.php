@@ -16,6 +16,9 @@ try {
             case "signup":
                 $class->create($_POST);
                 break;
+            case "login":
+                $class->login($_POST);
+                break;
         }
     });
 

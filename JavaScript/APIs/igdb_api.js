@@ -6,7 +6,7 @@ import * as Utilities from "../utilities_module.js";
 
 // Constants for IGDB API authentication
 const clientID = "wjrgwqzu6olj4dczprc3jx4kcvkcs4";
-const clientSecret = "2lr64wndvp5g2eqogk1sym4azconhc";
+const clientSecret = "kc3qi55za2doxq0ecswigtouuugq3k";
 const grantType = "client_credentials";
 const queryParameters = `?client_id=${clientID}&client_secret=${clientSecret}&grant_type=${grantType}`;
 

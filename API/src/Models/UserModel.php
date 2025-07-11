@@ -16,9 +16,10 @@ class UserModel extends AbstractModel
         $formatedGet = $this->formatGetStatements($get);
         $where = $formatedGet['where'];
         $parameters = $formatedGet['parameters'];
+        $columns = $this->getColumns();
 
         $sql = $this->prepareQuery(sprintf(
-            "SELECT *, %s FROM users $where",
+            "SELECT $columns, %s FROM Users $where",
             implode(",\n", $subqueries)
         ));
         $sql->execute($parameters);
@@ -48,15 +49,26 @@ class UserModel extends AbstractModel
         $sql->execute(array_values($data));
     }
 
+    function getColumns() {
+        return implode(', ', [
+            'id',
+            'email',
+            'username',
+            'password',
+            'createdAt',
+            'profilePicturePath',
+        ]);
+    }
+
     function getTitleSubquery()
     {
         return <<<SQL
                 (SELECT JSON_OBJECT(
-                        'id', user_titles.id,
-                        'name', user_titles.name
+                        'id', UserTitles.id,
+                        'name', UserTitles.name
                     )
-                FROM user_titles
-                WHERE user_titles.id = users.title
+                FROM UserTitles
+                WHERE UserTitles.id = Users.title_id
                 ) AS title
             SQL;
     }

@@ -14,7 +14,7 @@ import * as Reviews from "./reviews_section.js";
 let game;
 let rating;
 let reviews;
-let timeToBeat;
+let timesToBeat;
 let prices;
 let reviewEditor;
 
@@ -98,13 +98,13 @@ function fillPage() {
  */
 function fillTop() {
   const banner = document.querySelector("#banner");
-  if (game.cover.hero) {
+  if (game.covers.hero) {
     const bannerBackground = banner.querySelector("#banner--background");
-    bannerBackground.setAttribute("src", game.cover.hero);
+    bannerBackground.setAttribute("src", game.covers.hero);
 
     const logo = banner.querySelector("#banner--logo");
-      if (game.cover.logo) {
-        logo.setAttribute("src", game.cover.logo);
+      if (game.covers.logo) {
+        logo.setAttribute("src", game.covers.logo);
       } else {
         logo.remove();
       }
@@ -120,8 +120,8 @@ function fillTop() {
   top.querySelector("p").textContent = game.summary;
 
   const cover = top.querySelector("img");
-    if (game.cover.portrait) {
-      cover.setAttribute("src", game.cover.portrait);
+    if (game.covers.portrait) {
+      cover.setAttribute("src", game.covers.portrait);
     } else {
       cover.remove();
     }
@@ -142,12 +142,11 @@ function fillAbout() {
   orderPlatforms();
   createAboutList("#main--about--platforms", game.platforms, "name");
   createAboutList("#main--about--genres", game.genres, "name");
-  createAboutList("#main--about--game-modes", game.modes, "name");
-  createAboutList("#main--about--player-perspectives", game.perspectives, "name");
+  createAboutList("#main--about--game-modes", game.gameModes, "name");
+  createAboutList("#main--about--player-perspectives", game.playerPerspectives, "name");
   createAboutList("#main--about--themes", game.themes, "name");
-  createAboutList("#main--about--main-developers", game.involved_companies.main_developers, "name");
-  createAboutList("#main--about--supporting-developers", game.involved_companies.supporting_developers, "name");
-  createAboutList("#main--about--publishers", game.involved_companies.publishers, "name");
+  createAboutList("#main--about--main-developers", game.involvedCompanies.developers, "name");
+  createAboutList("#main--about--publishers", game.involvedCompanies.publishers, "name");
   createAboutList("#main--about--game-engines", game.engines, "name");
   createAboutList("#main--about--collections", game.collections, "name");
   createAboutList("#main--about--franchises", game.franchises, "name");
@@ -191,31 +190,31 @@ function orderPlatforms() {
  */
 function fillLanguages() {
   const section = document.querySelector("#main--localization--languages");
-  if (game.supported_languages.audio || game.supported_languages.subtitles || game.supported_languages.interface) {
+  if (game.supportedLanguages.dubbings || game.supportedLanguages.subtitles || game.supportedLanguages.translations) {
     let languages = [];
-    const max = Math.max(game.supported_languages.audio.length, game.supported_languages.subtitles.length, game.supported_languages.interface.length);
+    const max = Math.max(game.supportedLanguages.dubbings.length, game.supportedLanguages.subtitles.length, game.supportedLanguages.translations.length);
     for (let i = 0; i < max; i++) {
-      if(game.supported_languages.audio.length > i)
+      if(game.supportedLanguages.dubbings.length > i)
       {
-        let language = languages.find((lang) => lang.id == game.supported_languages.audio[i].id);
+        let language = languages.find((lang) => lang.id == game.supportedLanguages.dubbings[i].id);
         if (!language) {
-          language = game.supported_languages.audio[i];
+          language = game.supportedLanguages.dubbings[i];
           languages.push(language);
         }
         language.audio = true;
       }
-      if (game.supported_languages.subtitles.length > i) {
-        let language = languages.find((lang) => lang.id == game.supported_languages.subtitles[i].id);
+      if (game.supportedLanguages.subtitles.length > i) {
+        let language = languages.find((lang) => lang.id == game.supportedLanguages.subtitles[i].id);
         if (!language) {
-          language = game.supported_languages.subtitles[i];
+          language = game.supportedLanguages.subtitles[i];
           languages.push(language);
         }
         language.subtitles = true;
       }
-      if (game.supported_languages.interface.length > i) {
-        let language = languages.find((lang) => lang.id == game.supported_languages.interface[i].id);
+      if (game.supportedLanguages.translations.length > i) {
+        let language = languages.find((lang) => lang.id == game.supportedLanguages.translations[i].id);
         if (!language) {
-          language = game.supported_languages.interface[i];
+          language = game.supportedLanguages.translations[i];
           languages.push(language);
         }
         language.interface = true;
@@ -283,11 +282,11 @@ function fillAgeRatings() {
  */
 function fillReleases() {
   const parent = document.querySelector("#main--releases tbody");
-  game.regional_releases = game.regional_releases.sort((a,b) => a.date - b.date);
-  game.regional_releases.forEach((release) => {
+  game.regionalReleases = game.regionalReleases.sort((a,b) => a.date - b.date);
+  game.regionalReleases.forEach((release) => {
     const tr = document.createElement("tr");
 
-    if (release.date == game.official_release_date && game.regional_releases.length > 1) tr.style.fontWeight = 600;
+    if (release.date == game.official_release_date && game.regionalReleases.length > 1) tr.style.fontWeight = 600;
 
     const tdDate = document.createElement("td");
     tdDate.textContent = Utilities.dateFromUnix(release.date);
@@ -541,11 +540,11 @@ function fillDLCs() {
 
 function fillTimeToBeat() {
   const section = document.querySelector("#main--time-to-beat");
-  if (game.timeToBeat.minimum || game.timeToBeat.normal || game.timeToBeat.completionist || game.timeToBeat.speedrun) {
-    section.querySelector("#main--time-to-beat--minimum").textContent = Utilities.durationFromUnix(game.timeToBeat.minimum, "hours");
-    section.querySelector("#main--time-to-beat--normal").textContent = Utilities.durationFromUnix(game.timeToBeat.normal, "hours");
-    section.querySelector("#main--time-to-beat--completionist").textContent = Utilities.durationFromUnix(game.timeToBeat.completionist, "hours");
-    section.querySelector("#main--time-to-beat--speedrun").textContent = Utilities.durationFromUnix(game.timeToBeat.speedrun/100);
+  if (game.timesToBeat.minimum || game.timesToBeat.normal || game.timesToBeat.completionist || game.timesToBeat.speedrun) {
+    section.querySelector("#main--time-to-beat--minimum").textContent = Utilities.durationFromUnix(game.timesToBeat.minimum, "hours");
+    section.querySelector("#main--time-to-beat--normal").textContent = Utilities.durationFromUnix(game.timesToBeat.normal, "hours");
+    section.querySelector("#main--time-to-beat--completionist").textContent = Utilities.durationFromUnix(game.timesToBeat.completionist, "hours");
+    section.querySelector("#main--time-to-beat--speedrun").textContent = Utilities.durationFromUnix(game.timesToBeat.speedrun);
   } else {
     section.remove();
   }
@@ -722,7 +721,7 @@ function setupReviewEditor() {
   let submit = reviewEditor.querySelector("input[type='submit']");
 
   reviewEditor.querySelector("h3").textContent = `Your review of ${game.name}`;
-  reviewEditor.querySelector(".cover").style.backgroundImage = `url(${game.cover.portrait})`;
+  reviewEditor.querySelector(".cover").style.backgroundImage = `url(${game.covers.portrait})`;
   let platformDropdown = reviewEditor.querySelector("select");
   game.platforms.forEach((platform) => {
     let option = document.createElement("option");

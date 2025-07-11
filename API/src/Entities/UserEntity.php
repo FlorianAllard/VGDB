@@ -16,7 +16,7 @@ class UserEntity extends AbstractEntity {
 
     private const PASSWORD_REGEX = "/^(?=.*[!?@#$%^&*+-])(?=.*[0-9])(?=.*[A-Z])(?=.*[a-z]).{6,}$/";
 
-    private function __construct() {
+    public function __construct() {
         $this->createdAt = time();
     }
 
@@ -96,7 +96,7 @@ class UserEntity extends AbstractEntity {
     public function setTitle(string $newTitle) { $this->title = $newTitle; }
 
     // Get/Set password
-    public function getPassword(): string { return $this->password; }
+    public function getPassword(): string { return $this->passwordPlain; }
     public function setPassword(string $newPassword) {
         $newPassword = trim($newPassword);
         $this->passwordPlain = $newPassword;

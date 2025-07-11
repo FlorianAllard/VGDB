@@ -51,7 +51,7 @@ async function tryLoggingIn(form) {
       const emailError = parent.querySelector("#login-email-error span");
       const passwordField = parent.querySelector("#login-password");
       const passwordError = parent.querySelector("#login-password-error span");
-
+      
       for (const [key, value] of Object.entries(result.data)) {
         switch (key) {
           case "email":
@@ -89,7 +89,7 @@ async function tryLoggingIn(form) {
       }
     } else {
         localStorage.setItem("logged_in", true);
-        localStorage.setItem("user", JSON.stringify(result.data));
+        localStorage.setItem("user", JSON.stringify(result.data[0]));
         location.reload();  
     }
 }
