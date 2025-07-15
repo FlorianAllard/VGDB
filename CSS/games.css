@@ -1406,34 +1406,34 @@ table {
   color: var(--surface-color);
   text-shadow: 0 0 0.5rem rgba(0, 0, 0, 0.25);
 }
-#main--top--collection input:checked[id$=favorite] + label {
+#main--top--collection input:checked[id$=completed] + label {
   background-color: #F7B731;
   border-color: #FED330;
   color: #FED330;
   box-shadow: 0 2px 0 #FED330;
 }
-#main--top--collection input:checked[id$=completed] + label {
+#main--top--collection input:checked[id$=played] + label {
   background-color: #20BF6B;
   border-color: #26DE81;
   color: #26DE81;
   box-shadow: 0 2px 0 #26DE81;
 }
-#main--top--collection input:checked[id$=owned] + label {
+#main--top--collection input:checked[id$=backlog] + label {
   background-color: var(--secondary-color);
   border-color: var(--secondary-alt-color);
   color: var(--secondary-alt-color);
   box-shadow: 0 2px 0 var(--secondary-alt-color);
 }
-#main--top--collection input:checked[id$=owned] + label i {
+#main--top--collection input:checked[id$=backlog] + label i {
   filter: brightness(115%);
 }
-#main--top--collection input:checked[id$=wanted] + label {
+#main--top--collection input:checked[id$=wishlist] + label {
   background-color: #EB3B5A;
   border-color: #FC5C65;
   color: #FC5C65;
   box-shadow: 0 2px 0 #FC5C65;
 }
-#main--top--collection input:checked[id$=wanted] + label i {
+#main--top--collection input:checked[id$=wishlist] + label i {
   filter: brightness(125%);
 }
 #main--top--collection input:disabled + label {

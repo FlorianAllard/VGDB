@@ -21,33 +21,37 @@
                             <h3 class="loading">TITLE</h3>
                         </div>
                         <div class="profile-card--stats">
-                            <div class="profile-card--stats--finished">
+                            <div class="profile-card--stats--completed">
                                 <div class="profile-card--stats--icon">
                                     <i class="fa-solid fa-check"></i>
                                 </div>
                                 <h1 class="loading">999</h1>
-                                <my-tooltip>Finished</my-tooltip>
+                                <my-tooltip>Completed</my-tooltip>
                             </div>
-                            <div class="profile-card--stats--owned">
+                            <div class="profile-card--stats--played">
+                                <div class="profile-card--stats--icon">
+                                    <i class="fa-solid fa-check"></i>
+                                </div>
+                                <h1 class="loading">999</h1>
+                                <my-tooltip>Played</my-tooltip>
+                            </div>
+                            <div class="profile-card--stats--backlog">
                                 <div class="profile-card--stats--icon">
                                     <i class="fa-solid fa-lines-leaning"></i>
                                 </div>
                                 <h1 class="loading">999</h1>
-                                <my-tooltip>Owned</my-tooltip>
+                                <my-tooltip>Backlog</my-tooltip>
                             </div>
-                            <div class="profile-card--stats--wanted">
+                            <div class="profile-card--stats--wishlist">
                                 <div class="profile-card--stats--icon">
                                     <i class="fa-solid fa-heart"></i>
                                 </div>
                                 <h1 class="loading">999</h1>
-                                <my-tooltip>Wanted</my-tooltip>
+                                <my-tooltip>Wishlist</my-tooltip>
                             </div>
                         </div>
                     </div>
                     <div class="profile-card--stats--favorites">
-                        <div class="profile-card--stats--icon">
-                            <i class="fa-solid fa-star"></i>
-                        </div>
                         <img src="" alt="loading">
                         <img src="" alt="loading">
                         <img src="" alt="loading">
@@ -56,9 +60,9 @@
                 </div>
             </section>
 
-            <section id="favorites">
+            <section id="completed">
                 <div class="section-title">
-                    <h2>Favorites</h2>
+                    <h2>Completed</h2>
                 </div>
                 <div class="content">
                     <template data-loading-placeholders="4">
@@ -68,7 +72,6 @@
                             <div class="content">
                                 <b class="loading">-</b>
                                 <ul class="subtexts loading">
-                                    <li><small>-</small></li>
                                 </ul>
                             </div>
                         </a>
@@ -80,9 +83,9 @@
                 </div>
             </section>
 
-            <section id="completed">
+            <section id="played">
                 <div class="section-title">
-                    <h2>Completed</h2>
+                    <h2>Played</h2>
                 </div>
                 <div class="content">
                     <template data-loading-placeholders="8">
@@ -92,7 +95,6 @@
                             <div class="content">
                                 <b class="loading">-</b>
                                 <ul class="subtexts loading">
-                                    <li><small>-</small></li>
                                 </ul>
                             </div>
                         </a>
@@ -104,9 +106,9 @@
                 </div>
             </section>
 
-            <section id="owned">
+            <section id="backlog">
                 <div class="section-title">
-                    <h2>Owned</h2>
+                    <h2>Backlog</h2>
                 </div>
                 <div class="content">
                     <template data-loading-placeholders="8">
@@ -116,7 +118,6 @@
                             <div class="content">
                                 <b class="loading">-</b>
                                 <ul class="subtexts loading">
-                                    <li><small>-</small></li>
                                 </ul>
                             </div>
                         </a>
@@ -128,9 +129,9 @@
                 </div>
             </section>
 
-            <section id="wanted">
+            <section id="wishlist">
                 <div class="section-title">
-                    <h2>Wanted</h2>
+                    <h2>Wishlist</h2>
                 </div>
                 <div class="content">
                     <template data-loading-placeholders="8">
@@ -140,7 +141,6 @@
                             <div class="content">
                                 <b class="loading">-</b>
                                 <ul class="subtexts loading">
-                                    <li><small>-</small></li>
                                 </ul>
                             </div>
                         </a>

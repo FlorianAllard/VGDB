@@ -13,6 +13,7 @@ class UserEntity extends AbstractEntity {
     private ?string $passwordPlain = NULL;
     private int $createdAt;
     private string $profilePicturePath = "/Assets/Profiles/Default.webp";
+    private string $collection = "";
 
     private const PASSWORD_REGEX = "/^(?=.*[!?@#$%^&*+-])(?=.*[0-9])(?=.*[A-Z])(?=.*[a-z]).{6,}$/";
 
@@ -33,6 +34,7 @@ class UserEntity extends AbstractEntity {
             "password" => $this->password,
             "createdAt" => $this->createdAt,
             "profilePicturePath" => $this->profilePicturePath,
+            "collection" => json_decode($this->collection),
         ];
     }
 

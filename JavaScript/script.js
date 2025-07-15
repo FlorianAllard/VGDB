@@ -55,6 +55,7 @@ function setupProfile(header) {
       toggleProfileMenu(false);
     }
   });
+  profileMenu.querySelector("[href='/HTML/profile/']").setAttribute("href", `/HTML/profile/?id=${userData.id}`);
 
   function toggleProfileMenu(toggle) {
     if (toggle) {

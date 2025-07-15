@@ -12,7 +12,7 @@ class UserModel extends AbstractModel
 
     function getUsers($get): array|false
     {
-        $subqueries = [$this->getTitleSubquery()];
+        $subqueries = [$this->getTitleSubquery(), $this->getCollectionSubquery()];
 
         $formatedGet = $this->formatGetStatements($get);
         $where = $formatedGet['where'];
@@ -67,6 +67,76 @@ class UserModel extends AbstractModel
                 FROM UserTitles
                 WHERE UserTitles.id = Users.title_id
                 ) AS title
+            SQL;
+    }
+
+    function getCollectionSubquery()
+    {
+        $covers = <<<SQL
+        (SELECT JSON_OBJECT(
+            'id', Covers.id,
+            'hero', Covers.hero,
+            'landscape', Covers.landscape,
+            'portrait', Covers.portrait,
+            'logo', Covers.logo)
+        FROM Covers
+        WHERE Covers.game_id = Games.id)
+        SQL;
+
+        $favorites = <<<SQL
+            (SELECT JSON_ARRAYAGG(JSON_OBJECT(
+                'id', Games.id,
+                'name', Games.name,
+                'covers', $covers
+            ))
+            FROM Games
+            JOIN Favorites ON Favorites.user_id = Users.id
+            WHERE Favorites.game_id = Games.id
+            )
+            SQL;
+
+        $completed = <<<SQL
+            (SELECT COUNT(*)
+            FROM Games
+            JOIN Games_Users ON Games_Users.user_id = Users.id
+            WHERE Games_Users.game_id = Games.id AND Games_Users.category_id = 1
+            )
+            SQL;
+
+        $played = <<<SQL
+            (SELECT COUNT(*)
+            FROM Games
+            JOIN Games_Users ON Games_Users.user_id = Users.id
+            WHERE Games_Users.game_id = Games.id AND Games_Users.category_id = 2
+            )
+            SQL;
+
+        $backlog = <<<SQL
+            (SELECT COUNT(*)
+            FROM Games
+            JOIN Games_Users ON Games_Users.user_id = Users.id
+            WHERE Games_Users.game_id = Games.id AND Games_Users.category_id = 3
+            )
+            SQL;
+
+        $wishlist = <<<SQL
+            (SELECT COUNT(*)
+            FROM Games
+            JOIN Games_Users ON Games_Users.user_id = Users.id
+            WHERE Games_Users.game_id = Games.id AND Games_Users.category_id = 4
+            )
+            SQL;
+
+
+        return <<<SQL
+                (SELECT JSON_OBJECT(
+                        'favorites', $favorites,
+                        'completed', $completed,
+                        'played', $played,
+                        'backlog', $backlog,
+                        'wishlist', $wishlist
+                    )
+                ) AS collection
             SQL;
     }
 }

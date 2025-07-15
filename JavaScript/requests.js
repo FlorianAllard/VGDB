@@ -30,6 +30,25 @@ export async function signUp(params) {
   }
 }
 
+export async function getUsers(filters) {
+  try {
+    const params = getParams(filters);
+
+    const url = `http://localhost:3393/users${params.toString() ? `?${params.toString()}` : ""}`;
+    console.log(url);
+
+    const response = await fetch(url, {
+      method: "GET",
+    });
+    const json = await response.json();
+    console.log("getUsers response:", json);
+    return json;
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+}
+
 export async function getGames(filters) {
   try {
     const params = getParams(filters);

@@ -20,11 +20,19 @@ class CollectionModel extends AbstractModel
         $fields = implode(', ', array_keys($data));
         $placeholders = implode(', ', array_fill(0, count($data), '?'));
 
-        $sql = $this->prepareQuery(
-            "INSERT INTO Games_Users($fields) 
-            VALUES ($placeholders)
-            ON DUPLICATE KEY UPDATE `category_id`=VALUES(`category_id`)"
-        );
+        if($data['category_id'] == 0) {
+            $sql = $this->prepareQuery(
+                "INSERT INTO Favorites($fields) 
+                VALUES ($placeholders)"
+            );
+        } else {
+            $sql = $this->prepareQuery(
+                "INSERT INTO Games_Users($fields) 
+                VALUES ($placeholders)
+                ON DUPLICATE KEY UPDATE `category_id`=VALUES(`category_id`)"
+            );
+        }
+       
         $sql->execute((array_values($data)));
     }
 
@@ -37,6 +45,12 @@ class CollectionModel extends AbstractModel
 
         $sql = $this->prepareQuery(
             "DELETE FROM Games_Users 
+            WHERE $gameWhere $userWhere"
+        );
+        $sql->execute();
+
+        $sql = $this->prepareQuery(
+            "DELETE FROM Favorites 
             WHERE $gameWhere $userWhere"
         );
         $sql->execute();
@@ -82,11 +96,21 @@ class CollectionModel extends AbstractModel
             WHERE Covers.game_id = Games.id)
             SQL;
 
+        $genres = <<<SQL
+            (SELECT JSON_ARRAYAGG(JSON_OBJECT(
+                'id', Genres.id,
+                'name', Genres.name))
+            FROM Genres
+            JOIN Games_Genres ON Games_Genres.game_id = Games.id
+            WHERE Genres.id = Games_Genres.genre_id)
+            SQL;
+
         return <<<SQL
         (SELECT JSON_OBJECT(
                 'id', Games.id,
                 'name', Games.name,
-                'covers', $covers
+                'covers', $covers,
+                'genres', $genres
             )
         FROM Games
         WHERE Games.id = Games_Users.game_id

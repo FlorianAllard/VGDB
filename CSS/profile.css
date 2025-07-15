@@ -1041,7 +1041,7 @@ tbody.loading {
 }
 .profile-card--stats {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 1.5rem;
   justify-content: end;
 }
@@ -1072,39 +1072,39 @@ tbody.loading {
   text-shadow: 0 0 0.5rem rgba(0, 0, 0, 0.25);
 }
 
-.profile-card--stats--favorites {
+.profile-card--stats--completed {
   background-color: #FED330;
   border: 4px solid #F7B731;
   color: var(--surface-color);
 }
-.profile-card--stats--favorites .profile-card--stats--icon {
+.profile-card--stats--completed .profile-card--stats--icon {
   background-color: #F7B731;
   color: #FED330;
 }
-.profile-card--stats--finished {
+.profile-card--stats--played {
   background-color: #26DE81;
   border: 4px solid #20BF6B;
   color: var(--surface-color);
 }
-.profile-card--stats--finished .profile-card--stats--icon {
+.profile-card--stats--played .profile-card--stats--icon {
   background-color: #20BF6B;
   color: #26DE81;
 }
-.profile-card--stats--owned {
+.profile-card--stats--backlog {
   background-color: var(--secondary-alt-color);
   border: 4px solid var(--secondary-color);
   color: var(--surface-color);
 }
-.profile-card--stats--owned .profile-card--stats--icon {
+.profile-card--stats--backlog .profile-card--stats--icon {
   background-color: var(--secondary-color);
   color: var(--secondary-alt-color);
 }
-.profile-card--stats--wanted {
+.profile-card--stats--wishlist {
   background-color: #FC5C65;
   border: 4px solid #EB3B5A;
   color: var(--surface-color);
 }
-.profile-card--stats--wanted .profile-card--stats--icon {
+.profile-card--stats--wishlist .profile-card--stats--icon {
   background-color: #EB3B5A;
   color: #FC5C65;
 }
@@ -1130,7 +1130,7 @@ tbody.loading {
   border-radius: 0 0.25rem 0.25rem 0;
 }
 
-#favorites > .content, #completed > .content, #owned > .content, #wanted > .content {
+#completed > .content, #played > .content, #backlog > .content, #wishlist > .content {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 1rem;

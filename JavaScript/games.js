@@ -569,7 +569,7 @@ function fillDLCs() {
 
 function fillTimeToBeat() {
   const section = document.querySelector("#main--time-to-beat");
-  if (game.timesToBeat.minimum || game.timesToBeat.normal || game.timesToBeat.completionist || game.timesToBeat.speedrun) {
+  if (game.timesToBeat?.minimum || game.timesToBeat?.normal || game.timesToBeat?.completionist || game.timesToBeat?.speedrun) {
     section.querySelector("#main--time-to-beat--minimum").textContent = Utilities.durationFromUnix(game.timesToBeat.minimum, "hours");
     section.querySelector("#main--time-to-beat--normal").textContent = Utilities.durationFromUnix(game.timesToBeat.normal, "hours");
     section.querySelector("#main--time-to-beat--completionist").textContent = Utilities.durationFromUnix(game.timesToBeat.completionist, "hours");

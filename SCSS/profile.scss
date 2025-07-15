@@ -44,7 +44,7 @@
     }
 
     &--stats {
-        @include grid(3, 1.5rem);
+        @include grid(4, 1.5rem);
         justify-content: end;
 
         > div {
@@ -75,7 +75,7 @@
 
 // Stats Variants
 .profile-card--stats {
-    &--favorites {
+    &--completed {
         background-color: $warning-alt-color;
         border: $outline-width * 2 solid $warning-color;
         color: var(--surface-color);
@@ -85,7 +85,7 @@
             color: $warning-alt-color;
         }
     }
-    &--finished {
+    &--played {
         background-color: $success-alt-color;
         border: $outline-width * 2 solid $success-color;
         color: var(--surface-color);
@@ -95,7 +95,7 @@
             color: $success-alt-color;
         }
     }
-    &--owned {
+    &--backlog {
         background-color: var(--secondary-alt-color);
         border: $outline-width * 2 solid var(--secondary-color);
         color: var(--surface-color);
@@ -105,7 +105,7 @@
             color: var(--secondary-alt-color);
         }
     }
-    &--wanted {
+    &--wishlist {
         background-color: $error-alt-color;
         border: $outline-width * 2 solid $error-color;
         color: var(--surface-color);
@@ -141,7 +141,7 @@
 }
 
 // Lists (Finished, Owned, Wanted)
-#favorites, #completed, #owned, #wanted {
+#completed, #played, #backlog, #wishlist {
     > .content {
         @include grid(4);
         width: 100%;

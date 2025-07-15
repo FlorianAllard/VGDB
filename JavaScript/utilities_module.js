@@ -142,6 +142,9 @@ export function stopLoading(parent = document) {
   const loading = parent.querySelectorAll(".loading");
   loading.forEach((ld) => ld.classList.remove("loading"));
 
+  const alts = parent.querySelectorAll("[alt='loading']");
+  alts.forEach((lt) => (lt.alt = ""));
+
   const removeAfterLoading = parent.querySelectorAll(".remove-after-loading");
   removeAfterLoading.forEach((el) => el.remove());
 }

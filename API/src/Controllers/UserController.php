@@ -69,7 +69,7 @@ class UserController extends AbstractController implements CRUDInterface {
 
     public function read($get) {
         $data = $this->database->getUsers($get);
-        echo ['status' => 200, 'data' => $data];
+        echo json_encode(['status' => 200, 'data' => $data]);
     }
 
     public function update() {
