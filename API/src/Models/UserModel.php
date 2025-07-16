@@ -41,6 +41,23 @@ class UserModel extends AbstractModel
         return $data;
     }
 
+    function getTitles($get): array|false {
+        $formatedGet = $this->formatGetStatements($get);
+        $where = $formatedGet['where'];
+        $parameters = $formatedGet['parameters'];
+
+        $sql = $this->prepareQuery("SELECT * FROM UserTitles $where");
+        $sql->execute($parameters);
+
+        $data = [];
+        $entities = $sql->fetchAll(PDO::FETCH_ASSOC);
+        foreach ($entities as $entity) {
+            $data[] = $entity;
+        }
+
+        return $data;
+    }
+
     function addUser(UserEntity $user): void
     {
         $data = [
@@ -55,6 +72,21 @@ class UserModel extends AbstractModel
         $placeholders = implode(', ', array_fill(0, count($data), '?'));
         $sql = $this->prepareQuery("INSERT INTO Users($fields) VALUES ($placeholders)");
         $sql->execute(array_values($data));
+    }
+
+    function updateUser(array $post): void
+    {
+        $where = "id = " . $post['id'];
+        $fields = [];
+        foreach ($post as $key => $value) {
+            if($key != 'id') {
+                $fields[] = "$key = $value";
+            }
+        }
+        $fields = implode(", ", $fields);
+
+        $sql = $this->prepareQuery("UPDATE Users SET $fields WHERE $where");
+        $sql->execute();
     }
 
     function getTitleSubquery()

@@ -3,160 +3,231 @@
 
 // Layout
 #body {
+    width: 100%;
+    position: relative;
+    @include grid(4);
+    justify-items: center;
+    padding: 0 $side-padding 2rem $side-padding;
+    gap: 0 4rem;
+}
+
+aside {
+    @extend %surface;
+    position: sticky;
+    height: fit-content;
+    margin-top: 2rem;
+    top: 6.5rem;
+    width: 100%;
+}
+
+#main-content {
     @include flex(column, 4rem);
-    padding: 2rem $side-padding;
+    grid-column: span 3;
+    margin-top: 2rem;
+    width: 100%;
 }
 
 // Profile Card
-.profile-card {
-    @include flex(row, 2rem);
-    padding: 2rem;
-    border-radius: $border-radius;
-    box-shadow: $shadow;
-    background-color: var(--surface-color);
-    width: 100%;
-    aspect-ratio: 1280/279.68;
-    background-size: cover;
+#profile_card {
+    @include flex(column, 0.5rem);
+    align-items: center;
+    padding: 2rem 1rem 1rem 1rem;
+    overflow: hidden;
 
-    &--portrait {
-        border-radius: 100%;
-        aspect-ratio: 1/1;
-        height: 100%;
-        object-fit: cover;
+    &-identity {
+        @include flex(column, 0);
+        align-items: center;
     }
 
-    &--content {
-        @include flex(column, 1.5rem);
+    &-banner {
+        position: absolute;
         width: 100%;
-        min-width: 0;
-        height: min-content;
+        top: 0;
+        aspect-ratio: 5/2;
+        object-fit: cover;
+        background-repeat: repeat;
+        background-size: 100%;
+    }
 
-        > div:first-of-type {
-            @include flex(row);
-            align-self: stretch;
+    &-picture {
+        width: 50%;
+        aspect-ratio: 1/1;
+        border-radius: 100%;
+        margin-bottom: 0.5rem;
+        z-index: 1;
+        outline: $outline-width*2 solid var(--surface-color);
+    }
+
+    &-stats {
+        margin-top: 1rem;
+        @include grid(2, 0.5rem);
+        width: 100%;
+
+        h4{
+            grid-column: span 2;
         }
-    }
 
-    &--title {
-        @include flex(column, 0.25rem);
-        flex-grow: 1;
-        color: var(--surface-color);
-    }
-
-    &--stats {
-        @include grid(4, 1.5rem);
-        justify-content: end;
-
-        > div {
-            @include center();
-            justify-content: end;
-            position: relative;
-            padding: 0 1rem 0 3rem;
-            text-align: right;
+        a {
+            width: 100%;
+            @include flex(row, 0.5rem);
+            padding: 0.5rem;
+            align-items: center;
+            justify-content: space-between;
             border-radius: $border-radius;
+            &:hover {
+                    text-decoration: none;   }
         }
-    }
-}
 
-// Stats Icon
-.profile-card--stats--icon {
-    position: absolute;
-    z-index: 3;
-    width: 2rem;
-    height: 2rem;
-    left: -$outline-width * 2;
-    top: -$outline-width * 2;
-    background-color: var(--detail-color);
-    border-radius: $border-radius 0 $border-radius 0;
-    padding: $outline-width 0 0 $outline-width;
-    @include center();
-    text-shadow: 0 0 0.5rem rgba($color: black, $alpha: 0.25);
-}
+        i{
+            text-shadow: 0 0 0.5rem rgba($color: black, $alpha: 0.25);
+        }
 
-// Stats Variants
-.profile-card--stats {
-    &--completed {
-        background-color: $warning-alt-color;
-        border: $outline-width * 2 solid $warning-color;
-        color: var(--surface-color);
+        b{
+            color: var(--surface-color);
+        }
 
-        .profile-card--stats--icon {
+        &-completed {
             background-color: $warning-color;
             color: $warning-alt-color;
         }
-    }
-    &--played {
-        background-color: $success-alt-color;
-        border: $outline-width * 2 solid $success-color;
-        color: var(--surface-color);
-
-        .profile-card--stats--icon {
+        &-played {
             background-color: $success-color;
             color: $success-alt-color;
         }
-    }
-    &--backlog {
-        background-color: var(--secondary-alt-color);
-        border: $outline-width * 2 solid var(--secondary-color);
-        color: var(--surface-color);
-
-        .profile-card--stats--icon {
+        &-backlog {
             background-color: var(--secondary-color);
             color: var(--secondary-alt-color);
         }
-    }
-    &--wishlist {
-        background-color: $error-alt-color;
-        border: $outline-width * 2 solid $error-color;
-        color: var(--surface-color);
-
-        .profile-card--stats--icon {
+        &-wishlist {
             background-color: $error-color;
             color: $error-alt-color;
         }
     }
-}
 
-// Favorites Images
-.profile-card--stats--favorites {
-    @include flex(row, $outline-width * 2);
-    position: relative;
-    border-radius: $border-radius;
-    width: 100%;
-
-    img {
-        aspect-ratio: 460/215;
-        object-fit: cover;
-        flex: 1 1 0;
-        min-width: 0;
-
-        &:first-of-type {
-            border-bottom-left-radius: $border-radius / 2;
+    &-favorites {
+        margin-top: 1rem;
+        @include grid(3, 0.5rem);
+        width: 100%;
+        margin-bottom: 1rem;
+        
+        h4 {
+            grid-column: span 3;
         }
 
-        &:last-of-type {
-            border-radius: 0 $border-radius / 2 $border-radius / 2 0;
+        img {
+            border-radius: $border-radius;
+            aspect-ratio: 359/539;
+            width: 100%;
         }
+    }
+
+    &-edit {
+        width: 100%;
     }
 }
 
 // Lists (Finished, Owned, Wanted)
 #completed, #played, #backlog, #wishlist {
+    position: relative;
     > .content {
-        @include grid(4);
+        @include grid(3);
+        grid-auto-rows: 1fr;
         width: 100%;
         flex-wrap: nowrap;
     }
 }
 
 .navigation {
-    width: 100%;
     @include flex(row, 0.5rem);
-    justify-content: end;
+
+    button {
+        aspect-ratio: 1/1;
+    }
 }
 
-.disabled {
-    opacity: 50%;
-    pointer-events: none;
-    color: var(--detail-color);
+div:has(>.profile-card--portrait){
+    position: relative;
+}
+
+.section-title {
+    @include flex(row, 0.5rem);
+    justify-content: space-between;
+    align-items: center;
+}
+
+#profile_editor {
+    @include center;
+    padding: 2rem;
+
+    form {
+        @extend %surface;
+        width: 66%;
+        height: 100%;
+        aspect-ratio: 16/9;
+        padding: 1.5rem 2rem;
+        gap: 1.5rem;
+    }
+
+    &-form {
+        gap: 2rem;
+
+        &-picture {
+            position: relative;
+            height: 100%;
+            aspect-ratio: 1/1;
+            border-radius: 100%;
+            background-color: var(--background-color);
+
+            &:has(select:hover) i {
+                opacity: 100%;
+            }
+
+            select {
+                width: 100%;
+                height: 100%;
+                border-radius: 100%;
+
+                @include transition(opacity);
+
+                background-size: cover;
+                background-position: center;
+
+                &:hover {
+                    opacity: 50%;
+                    cursor: pointer;
+                }
+            }
+
+            i{
+                font-size: 2.5rem;
+                width: 2.5rem;
+                color: var(--text-color);
+                position: absolute;
+                left: 50%;
+                top: 50%;
+                translate: -50% -50%;
+                opacity: 0%;
+                @include transition(opacity);
+                z-index: 1;
+                pointer-events: none;
+            }
+        }
+
+        &-general {
+            width: 100%;
+
+            div {
+                gap: 0.25rem;
+            }
+        }
+    }
+
+    &-favorites {
+        flex: 1 1 0;
+    }
+    
+    &-footer {
+        width: 100%;
+        justify-content: end;
+    }
 }

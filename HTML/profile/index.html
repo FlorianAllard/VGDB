@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,149 +10,179 @@
     <script type="module" src="/JavaScript/script.js"></script>
     <script type="module" src="/JavaScript/profile.js"></script>
 </head>
+
 <body>
     <main>
         <section id="body">
-            <section class="profile-card">
-                <img src="" alt="loading" class="profile-card--portrait">
-                <div class="profile-card--content">
-                    <div>
-                        <div class="profile-card--title">
-                            <h1 class="loading">USERNAME</h1>
-                            <h3 class="loading">TITLE</h3>
-                        </div>
-                        <div class="profile-card--stats">
-                            <div class="profile-card--stats--completed">
-                                <div class="profile-card--stats--icon">
-                                    <i class="fa-solid fa-check"></i>
-                                </div>
-                                <h1 class="loading">999</h1>
-                                <my-tooltip>Completed</my-tooltip>
-                            </div>
-                            <div class="profile-card--stats--played">
-                                <div class="profile-card--stats--icon">
-                                    <i class="fa-solid fa-check"></i>
-                                </div>
-                                <h1 class="loading">999</h1>
-                                <my-tooltip>Played</my-tooltip>
-                            </div>
-                            <div class="profile-card--stats--backlog">
-                                <div class="profile-card--stats--icon">
-                                    <i class="fa-solid fa-lines-leaning"></i>
-                                </div>
-                                <h1 class="loading">999</h1>
-                                <my-tooltip>Backlog</my-tooltip>
-                            </div>
-                            <div class="profile-card--stats--wishlist">
-                                <div class="profile-card--stats--icon">
-                                    <i class="fa-solid fa-heart"></i>
-                                </div>
-                                <h1 class="loading">999</h1>
-                                <my-tooltip>Wishlist</my-tooltip>
-                            </div>
+            <aside id="profile_card">
+                <div id="profile_card-banner" style="background-image: url(/Assets/profile_motif.png);"></div>
+                <img src="" alt="" id="profile_card-picture" class="loading">
+                <div id="profile_card-identity">
+                    <h2 id="profile_card-identity-username" class="loading">Username</h2>
+                    <b id="profile_card-identity-title" class="loading">Title</b>
+                </div>
+                <div id="profile_card-stats">
+                    <h4>Collection</h4>
+                    <a href="#completed" id="profile_card-stats-completed">
+                        <i class="fa-solid fa-trophy"></i>
+                        <b class="loading">999</b>
+                        <my-tooltip>Completed</my-tooltip>
+                    </a>
+                    <a href="#played" id="profile_card-stats-played">
+                        <i class="fa-solid fa-gamepad"></i>
+                        <b class="loading">999</b>
+                        <my-tooltip>Played</my-tooltip>
+                    </a>
+                    <a href="#backlog" id="profile_card-stats-backlog">
+                        <i class="fa-solid fa-calendar-day"></i>
+                        <b class="loading">999</b>
+                        <my-tooltip>Backlog</my-tooltip>
+                    </a>
+                    <a href="#wishlist" id="profile_card-stats-wishlist">
+                        <i class="fa-solid fa-heart"></i>
+                        <b class="loading">999</b>
+                        <my-tooltip>Wishlist</my-tooltip>
+                    </a>
+                </div>
+                <div id="profile_card-favorites" fill_cells="3">
+                    <h4>Favorites</h4>
+                </div>
+                <button id="profile_card-edit" class="secondary" style="display: none;">Edit profile</button>
+            </aside>
+
+            <section id="main-content">
+                <section id="completed">
+                    <div class="section-title">
+                        <h2>Completed</h2>
+                        <div class="navigation">
+                            <button class="navigation--previous"><i class="fa-solid fa-chevron-left"></i></button>
+                            <button class="navigation--next"><i class="fa-solid fa-chevron-right"></i></button>
                         </div>
                     </div>
-                    <div class="profile-card--stats--favorites">
-                        <img src="" alt="loading">
-                        <img src="" alt="loading">
-                        <img src="" alt="loading">
-                        <img src="" alt="loading">
+                    <div class="content" fill_cells="6">
+                        <template data-loading-placeholders="6">
+                            <a href="" class="card vertical">
+                                <div class="cover landscape loading">
+                                </div>
+                                <div class="content">
+                                    <b class="loading">-</b>
+                                    <ul class="subtexts loading">
+                                    </ul>
+                                </div>
+                            </a>
+                        </template>
                     </div>
-                </div>
-            </section>
+                </section>
 
-            <section id="completed">
-                <div class="section-title">
-                    <h2>Completed</h2>
-                </div>
-                <div class="content">
-                    <template data-loading-placeholders="4">
-                        <a href="" class="card vertical">
-                            <div class="cover landscape loading">
-                            </div>
-                            <div class="content">
-                                <b class="loading">-</b>
-                                <ul class="subtexts loading">
-                                </ul>
-                            </div>
-                        </a>
-                    </template>
-                </div>
-                <div class="navigation">
-                    <button class="navigation--previous" class="tertiary"><i class="fa-solid fa-chevron-left"></i></button>
-                    <button class="navigation--next" class="tertiary"><i class="fa-solid fa-chevron-right"></i></button>
-                </div>
-            </section>
+                <section id="played">
+                    <div class="section-title">
+                        <h2>Played</h2>
+                        <div class="navigation">
+                            <button class="navigation--previous"><i class="fa-solid fa-chevron-left"></i></button>
+                            <button class="navigation--next"><i class="fa-solid fa-chevron-right"></i></button>
+                        </div>
+                    </div>
+                    <div class="content" fill_cells="6">
+                        <template data-loading-placeholders="6">
+                            <a href="" class="card vertical">
+                                <div class="cover landscape loading">
+                                </div>
+                                <div class="content">
+                                    <b class="loading">-</b>
+                                    <ul class="subtexts loading">
+                                    </ul>
+                                </div>
+                            </a>
+                        </template>
+                    </div>
+                </section>
 
-            <section id="played">
-                <div class="section-title">
-                    <h2>Played</h2>
-                </div>
-                <div class="content">
-                    <template data-loading-placeholders="8">
-                        <a href="" class="card vertical">
-                            <div class="cover landscape loading">
-                            </div>
-                            <div class="content">
-                                <b class="loading">-</b>
-                                <ul class="subtexts loading">
-                                </ul>
-                            </div>
-                        </a>
-                    </template>
-                </div>
-                <div class="navigation">
-                    <button class="navigation--previous" class="tertiary"><i class="fa-solid fa-chevron-left"></i></button>
-                    <button class="navigation--next" class="tertiary"><i class="fa-solid fa-chevron-right"></i></button>
-                </div>
-            </section>
+                <section id="backlog">
+                    <div class="section-title">
+                        <h2>Backlog</h2>
+                        <div class="navigation">
+                            <button class="navigation--previous"><i class="fa-solid fa-chevron-left"></i></button>
+                            <button class="navigation--next"><i class="fa-solid fa-chevron-right"></i></button>
+                        </div>
+                    </div>
+                    <div class="content" fill_cells="6">
+                        <template data-loading-placeholders="6">
+                            <a href="" class="card vertical">
+                                <div class="cover landscape loading">
+                                </div>
+                                <div class="content">
+                                    <b class="loading">-</b>
+                                    <ul class="subtexts loading">
+                                    </ul>
+                                </div>
+                            </a>
+                        </template>
+                    </div>
+                </section>
 
-            <section id="backlog">
-                <div class="section-title">
-                    <h2>Backlog</h2>
-                </div>
-                <div class="content">
-                    <template data-loading-placeholders="8">
-                        <a href="" class="card vertical">
-                            <div class="cover landscape loading">
-                            </div>
-                            <div class="content">
-                                <b class="loading">-</b>
-                                <ul class="subtexts loading">
-                                </ul>
-                            </div>
-                        </a>
-                    </template>
-                </div>
-                <div class="navigation">
-                    <button class="navigation--previous" class="tertiary"><i class="fa-solid fa-chevron-left"></i></button>
-                    <button class="navigation--next" class="tertiary"><i class="fa-solid fa-chevron-right"></i></button>
-                </div>
-            </section>
-
-            <section id="wishlist">
-                <div class="section-title">
-                    <h2>Wishlist</h2>
-                </div>
-                <div class="content">
-                    <template data-loading-placeholders="8">
-                        <a href="" class="card vertical">
-                            <div class="cover landscape loading">
-                            </div>
-                            <div class="content">
-                                <b class="loading">-</b>
-                                <ul class="subtexts loading">
-                                </ul>
-                            </div>
-                        </a>
-                    </template>
-                </div>
-                <div class="navigation">
-                    <button class="navigation--previous" class="tertiary"><i class="fa-solid fa-chevron-left"></i></button>
-                    <button class="navigation--next" class="tertiary"><i class="fa-solid fa-chevron-right"></i></button>
-                </div>
+                <section id="wishlist">
+                    <div class="section-title">
+                        <h2>Wishlist</h2>
+                        <div class="navigation">
+                            <button class="navigation--previous"><i class="fa-solid fa-chevron-left"></i></button>
+                            <button class="navigation--next"><i class="fa-solid fa-chevron-right"></i></button>
+                        </div>
+                    </div>
+                    <div class="content" fill_cells="6">
+                        <template data-loading-placeholders="6">
+                            <a href="" class="card vertical">
+                                <div class="cover landscape loading">
+                                </div>
+                                <div class="content">
+                                    <b class="loading">-</b>
+                                    <ul class="subtexts loading">
+                                    </ul>
+                                </div>
+                            </a>
+                        </template>
+                    </div>
+                </section>
             </section>
         </section>
     </main>
+
+    <dialog id="profile_editor">
+        <form action="" method="post" class="flex-column">
+            <div id="profile_editor-header" class="flex-row space-between">
+                <h3>Profile edition</h3>
+                <button id="profile_editor-header-close" class="tertiary"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+
+            <div id="profile_editor-form" class="flex-row">
+                <div id="profile_editor-form-picture">
+                    <i class="fa-solid fa-pen"></i>
+                    <select name="picture">
+                    </select>
+                </div>
+                <div id="profile_editor-form-general" class="flex-column">
+                    <!-- <div class="flex-column">
+                        <label for="profile_editor-general-email">Email address</label>
+                        <input type="text" name="email" id="profile_editor-general-email" disabled>
+                    </div> -->
+                    <div class="flex-column">
+                        <label for="profile_editor-general-username">Username</label>
+                        <input type="text" name="username" id="profile_editor-general-username" disabled>
+                    </div>
+                    <div class="flex-column">
+                        <label for="profile_editor-general-title">Title</label>
+                        <select name="title_id" id="profile_editor-general-title">
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div id="profile_editor-favorites"></div>
+
+            <div id="profile_editor-footer" class="flex-row">
+                <input type="submit" class="primary" value="Save changes">
+            </div>
+        </form>
+    </dialog>
 </body>
+
 </html>

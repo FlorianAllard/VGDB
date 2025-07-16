@@ -147,6 +147,8 @@ export function stopLoading(parent = document) {
 
   const removeAfterLoading = parent.querySelectorAll(".remove-after-loading");
   removeAfterLoading.forEach((el) => el.remove());
+
+  fillEmptyCells(parent);
 }
 
 export async function getDominantColor(img) {
@@ -217,4 +219,23 @@ export function getWebsiteFromUrl(url) {
 
   const site = sites.find((s) => url.toLowerCase().includes(s.keyword));
   return site ? { url, site: site.site, color: site.color, icon: site.icon } : { url, site: "", color: "#E6E6E6", icon: "/Assets/Sites/link.svg" };
+}
+
+export function fillEmptyCells(parent = document) {
+  const grids = parent.querySelectorAll("[fill_cells]");
+  grids.forEach(grid => {
+    if(!grid.querySelector(".fill_cells-placeholder")) {
+      const siblings = grid.querySelectorAll("a, img");
+      const columns = grid.getAttribute("fill_cells");
+      let amount = columns - (siblings.length % columns);
+      if(amount == columns) amount = 0;
+
+      for (let i = 0; i < amount; i++) {
+        const placeholder = document.createElement("div");
+        placeholder.classList.add("fill_cells-placeholder");
+        placeholder.style.height = siblings[0].height;
+        grid.append(placeholder);
+      }
+    }
+  });
 }

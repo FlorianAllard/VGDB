@@ -62,8 +62,6 @@ class UserEntity extends AbstractEntity {
             $errors['password'] = "Please enter your password";
         } else if (!preg_match(self::PASSWORD_REGEX, $this->passwordPlain) || strlen($this->passwordPlain) < 8) {
             $errors['password'] = "Please use a more complex password";
-        } else {
-            $this->password = password_hash($this->passwordPlain, PASSWORD_DEFAULT);
         }
 
         if (empty($this->passwordConfirm)) {
@@ -98,11 +96,12 @@ class UserEntity extends AbstractEntity {
     public function setTitle(string $newTitle) { $this->title = $newTitle; }
 
     // Get/Set password
-    public function getPassword(): string { return $this->passwordPlain; }
-    public function setPassword(string $newPassword) {
+    public function getPassword(): string { return $this->password; }
+    public function setPassword(string $newPassword, bool $hash = true) {
         $newPassword = trim($newPassword);
         $this->passwordPlain = $newPassword;
-        $this->password = password_hash($newPassword, PASSWORD_DEFAULT);
+        if($hash) $this->password = password_hash($newPassword, PASSWORD_DEFAULT);
+        else $this->password = $newPassword;
     }
 
     

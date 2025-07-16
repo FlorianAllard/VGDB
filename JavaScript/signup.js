@@ -107,7 +107,8 @@ async function trySigningUp(form) {
       }
     } else {
       localStorage.setItem("logged_in", true);
-      localStorage.setItem("user", JSON.stringify(result.data));
+      delete result.data[0].password;
+      localStorage.setItem("user", JSON.stringify(result[0].data));
       location.reload();
     }
 }

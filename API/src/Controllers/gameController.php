@@ -72,7 +72,7 @@ class GameController extends AbstractController implements CRUDInterface
         echo json_encode(['status' => 200, 'time' => $timeString, 'data' => $data]);
     }
 
-    public function update() {}
+    public function update($post) {}
 
     public function delete() {}
 }

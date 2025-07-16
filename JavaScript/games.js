@@ -333,7 +333,7 @@ async function initCollection(){
       const label = parent.querySelector(`[for="${radio.id}"]`);
       label.addEventListener("click", function (e) {
         e.preventDefault();
-        setCollection(radio.checked ? -1 : i);
+        setCollection(radio.checked ? -2 : i);
       });
     }
   }

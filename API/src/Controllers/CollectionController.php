@@ -17,7 +17,7 @@ class CollectionController extends AbstractController implements CRUDInterface {
         $errors = [];
         $collection = new CollectionEntity();
 
-        if ($post['category_id'] > 0) {
+        if ($post['category_id'] > -1) {
             $collection->setGame($post['game_id'] ?? '');
             $collection->setUser($post['user_id'] ?? '');
             $collection->setCategory($post['category_id'] ?? '');
@@ -41,7 +41,7 @@ class CollectionController extends AbstractController implements CRUDInterface {
         echo json_encode(['status' => 200, 'data' => $data]);
     }
 
-    public function update() {}
+    public function update($post) {}
 
     public function delete() {}
 }

@@ -7,6 +7,6 @@ use Abstract\AbstractEntity;
 interface CRUDInterface {
     function create(array $post);
     function read(array $get);
-    function update();
+    function update(array $post);
     function delete();
 }

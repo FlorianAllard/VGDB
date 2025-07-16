@@ -36,9 +36,17 @@ abstract class AbstractModel {
     protected function formatGetStatements($get): array {
         $conditions = [];
         $parameters = [];
+        $limit = "";
+        $offset = "";
         foreach ($get as $key => $value) {
-            if ($key === 'limit') continue;
-            if ($key === 'offset') continue;
+            if ($key === 'limit') {
+                $limit = " LIMIT $value";
+                continue;
+            }
+            if ($key === 'offset') {
+                $offset = " OFFSET $value";
+                continue;
+            }
 
             $valueArray = explode(",", $value);
             $invert = str_ends_with($key, "!");
@@ -55,7 +63,9 @@ abstract class AbstractModel {
             ? "WHERE " . implode(" AND ", $conditions)
             : "";
 
-        return ['where' => $where, 'parameters' => $parameters];
+        
+
+        return ['where' => $where . $limit . $offset, 'parameters' => $parameters];
     }
 
     protected function insertInto(string $table, array $data, $fetchAssoc = false): array {

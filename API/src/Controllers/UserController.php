@@ -37,7 +37,7 @@ class UserController extends AbstractController implements CRUDInterface {
             return;
         } 
 
-        echo ['status' => 405, 'data' => $errors];
+        echo json_encode(['status' => 405, 'data' => $errors]);
     }
 
     public function login($post) {
@@ -45,7 +45,7 @@ class UserController extends AbstractController implements CRUDInterface {
         $user = new UserEntity();
 
         $user->setEmail($post['email'] ?? '');
-        $user->setPassword($post['password'] ?? '');
+        $user->setPassword($post['password'] ?? '', false);
 
         if (empty($user->getEmail())) {
             $errors['email'] = "Please enter your email address";
@@ -64,7 +64,7 @@ class UserController extends AbstractController implements CRUDInterface {
             }
         }
 
-        echo ['status' => 405, 'data' => $errors];
+       echo json_encode(['status' => 405, 'data' => $errors]);
     }
 
     public function read($get) {
@@ -72,8 +72,15 @@ class UserController extends AbstractController implements CRUDInterface {
         echo json_encode(['status' => 200, 'data' => $data]);
     }
 
-    public function update() {
+    public function readTitles($get) {
+        $data = $this->database->getTitles($get);
+        echo json_encode(['status' => 200, 'data' => $data]);
+    }
 
+    public function update($post) {
+        $this->database->updateUser($post);
+        $data = $this->database->getUsers(['id' => $post['id']]);
+        echo json_encode(['status' => 200, 'data' => $data]);
     }
 
     public function delete() {

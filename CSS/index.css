@@ -150,6 +150,10 @@ button, input[type=submit] {
   text-transform: uppercase;
   font-weight: bold;
 }
+button:disabled, input[type=submit]:disabled {
+  pointer-events: none;
+  color: var(--detail-color);
+}
 button.primary, input[type=submit].primary {
   color: var(--surface-color);
   background-color: var(--secondary-alt-color);
@@ -162,9 +166,7 @@ button.primary:hover, input[type=submit].primary:hover {
   box-shadow: 0 2px 0 var(--secondary-color);
 }
 button.primary:disabled, input[type=submit].primary:disabled {
-  pointer-events: none;
   background-color: var(--text-color);
-  opacity: 50%;
   border: none;
   box-shadow: none;
 }
@@ -991,6 +993,12 @@ tbody.loading {
 }
 #signup_dialog input[type=submit], #signup_dialog span {
   grid-column: span 2;
+}
+
+.fill_cells-placeholder {
+  border-radius: 0.5rem;
+  background-color: var(--detail-color);
+  opacity: 50%;
 }
 
 #body {

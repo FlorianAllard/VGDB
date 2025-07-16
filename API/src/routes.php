@@ -20,6 +20,10 @@ try {
         $class = new UserController();
         $class->read($_GET);
     });
+    get('/users/titles', function () {
+        $class = new UserController();
+        $class->readTitles($_GET);
+    });
     post('/users/$action', function ($action) {
         $class = new UserController();
         switch ($action) {
@@ -28,6 +32,9 @@ try {
                 break;
             case "login":
                 $class->login($_POST);
+                break;
+            case "update":
+                $class->update($_POST);
                 break;
         }
     });
