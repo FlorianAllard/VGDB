@@ -75,7 +75,7 @@ $shadow: 0 .125rem .125rem 0 rgba(0, 0, 0, .1);
 
 @mixin responsive-grid($column-size, $min-columns:5, $max-columns:10, $gap: 1rem) {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(min(100%/$min-columns, max($column-size, 100%)), 1fr));
+    grid-template-columns: repeat(auto-fit, minmax($column-size, 1fr));
     gap: $gap;
 }
 
@@ -119,6 +119,13 @@ $shadow: 0 .125rem .125rem 0 rgba(0, 0, 0, .1);
         box-shadow: 0 $outline-width 0 var(--secondary-alt-color);
         cursor: pointer;
     }
+}
+
+%center {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    translate: -50% -50%;
 }
 
 :root {
@@ -194,7 +201,7 @@ div:has(>select) {
     i {
         position: absolute;
         font-size: 0.75rem;
-        top: 50%;
+        bottom: 0.5rem;
         right: 1rem;
         translate: 0 -50%;
     }

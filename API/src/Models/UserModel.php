@@ -12,7 +12,11 @@ class UserModel extends AbstractModel
 
     function getUsers($get): array|false
     {
-        $subqueries = [$this->getTitleSubquery(), $this->getCollectionSubquery()];
+        $subqueries = [
+            $this->getTitleSubquery(),
+            $this->getPictureSubquery(),
+            $this->getCollectionSubquery(),
+        ];
 
         $formatedGet = $this->formatGetStatements($get);
         $where = $formatedGet['where'];
@@ -23,7 +27,6 @@ class UserModel extends AbstractModel
             'username',
             'password',
             'createdAt',
-            'profilePicturePath',
         ]);
 
         $sql = $this->prepareQuery(sprintf(
@@ -49,12 +52,24 @@ class UserModel extends AbstractModel
         $sql = $this->prepareQuery("SELECT * FROM UserTitles $where");
         $sql->execute($parameters);
 
-        $data = [];
-        $entities = $sql->fetchAll(PDO::FETCH_ASSOC);
-        foreach ($entities as $entity) {
-            $data[] = $entity;
-        }
+        $data = $sql->fetchAll(PDO::FETCH_ASSOC);
+        return $data;
+    }
 
+    function getPictures($get): array|false {
+        $formatedGet = $this->formatGetStatements($get);
+        $where = $formatedGet['where'];
+        $parameters = $formatedGet['parameters'];
+
+        $sql = $this->prepareQuery("SELECT * FROM ProfilePictures $where");
+        $sql->execute($parameters);
+
+        $data = $sql->fetchAll(PDO::FETCH_ASSOC);
+        foreach ($data as &$dt) {
+            $dt['path'] = str_replace('\\', '/', $dt['path']);
+            $dt['path'] = str_replace('//', '/', $dt['path']);
+            $dt['path'] = preg_replace('#^.*(/Assets)#', '$1', $dt['path']);
+        }
         return $data;
     }
 
@@ -66,7 +81,7 @@ class UserModel extends AbstractModel
             "title_id" => 6,
             "password" => $user->getPassword(),
             "createdAt" => $user->getCreatedAt(),
-            "profilePicturePath" => $user->getProfilePicturePath(),
+            "picture_id" => 1,
         ];
         $fields = implode(', ', array_keys($data));
         $placeholders = implode(', ', array_fill(0, count($data), '?'));
@@ -99,6 +114,19 @@ class UserModel extends AbstractModel
                 FROM UserTitles
                 WHERE UserTitles.id = Users.title_id
                 ) AS title
+            SQL;
+    }
+
+    function getPictureSubquery()
+    {
+        return <<<SQL
+                (SELECT JSON_OBJECT(
+                        'id', ProfilePictures.id,
+                        'path', ProfilePictures.path
+                    )
+                FROM ProfilePictures
+                WHERE ProfilePictures.id = Users.picture_id
+                ) AS picture
             SQL;
     }
 

@@ -83,6 +83,23 @@ class CollectionModel extends AbstractModel
         return $data;
     }
 
+    function updateFavorites($post): void {
+        $user = $post['user_id'];
+        $data = [
+            'user_id' => [],
+            'game_id' => [],
+        ];
+        $gameIDs = explode(",", $post['game_id']);
+        foreach ($gameIDs as $game) {
+            $data['user_id'][] = $user;
+            $data['game_id'][] = $game;
+        }
+        $sql = $this->prepareQuery("DELETE FROM Favorites WHERE user_id=$user");
+        $sql->execute();
+
+        $this->insertInto('Favorites', $data, true);
+    }
+
     function getGameSubquery()
     {   
         $covers = <<<SQL

@@ -176,6 +176,21 @@ export async function setCollections(filters) {
   }
 }
 
+export async function updateFavorites(params) {
+  try {
+    const response = await fetch("http://localhost:3393/collections/favorites", {
+      method: "POST",
+      body: params,
+    });
+    const json = await response.json();
+    console.log("updateFavorites response:", json);
+    return json;
+  } catch (e) {
+    console.error(e);
+    return null;
+  }
+}
+
 export async function getUserTitles(filters) {
   try {
     const params = getParams(filters);
@@ -188,6 +203,25 @@ export async function getUserTitles(filters) {
     });
     const json = await response.json();
     console.log("getUserTitles response:", json);
+    return json;
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+}
+
+export async function getProfilePictures(filters) {
+  try {
+    const params = getParams(filters);
+
+    const url = `http://localhost:3393/users/pictures${params.toString() ? `?${params.toString()}` : ""}`;
+    console.log(url);
+
+    const response = await fetch(url, {
+      method: "GET"
+    });
+    const json = await response.json();
+    console.log("getProfilePictures response:", json);
     return json;
   } catch (error) {
     console.error(error);

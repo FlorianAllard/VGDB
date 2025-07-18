@@ -43,5 +43,10 @@ class CollectionController extends AbstractController implements CRUDInterface {
 
     public function update($post) {}
 
+    public function updateFavorites($post) {
+        $this->database->updateFavorites($post);
+        echo json_encode(['status' => 200]);
+    }
+
     public function delete() {}
 }

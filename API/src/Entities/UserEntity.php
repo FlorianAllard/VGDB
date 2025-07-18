@@ -12,7 +12,7 @@ class UserEntity extends AbstractEntity {
     private ?string $passwordConfirm = NULL;
     private ?string $passwordPlain = NULL;
     private int $createdAt;
-    private string $profilePicturePath = "/Assets/Profiles/Default.webp";
+    private string $picture = "";
     private string $collection = "";
 
     private const PASSWORD_REGEX = "/^(?=.*[!?@#$%^&*+-])(?=.*[0-9])(?=.*[A-Z])(?=.*[a-z]).{6,}$/";
@@ -26,6 +26,11 @@ class UserEntity extends AbstractEntity {
     }
 
     public function encode(): array {
+        $profile = json_decode($this->picture, true);
+        $profile['path'] = str_replace('\\', '/', $profile['path']);
+        $profile['path'] = str_replace('//', '/', $profile['path']);
+        $profile['path'] = preg_replace('#^.*(/Assets)#', '$1', $profile['path']);
+
         return [
             "id" => $this->id,
             "email" => $this->email,
@@ -33,7 +38,7 @@ class UserEntity extends AbstractEntity {
             "title" => json_decode($this->title),
             "password" => $this->password,
             "createdAt" => $this->createdAt,
-            "profilePicturePath" => $this->profilePicturePath,
+            "picture" => $profile,
             "collection" => json_decode($this->collection),
         ];
     }
@@ -118,9 +123,6 @@ class UserEntity extends AbstractEntity {
 
     
     // Get/Set username
-    public function getProfilePicturePath(): string { return $this->profilePicturePath; }
-    public function setProfilePicturePath(string $newPath) {
-        $newPath = trim($newPath);
-        $this->profilePicturePath = $newPath;
-    }
+    public function getPicture(): string { return $this->picture; }
+    public function setPicture(string $newPicture) { $this->picture = $newPicture; }
 }

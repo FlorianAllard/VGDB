@@ -140,7 +140,7 @@ div:has(> select) select {
 div:has(> select) i {
   position: absolute;
   font-size: 0.75rem;
-  top: 50%;
+  bottom: 0.5rem;
   right: 1rem;
   translate: 0 -50%;
 }

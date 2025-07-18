@@ -5,6 +5,11 @@ import * as Utilities from "./utilities_module.js";
 import * as IGDB from "./APIs/igdb_api.js";
 import * as Requests from "./requests.js";
 
+let profileEditor;
+let pictureSelector;
+let pictureIndex = -1;
+let favoriteSelectors;
+
 const CARDS_PER_LOAD = {
   completed: 6,
   played: 6,
@@ -22,7 +27,7 @@ const OFFSETS = {
 const userData = await Requests.getUsers(`id=${new URLSearchParams(window.location.search).get("id")}`);
 const user = userData.data[0];
 
-if (localStorage.getItem("logged_in")) {
+if (localStorage.getItem("logged_in") && user.id == JSON.parse(localStorage.getItem("user")).id) {
   const button = document.querySelector("#profile_card-edit");
   button.style.display = "";
 
@@ -40,7 +45,10 @@ async function loadPage() {
     loadCategory(2),
     loadCategory(3),
     loadCategory(4),
-    loadCard()
+    loadCard(),
+    initProfileEditor(),
+    initPictureSelector(),
+    initFavoritesSelector(),
   ]);
 
   initNavigation();
@@ -131,7 +139,7 @@ async function loadCard() {
   const parent = document.querySelector("#profile_card");
   
   const img = parent.querySelector("#profile_card-picture");
-  img.src = user.profilePicturePath;
+  img.src = user.picture.path;
   parent.querySelector("#profile_card-banner").style.backgroundColor = await Utilities.getDominantColor(img);
   
   parent.querySelector("#profile_card-identity-username").textContent = user.username;
@@ -167,48 +175,142 @@ function initNavigation() {
   }
 }
 
-const editor = document.querySelector("#profile_editor");
-editor.querySelector("#profile_editor-header-close").addEventListener("click", () => disableProfileEditor(null, true));
-const form = editor.querySelector("form");
-form.addEventListener("submit", (e) => {
-  e.preventDefault();
-  saveProfileChanges(form);
-});
+//#region PROFILE EDITOR
 
-async function enableProfileEditor() {
-  document.body.classList.add("stop-scrolling");
-  editor.addEventListener("click", disableProfileEditor);
-  editor.setAttribute("open", "");
+async function initProfileEditor() {
+  profileEditor = document.querySelector("#profile_editor");
+  profileEditor.querySelector("#profile_editor-header-close").addEventListener("click", () => {
+    disableProfileEditor(null, true);
+  });
+  const form = profileEditor.querySelector("form");
+  form.addEventListener("submit", (e) => {
+    e.preventDefault();
+    saveProfileChanges(form);
+  });
 
-  editor.querySelector("#profile_editor-form-picture select").style.backgroundImage = `url(${user.profilePicturePath})`;
-  editor.querySelector("#profile_editor-general-username").value = user.username;
+  pictureIndex = user.picture.id;
 
+  // Title select
   let titlesAvailable = await Requests.getUserTitles();
-  const titleSelect = editor.querySelector("#profile_editor-general-title");
+  const titleSelect = profileEditor.querySelector("#profile_editor-general-title");
   titlesAvailable.data.forEach(titleData => {
     const option = document.createElement('option');
     option.setAttribute("value", titleData.id);
     option.textContent = titleData.name;
     titleSelect.append(option);
   });
+}
+
+async function enableProfileEditor() {
+  document.body.classList.add("stop-scrolling");
+  profileEditor.addEventListener("click", disableProfileEditor);
+  profileEditor.setAttribute("open", "");
+
+  profileEditor.querySelector("#profile_editor-general-username").value = user.username;
+
+  const titleSelect = profileEditor.querySelector("#profile_editor-general-title");
   titleSelect.value = user.title.id;
 }
 
 function disableProfileEditor(event, skipEvent = false) {
-  if (!skipEvent && event.target != editor) return;
-
-  editor.removeAttribute("open");
+  if (!skipEvent && event.target != profileEditor) return;
+  profileEditor.removeAttribute("open");
+  disablePictureSelector();
   document.body.classList.remove("stop-scrolling");
-  editor.removeEventListener("click", disableProfileEditor);
+  profileEditor.removeEventListener("click", disableProfileEditor);
 }
 
+//#endregion
+
+//#region PICTURE SELECTOR
+
+async function initPictureSelector() {
+  let picturesAvailable = await Requests.getProfilePictures();
+  profileEditor.querySelector("#profile_editor-form-picture img").src = picturesAvailable.data.find(pic => pic.id === pictureIndex)?.path || "";
+  pictureSelector = profileEditor.querySelector("#profile_editor-form-picture-selector");
+
+  picturesAvailable.data.forEach(pic => {
+    const button = document.createElement("button");
+    button.style.backgroundImage = `url(${pic.path})`;
+    button.setAttribute('type', 'button');
+
+    button.addEventListener("click", () => {
+      pictureIndex = pic.id;
+      profileEditor.querySelector("#profile_editor-form-picture img").src = pic.path;
+      disablePictureSelector();
+    });
+
+    pictureSelector.append(button);
+  }); 
+
+  profileEditor.querySelector("#profile_editor-form-picture-button").addEventListener("click", () => enablePictureSelector());
+}
+async function enablePictureSelector() {
+  pictureSelector.style.display = "";
+}
+function disablePictureSelector(event, skipEvent = false) {
+  pictureSelector.style.display = "none";
+}
+
+//#endregion
+
+//#region FAVORITES SELECTOR
+
+async function initFavoritesSelector() {
+  const parent = profileEditor.querySelector("#profile_editor-favorites-container");
+  const response = await Requests.getCollections([
+    `user_id=${user.id}`,
+    `category_id=1,2`
+  ]);
+
+  favoriteSelectors = [];
+  response.data.forEach(dt => {
+    const game = dt.game;
+    const card = document.createElement("input");
+    card.setAttribute("type", "checkbox");
+    card.id = game.id;
+    card.style.display = "none";
+    card.checked = user.collection.favorites?.some(fav => fav.id === game.id);
+    
+    const label = document.createElement("label");
+    label.setAttribute("for", game.id);
+    label.style.backgroundImage = `url(${game.covers?.portrait})`;
+
+    card.addEventListener("change", () => {
+      updateCards();
+    });
+
+    favoriteSelectors.push(card);
+    parent.appendChild(card);
+    parent.appendChild(label);
+  });
+
+  updateCards();
+  function updateCards() {
+    const checkedCount = favoriteSelectors.filter((c) => c.checked).length;
+    favoriteSelectors.forEach((card) => {
+      if (!card.checked) {
+        card.disabled = checkedCount >= 3;
+      }
+    });
+  }
+}
+
+//#endregion
+
 async function saveProfileChanges(form) {
-  const formData = new FormData(form);
-  formData.append('id', user.id);
-  const result = await Requests.updateUsers(formData);
-  if(result.status == 200) {
-    delete result.data[0].password;
-    localStorage.setItem("user", JSON.stringify(result.data[0]));
+  const userForm = new FormData(form);
+  userForm.append("id", user.id);
+  userForm.append("picture_id", pictureIndex);
+  const userUpdate = await Requests.updateUsers(userForm);
+
+  const favoriteForm = new FormData();
+  favoriteForm.append("user_id", user.id);
+  const favoriteIds = favoriteSelectors.filter(card => card.checked).map(card => card.id);
+  favoriteForm.append("game_id", favoriteIds);
+  const favoriteUpdate = await Requests.updateFavorites(favoriteForm);
+
+  if (userUpdate.status == 200 && favoriteUpdate.status == 200) {
     location.reload();
   }
 }

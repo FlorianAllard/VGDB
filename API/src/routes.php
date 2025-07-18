@@ -24,6 +24,10 @@ try {
         $class = new UserController();
         $class->readTitles($_GET);
     });
+    get('/users/pictures', function () {
+        $class = new UserController();
+        $class->readPictures($_GET);
+    });
     post('/users/$action', function ($action) {
         $class = new UserController();
         switch ($action) {
@@ -48,6 +52,9 @@ try {
         switch ($action) {
             case "create":
                 $class->create($_POST);
+                break;
+            case "favorites":
+                $class->updateFavorites($_POST);
                 break;
         }
     });

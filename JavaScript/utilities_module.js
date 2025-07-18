@@ -227,13 +227,13 @@ export function fillEmptyCells(parent = document) {
     if(!grid.querySelector(".fill_cells-placeholder")) {
       const siblings = grid.querySelectorAll("a, img");
       const columns = grid.getAttribute("fill_cells");
-      let amount = columns - (siblings.length % columns);
-      if(amount == columns) amount = 0;
-
+      let amount = columns - siblings.length;
       for (let i = 0; i < amount; i++) {
         const placeholder = document.createElement("div");
         placeholder.classList.add("fill_cells-placeholder");
-        placeholder.style.height = siblings[0].height;
+        if(siblings.length > 0) {
+          placeholder.style.height = siblings[0].height;
+        }
         grid.append(placeholder);
       }
     }

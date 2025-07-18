@@ -127,7 +127,7 @@ div:has(> select) select {
 div:has(> select) i {
   position: absolute;
   font-size: 0.75rem;
-  top: 50%;
+  bottom: 0.5rem;
   right: 1rem;
   translate: 0 -50%;
 }
@@ -1132,7 +1132,7 @@ tbody.loading {
 #main-content--grid {
   margin-top: 1rem;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(25%, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(30%, 1fr));
   gap: 1rem;
 }
 #main-content--grid .cover {

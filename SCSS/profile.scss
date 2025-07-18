@@ -114,7 +114,7 @@ aside {
             grid-column: span 3;
         }
 
-        img {
+        img, .fill_cells-placeholder {
             border-radius: $border-radius;
             aspect-ratio: 359/539;
             width: 100%;
@@ -159,7 +159,7 @@ div:has(>.profile-card--portrait){
     @include center;
     padding: 2rem;
 
-    form {
+    >section {
         @extend %surface;
         width: 66%;
         height: 100%;
@@ -168,48 +168,67 @@ div:has(>.profile-card--portrait){
         gap: 1.5rem;
     }
 
+    form {
+        height: 100%;
+    }
+
     &-form {
         gap: 2rem;
 
         &-picture {
-            position: relative;
+            flex: 1 1 0;
             height: 100%;
             aspect-ratio: 1/1;
             border-radius: 100%;
-            background-color: var(--background-color);
+            background-color: var(--secondary-color);
+            border: $outline-width solid var(--surface-color);
+            outline: $outline-width solid var(--detail-color);
 
-            &:has(select:hover) i {
-                opacity: 100%;
-            }
+            position: relative;
 
-            select {
+            &-button {
                 width: 100%;
                 height: 100%;
                 border-radius: 100%;
-
+                opacity: 100%;
                 @include transition(opacity);
-
-                background-size: cover;
-                background-position: center;
-
                 &:hover {
                     opacity: 50%;
-                    cursor: pointer;
+                    cursor: pointer;  
                 }
             }
 
-            i{
-                font-size: 2.5rem;
-                width: 2.5rem;
-                color: var(--text-color);
+            &-icon {
                 position: absolute;
+                border-radius: 100%;
+                background-color: var(--surface-color);
+                border: $outline-width solid var(--detail-color);
+                width: 2.5rem;
+                height: 2.5rem;
+                bottom: -$outline-width*2;
+                right: -$outline-width*2;
+
+                i {
+                    @extend %center;
+                    color: var(--text-color);
+                }
+            }
+
+            &-selector {
+                @extend %surface;
+                position: absolute;
+                @include grid(4);
                 left: 50%;
                 top: 50%;
-                translate: -50% -50%;
-                opacity: 0%;
-                @include transition(opacity);
-                z-index: 1;
-                pointer-events: none;
+                z-index: +1;
+
+                button {
+                    width: 4rem;
+                    height: 4rem;
+                    aspect-ratio: 1/1;
+                    border-radius: 100%;
+                    background-size: cover;
+                }
             }
         }
 
@@ -223,7 +242,46 @@ div:has(>.profile-card--portrait){
     }
 
     &-favorites {
+        margin-top: 1rem;
         flex: 1 1 0;
+        @include flex(column, 0.25rem);
+
+        &-body {
+            flex: 1 1 0;
+            overflow-y: scroll;
+            border-radius: $border-radius;
+            border: $outline-width solid var(--detail-color);
+        }
+
+        &-container {
+            flex-wrap: wrap;
+
+            @include responsive-grid(6rem);
+            padding: 1rem;
+
+            label {
+                aspect-ratio: 359/539;
+                background-color: var(--secondary-color);
+                background-size: cover;
+                border-radius: $border-radius;
+                border: $outline-width solid var(--surface-color);
+                outline: $outline-width solid var(--surface-color);
+                
+                &:hover {
+                    cursor: pointer;
+                    background-blend-mode: soft-light;
+                }
+            }
+            
+            input:checked+label {
+                border: $outline-width solid var(--surface-color);
+                outline: $outline-width*1.5 solid var(--secondary-color);
+            }
+            input:disabled+label {
+                opacity: 50%;
+                pointer-events: none;
+            }
+        }
     }
     
     &-footer {
