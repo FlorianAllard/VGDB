@@ -25,6 +25,10 @@ class UserController extends AbstractController implements CRUDInterface {
 
         $errors = $user->validate();
 
+        if(empty($post['g-recaptcha-response']) || !$this->verifyReCaptcha($post['g-recaptcha-response'])) {
+            $errors['captcha'] = "Please verify you are not a robot";
+        }
+
         $userWithSameEmail = $this->database->getUsers(['email' => $user->getEmail()]);
         if ($userWithSameEmail) {
             $errors['email'] = "This email address is already in use";
@@ -52,6 +56,9 @@ class UserController extends AbstractController implements CRUDInterface {
         }
         if (empty($user->getPassword())) {
             $errors['password'] = "Please enter your password";
+        }
+        if (!empty($post['username'])) {
+            $errors['honeypot'] = "Bad bot";
         }
 
         if(empty($errors)) {

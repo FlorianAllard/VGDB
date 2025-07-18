@@ -987,8 +987,23 @@ tbody.loading {
         padding: 2rem;
     }
 
+    div:has(>.g-recaptcha) {
+        margin-top: 1rem;
+        grid-column: span 2;
+        justify-content: center;
+
+        .g-recaptcha {
+            @include center();
+        }
+    }
+
     input{
         min-width: 16rem;
+
+        &#login-username {
+            position: absolute;
+            translate: -999%;
+        }
     }
 
     div:has(>input) {

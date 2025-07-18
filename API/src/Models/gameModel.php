@@ -465,9 +465,6 @@ class GameModel extends AbstractModel {
         if (isset($raw['release_dates'])) {
             $this->formatAndInsertReleases($game->getID(), $raw['release_dates']);
         }
-        if (isset($raw['release_dates'])) {
-            $this->formatAndInsertReleases($game->getID(), $raw['release_dates']);
-        }
         $rawArtworks = isset($raw['artworks']) ? $raw['artworks'] : [];
         $rawScreenshots = isset($raw['screenshots']) ? $raw['screenshots'] : [];
         $rawVideos = isset($raw['videos']) ? $raw['videos'] : [];
@@ -918,6 +915,8 @@ class GameModel extends AbstractModel {
         $platformFamilies = [];
 
         foreach ($raw as $rawRelease) {
+            if(!isset($rawRelease['date'])) continue;
+
             $item = array_find($regionalReleases, function($value) use ($rawRelease) {
                 return $value['date'] == $rawRelease['date'];
             });

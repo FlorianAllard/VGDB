@@ -296,14 +296,15 @@ function fillReleases() {
     tr.append(tdRelease);
 
     const tdPlatforms = document.createElement("td");
-    for (let i = 0; i < release.platforms.length; i++) {
+    debugger;
+    for (let i = 0; i < release.platforms?.length; i++) {
       const platform = release.platforms[i];
       tdPlatforms.innerHTML += platform.name + (i < release.platforms.length - 1 ? "<br>" : "");
     }
     tr.append(tdPlatforms);
 
     const tdRegions = document.createElement("td");
-    for (let i = 0; i < release.regions.length; i++) {
+    for (let i = 0; i < release.regions?.length; i++) {
       const region = release.regions[i];
       tdRegions.innerHTML += region.name + (i < release.regions.length - 1 ? "<br>" : "");
     }

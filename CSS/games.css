@@ -903,8 +903,22 @@ tbody.loading {
 #login_dialog section, #signup_dialog section {
   padding: 2rem;
 }
+#login_dialog div:has(> .g-recaptcha), #signup_dialog div:has(> .g-recaptcha) {
+  margin-top: 1rem;
+  grid-column: span 2;
+  justify-content: center;
+}
+#login_dialog div:has(> .g-recaptcha) .g-recaptcha, #signup_dialog div:has(> .g-recaptcha) .g-recaptcha {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 #login_dialog input, #signup_dialog input {
   min-width: 16rem;
+}
+#login_dialog input#login-username, #signup_dialog input#login-username {
+  position: absolute;
+  translate: -999%;
 }
 #login_dialog div:has(> input), #signup_dialog div:has(> input) {
   gap: 0rem;
